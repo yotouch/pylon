@@ -1,0 +1,43 @@
+.DS_Store
+
+.sass-cache
+node_modules
+
+*.css.map
+
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+*.iml
+
+.idea
+
+
+/bin/
+
+/build/
+
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+#*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+# eclipse and gradle files
+.project
+.classpath
+.springBeans
+.settings/
+.gradle/
