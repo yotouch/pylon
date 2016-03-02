@@ -4,9 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AiurApplication {
+public class PylonApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(AiurApplication.class, args);
+		SpringApplication.run(PylonApplication.class, args);
 	}
 }

@@ -1,0 +1,13 @@
+spring.datasource:
+    url: jdbc:mysql://127.0.0.1:3306/pylon?useUnicode=true&characterEncoding=utf8&autoReconnect=true
+    username: root
+    password: 
+    driverClassName: com.mysql.jdbc.Driver
+    
+spring.freemarker:
+    cache: false
+    
+    
+multipart:
+    maxFileSize: 16MB
+    maxRequestSize: 16MB
