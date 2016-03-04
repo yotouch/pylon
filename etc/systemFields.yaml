@@ -1,0 +1,19 @@
+systemFields:
+    uuid:
+        dataType: UUID
+        displayName: UUID
+        required: 1
+    creatorUuid:
+        dataType: UUID
+        displayName: Creator UUID
+    createdAt:
+        dataType: DATETIME
+        displayName: 创建时间
+        defaultValue: ${NOW}
+    updatedAt:
+        dataType: DATETIME
+        defaultValue: ${NOW}
+    status:
+        dataType: INT
+        displayName: 状态
+        required: 1

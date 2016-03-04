@@ -1,0 +1,370 @@
+entities:
+    user:
+        nickname:
+            dataType: STRING
+            displayName: 姓名
+            required: 1
+        fullname:
+            dataType: STRING
+        phone:
+            dataType: STRING
+            displayName: 电话
+            required: 1
+        password:
+            dataType: STRING
+            displayName: 密码
+            required: 1
+        city:
+            dataType: STRING
+        country:
+            dataType: STRING
+        headImgUrl:
+            dataType: STRING
+        language:
+            dataType: STRING
+        province:
+            dataType: STRING
+        gender:
+            dataType: INT
+        subscribe:
+            dataType: STRING
+        subscribeTime:
+            dataType: DATETIME
+        wxOpenId:
+            dataType: STRING
+        wxUnionId:
+            dataType: STRING
+        wxAccessToken:
+            dataType: STRING
+        wxRefreshToken:
+            dataType: STRING
+        wxAccessTokenExpires:
+            dataType: DATETIME
+        addresses:
+            fieldType: MULTI_REFERENCE
+            targetMetaEntity: address
+    shop:
+        name:
+            dataType: STRING
+        returnAddr:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: address
+           
+    item:
+        shop:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: shop
+        catalog:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: catalog
+        subCatalog:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: catalog
+        totalStock:
+            dataType: INT
+            displayName: 总库存
+            required: 1
+        totalInOrder:
+            dataType: INT
+        totalSales:
+            dataType: INT
+        showStock:
+            dataType: BOOL
+            defaultValue: falsee
+        name:
+            dataType: STRING
+            displayName: 商品名
+            required: 1
+        price:
+            dataType: DOUBLE
+            displayName: 价格
+            required: 1
+        itemProps:
+            fieldType: MULTI_REFERENCE
+            targetMetaEntity: itemProp
+        pictures:
+            fieldType: MULTI_REFERENCE
+            displayName: 商品图片
+            targetMetaEntity: attachment
+        useCommission:
+            dataType: BOOL
+            displayName: 开启返佣
+            required: 1
+            defaultValue: false
+        commission:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: commission
+        deliveryType:
+            dataType: INT
+        deliveryFee:
+            dataType: DOUBLE
+            displayName: 运费
+        deliveryTemplateUuid:
+            dataType: UUID
+            displayName: 运费模板
+        summary:
+            dataType: TEXT
+            displayName: 商品简介
+            required: 1
+        intro:
+            dataType: TEXT
+            displayName: 商品图文介绍
+            required: 1
+    catalog:
+        name:
+            dataType: STRING
+            displayName: 名称
+            required: 1
+        parent:
+            fieldType: SINGLE_REFERENCE
+            displayName: 父类
+            targetMetaEntity: catalog
+            required: 1
+            defaultValue: 
+    attachment:
+        content:
+            dataType: BINARY
+        mime:
+            dataType: STRING
+        md5:
+            dataType: STRING
+
+    commission:
+        name:
+            dataType: STRING
+        l1Type:
+            dataType: STRING
+        l1Amount:
+            dataType: DOUBLE
+        l2Type:
+            dataType: STRING
+        l2Amount:
+            dataType: DOUBLE
+        l3Type:
+            dataType: STRING
+        l3Amount:
+            dataType: DOUBLE             
+
+    itemProp:
+        name:
+            dataType: STRING
+        value:
+            dataType: STRING
+            
+    district:
+        name:
+            dataType: STRING
+        parent:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: district
+
+    address:
+        receiver:
+            dataType: STRING
+            displayName: 收货人
+        phone:
+            dataType: STRING
+            displayName: 收货人电话
+        province:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: district
+            displayName: 省
+        city:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: district
+            displayName: 市
+        district:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: district
+        address:
+            dataType: STRING
+            displayName: 地址
+        zipcode:
+            dataType: STRING
+            displayName: 邮编
+        
+    
+    order:
+        serialNumber: 
+            dataType: STRING
+        item:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: item
+        shop:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: shop            
+        quantity:
+            dataType: INT
+        price:
+            dataType: DOUBLE
+        totalPrice:
+            dataType: DOUBLE
+        deliveryFee:
+            dataType: DOUBLE
+        state:
+            dataType: INT
+        receiver:
+            dataType: STRING
+        phone:
+            dataType: STRING
+        province:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: district
+        city:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: district
+        district:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: district
+        address:
+            dataType: STRING
+        zipcode:
+            dataType: STRING
+        buyer:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: user
+        reseller:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: reseller
+        commission:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: commission
+        delivery:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: delivery
+        expressNo:
+            dataType: STRING
+        needDelivery:
+            dataType: BOOL
+          
+    reseller:
+        fullname:
+            dataType: STRING
+        phone:
+            dataType: STRING
+        user:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: user
+        referee:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: reseller
+        operatedAt:
+            dataType: DATETIME
+            
+    resellItem:
+        item:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: item
+        reseller:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: reseller
+
+    fundsJournal:
+        type:
+            dataType: STRING
+        targetUuid:
+            dataType: UUID
+        fromWallet:
+            dataType: STRING
+        fromUuid:
+            dataType: UUID
+        toWallet:
+            dataType: STRING
+        toUuid:
+            dataType: UUID
+        amount:
+            dataType: DOUBLE
+        state:
+            dataType: STRING
+        shop:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: shop
+        paymentVendor:
+            dataType: UUID
+        paymentTradeUuid:
+            dataType: UUID
+    
+    delivery:
+        name:
+            dataType: STRING
+            
+    wechat:
+        name:
+            dataType: STRING
+        appId:
+            dataType: STRING
+        secret:
+            dataType: STRING
+        token:
+            dataType: STRING
+        accessToken:
+            dataType: STRING
+        tokenExpires:
+            dataType: DATETIME
+        aeskey:
+            dataType: STRING
+        jsapiTicket:
+            dataType: STRING
+        ticketExpires:
+            dataType: DATETIME
+        mchId:
+            dataType: STRING
+        mchKey:
+            dataType: STRING
+
+    wechatTradeOrder:
+        appId:
+            dataType: STRING
+        mchId:
+            dataType: STRING
+        openId:
+            dataType: STRING
+        deviceInfo:
+            dataType: STRING
+        tradeType:
+            dataType: STRING
+        codeUrl:
+            dataType: STRING
+        bankType:
+            dataType: STRING
+        outTradeNo:
+            dataType: STRING
+        transactionId:
+            dataType: STRING
+        endAt:
+            dataType: DATETIME
+        fee:
+            dataType: DOUBLE
+
+    wallet:
+        ownerType:
+            dataType: UUID
+        ownerUuid:
+            dataType: UUID
+        amount:
+            dataType: DOUBLE
+        lastChangedAt:
+            dataType: DATETIME
+            
+    commissionApply:
+        accountType:
+            dataType: STRING
+        accountNo:
+            dataType: STRING
+        amount:
+            dataType: DOUBLE
+        user:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: user
+        
+
+          
+            
+        
+        
+        
+        
+        
+
+    
+    

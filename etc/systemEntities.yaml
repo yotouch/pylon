@@ -1,0 +1,43 @@
+entities:
+    metaEntity:
+        name:
+            dataType: STRING
+        displayName:
+            dataType: STRING
+            displayName: 显示名称
+        scope:
+            dataType: STRING
+        seqId:
+            dataType: INT
+    metaField:
+        name:
+            dataType: STRING
+            displayName: 字段名称
+        metaEntityUuid:
+            dataType: UUID
+        displayName:
+            dataType: STRING
+            displayName: 显示名称
+        dataType:
+            dataType: STRING
+            displayName: 数据类型
+        fieldType:
+            dataType: STRING
+        targetMetaEntityUuid:
+            dataType: UUID
+        defaultValue:
+            dataType: STRING
+        required:
+            dataType: BOOL
+        weight:
+            dataType: INT
+        visible:
+            dataType: BOOL
+            defaultValue: false
+    attachment:
+        content:
+            dataType: BINARY
+        mime:
+            dataType: STRING
+        md5:
+            dataType: STRING
