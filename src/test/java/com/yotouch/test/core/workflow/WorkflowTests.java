@@ -2,6 +2,8 @@ package com.yotouch.test.core.workflow;
 
 import static org.junit.Assert.*;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.yotouch.core.PylonApplication;
 import com.yotouch.core.workflow.Workflow;
 import com.yotouch.core.workflow.WorkflowManager;
+import com.yotouch.core.workflow.WorkflowState;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = PylonApplication.class)
@@ -25,6 +28,16 @@ public class WorkflowTests {
         Workflow wf = wfMgr.getWorkflow("testWf");
         
         assertEquals("testWf", wf.getName());
+        
+        WorkflowState startState = wf.getStartState();
+        assertEquals("start", startState.getName());
+        
+        List<WorkflowState> finishStates = wf.getFinishStates();
+        assertEquals(1, finishStates.size());
+        
+        WorkflowState finishState = finishStates.get(0);
+        assertEquals("finish", finishState.getName());
+        
         
         
         

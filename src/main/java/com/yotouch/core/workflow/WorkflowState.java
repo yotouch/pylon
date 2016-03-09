@@ -4,4 +4,8 @@ public interface WorkflowState {
 
     String getName();
 
+    boolean isStart();
+
+    boolean isFinish();
+
 }
