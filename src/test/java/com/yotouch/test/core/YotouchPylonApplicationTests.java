@@ -1,18 +1,24 @@
-package com.yotouch;
+package com.yotouch.test.core;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.yotouch.core.PylonApplication;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = PylonApplication.class)
-@WebAppConfiguration
-public class AiurApplicationTests {
-
+public class YotouchPylonApplicationTests {
+    
+    @Autowired
+    ApplicationContext ctx;
+    
 	@Test
 	public void contextLoads() {
+        
 	}
 
 }

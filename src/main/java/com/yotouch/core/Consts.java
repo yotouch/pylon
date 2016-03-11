@@ -12,11 +12,20 @@ public interface Consts {
     String META_FIELD_DATA_TYPE_BINARY      = "BINARY";
     String META_FIELD_DATA_TYPE_BOOLEAN     = "BOOL";
     
+    
+    
     String FIELD_VARIABLE_NOW               = "${NOW}";
     
     String DEFAULT_COMPANY_NAME             = "default";
     
     String FIELD_NAME_COMPANY_UUID          = "companyUuid";
+    
+    String WORKFLOW_STATE_TYPE_START        = "start";
+    String WORKFLOW_STATE_TYPE_FINISH       = "finish";
+    String WORKFLOW_STATE_TYPE_NORMAL       = "normal";
+    
+    String WORKFLOW_STATE_ANY_STATE         = "__ANY__";
+    String WORKFLOW_STATE_SELF_STATE        = "__SELF__";
     
     String CONFIG_KEY_INSTANCE_NAME         = "instanceName";
     String CONFIG_KEY_CONST                 = "const";
@@ -41,6 +50,10 @@ public interface Consts {
     
     String PAYMENT_VENDOR_WECHAT            = "payment_wechat";
     String WECHAT_TRADE_STATUS_SUCCESS      = "SUCCESS";
+    
+    
+    
+    
     
     
     
