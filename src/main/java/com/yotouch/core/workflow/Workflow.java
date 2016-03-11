@@ -10,4 +10,8 @@ public interface Workflow {
 
     List<WorkflowState> getFinishStates();
 
+    WorkflowState getState(String name);
+
+    WorkflowAction getAction(String name);
+
 }

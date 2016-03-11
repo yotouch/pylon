@@ -50,6 +50,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
                 logger.info("workflows " + workflows);
                 
                 for (Object o: workflows) {
+                    @SuppressWarnings("unchecked")
                     Map<String, Object> wfMap = (Map<String, Object>) o;
                     this.buildWorkflow(wfMap);
                 }
@@ -63,6 +64,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
     }
     
 
+    @SuppressWarnings("unchecked")
     private void buildWorkflow(Map<String, Object> wfMap) {
         String name = (String) wfMap.get("name");
         
@@ -75,7 +77,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
             
             String stateDispName = stMap.get("displayName");
             if (StringUtils.isEmpty(stateDispName)) {
-                stateDispName = "";
+                stateDispName = stateName;
             }
             
             wfState.setDisplayName(stateDispName);
@@ -91,6 +93,42 @@ public class WorkflowManagerImpl implements WorkflowManager {
             
             wfi.addState(wfState);
             wfState.setWorkflow(wfi);
+        }
+        
+        List<Map<String, String>> actionList = (List<Map<String, String>>) wfMap.get("actions");
+        for (Map<String, String> actMap: actionList) {
+            String actionName = actMap.get("name");
+            WorkflowActionImpl wfAction = new WorkflowActionImpl(actionName);
+            
+            String dispName = actMap.get("displayName");
+            if (StringUtils.isEmpty(dispName)) {
+                dispName = name;
+            }
+            wfAction.setDisplayName(dispName);
+            
+            
+            String fromName = actMap.get("from");
+            if (Consts.WORKFLOW_STATE_ANY_STATE.equalsIgnoreCase(fromName)) {
+                wfAction.setFrom(WorkflowStateImpl.AnyState);
+            } else {
+                WorkflowStateImpl fromState = (WorkflowStateImpl) wfi.getState(fromName);
+                wfAction.setFrom(fromState);
+                
+                fromState.addOutAction(wfAction);
+            }
+            
+            String toName = actMap.get("to");
+            if (Consts.WORKFLOW_STATE_SELF_STATE.equalsIgnoreCase(toName)) {
+                wfAction.setTo(WorkflowStateImpl.SelfState);
+            } else {
+                WorkflowStateImpl toState = (WorkflowStateImpl) wfi.getState(toName);
+                wfAction.setTo(toState);
+                toState.addInAction(wfAction);
+            }
+            
+            wfi.addAction(wfAction);
+            wfAction.setWorkflow(wfi);
+
         }
         
         

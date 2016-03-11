@@ -20,5 +20,26 @@ workflows:
           - name: act1_2
             from: state1
             to: state2
+          - name: act2_finish
+            from: state2
+            to: finish
+          - name: act1_3
+            from: state1
+            to: state3
+          - name: act3_2
+            from: state3
+            to: state2
+          - name: act3_finish
+            from: state3
+            to: finish
+          - name: edit
+            from: __ANY__
+            to: __SELF__
+          - name: revert
+            from: __ANY__
+            to: start
+          - name: review3
+            from: state3
+            to: __SELF__
                 
         
