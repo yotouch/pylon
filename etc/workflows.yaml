@@ -41,5 +41,28 @@ workflows:
           - name: review3
             from: state3
             to: __SELF__
+
+    - name: party
+      states:
+          - name: start
+            displayName: 开始
+            type: start
+          - name: apply
+            displayName: 报名中
+          - name: inProcessing
+            displayName: 进行中
+          - name: finish
+            displayName: 结束
+      actions:
+          - name: start
+            from: start
+            to: apply
+          - name: stopSignup
+            from: apply
+            to: inProcessing
+          - name: finish
+            from: inProcessing
+            to: finish
+
                 
         
