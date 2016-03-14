@@ -27,6 +27,9 @@ public interface Consts {
     String WORKFLOW_STATE_ANY_STATE         = "__ANY__";
     String WORKFLOW_STATE_SELF_STATE        = "__SELF__";
     
+    String BIZ_ENTITY_FIELD_WORKFLOW        = "wf_workflow";
+    String BIZ_ENTITY_FIELD_STATE           = "wf_state";
+    
     String CONFIG_KEY_INSTANCE_NAME         = "instanceName";
     String CONFIG_KEY_CONST                 = "const";
     

@@ -76,7 +76,7 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
         this.uuid = uuid;        
     }
     
-    void setMetaEntity(MetaEntityImpl mei) {
+    public void setMetaEntity(MetaEntityImpl mei) {
         this.me = mei;        
     }
     

@@ -68,7 +68,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
     private void buildWorkflow(Map<String, Object> wfMap) {
         String name = (String) wfMap.get("name");
         
-        WorkflowImpl wfi = new WorkflowImpl(name);
+        WorkflowImpl wfi = new WorkflowImpl("uuid-" + name, name);
         
         List<Map<String, String>> stateList = (List<Map<String, String>>) wfMap.get("states");
         for (Map<String, String> stMap: stateList) {
