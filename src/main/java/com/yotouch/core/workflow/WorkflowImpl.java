@@ -7,6 +7,7 @@ import java.util.Map;
 
 public class WorkflowImpl implements Workflow {
     
+    private String uuid;
     private String name;
 
     private Map<String, WorkflowState> stateMap;
@@ -16,7 +17,8 @@ public class WorkflowImpl implements Workflow {
     private Map<String, WorkflowAction> actionMap;    
     private Map<String, WorkflowAction> fromAnyActionMap;
 
-    public WorkflowImpl(String name) {
+    public WorkflowImpl(String uuid, String name) {
+        this.uuid = uuid;
         this.name = name;
         this.stateMap = new HashMap<>();
         this.finishStates = new ArrayList<>();
@@ -27,6 +29,11 @@ public class WorkflowImpl implements Workflow {
     @Override
     public String getName() {
         return this.name;
+    }
+    
+    @Override
+    public String getUuid() {
+        return this.uuid;
     }
 
     public WorkflowImpl addState(WorkflowState state) {
@@ -89,10 +96,10 @@ public class WorkflowImpl implements Workflow {
         if (getClass() != obj.getClass())
             return false;
         WorkflowImpl other = (WorkflowImpl) obj;
-        if (name == null) {
-            if (other.name != null)
+        if (uuid == null) {
+            if (other.uuid!= null)
                 return false;
-        } else if (!name.equals(other.name))
+        } else if (!uuid.equals(other.uuid))
             return false;
         return true;
     }
