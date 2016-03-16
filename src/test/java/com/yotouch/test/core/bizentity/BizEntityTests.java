@@ -50,7 +50,6 @@ public class BizEntityTests {
         
         MetaEntity me = bme.getMetaEntity();
         assertEquals(entityMgr.getMetaEntity("party"), me);
-        
 
         DbSession dbSession = this.ytApp.getRuntime().createDbSession();
 

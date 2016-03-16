@@ -74,7 +74,7 @@ public class BizEntityManagerImpl implements BizEntityManager {
                     fillWfFields(me);
                     
                     BizMetaEntityImpl bme = new BizMetaEntityImpl(wf, me);
-                    this.entityNamedMap.put(wf.getName(), bme);                    
+                    this.entityNamedMap.put(me.getName(), bme);                    
                 }
                 
                 ((EntityManagerImpl)this.entityMgr).rebuildDb();
