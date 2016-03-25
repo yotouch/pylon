@@ -1,15 +1,5 @@
 bizEntities:
   - workflow: party
-    entity:
-      - name: party
-        fields:
-          - name: address
-            dataType: STRING
-          - name: quota
-            dataType: INT
-          - name: members
-            fieldType: MULTI_REFERENCE
-            targetMetaEntity: user
-
+    entity: party
 
 

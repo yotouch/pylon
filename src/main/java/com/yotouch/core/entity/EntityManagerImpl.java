@@ -63,13 +63,9 @@ public class EntityManagerImpl implements EntityManager {
         rebuildDb();
     }
 
-    
-
     private void buildMultiReferenceEntities() {
-        
         scanMrEntities(this.systemEntities.values());
         scanMrEntities(this.userEntities.values());
-        
     }
 
     private void scanMrEntities(Collection<MetaEntity> entities) {
@@ -124,7 +120,7 @@ public class EntityManagerImpl implements EntityManager {
     }
 
     // CREATE OR ALTER TABLE
-    private void rebuildDb() {
+    public void rebuildDb() {
 
         List<String> tables = dbStore.fetchAllTables();
 

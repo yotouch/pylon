@@ -356,7 +356,16 @@ entities:
         user:
             fieldType: SINGLE_REFERENCE
             targetMetaEntity: user
-        
+    
+    party: 
+        address:
+            dataType: STRING
+        quota:
+            dataType: INT
+        members:
+            fieldType: MULTI_REFERENCE
+            targetMetaEntity: user
+
 
           
             

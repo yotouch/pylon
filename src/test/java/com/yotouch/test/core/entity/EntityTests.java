@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.yotouch.core.PylonApplication;
+import com.yotouch.base.PylonApplication;
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.entity.EntityManager;
 import com.yotouch.core.entity.MetaEntity;

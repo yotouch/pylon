@@ -145,7 +145,7 @@ public class DbStoreImpl implements DbStore {
         } else if (Consts.META_FIELD_DATA_TYPE_UUID.equalsIgnoreCase(mf.getDataType())) {
             sql += name + " VARCHAR(40) NOT NULL DEFAULT \"\", ";
         } else if (Consts.META_FIELD_DATA_TYPE_DATETIME.equalsIgnoreCase(mf.getDataType())) {
-            sql += name + " DATETIME, ";
+            sql += name + " TIMESTAMP NULL DEFAULT NULL , ";
         } else if (Consts.META_FIELD_DATA_TYPE_INT.equalsIgnoreCase(mf.getDataType())) {
             sql += name + " INT, ";
         } else if (Consts.META_FIELD_DATA_TYPE_DOUBLE.equalsIgnoreCase(mf.getDataType())) {
