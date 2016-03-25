@@ -20,7 +20,7 @@ import com.yotouch.core.workflow.Workflow;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = PylonApplication.class)
-public interface BizEntityTests {
+public class BizEntityTests {
 
     @Autowired
     private BizEntityManager beMgr;
