@@ -181,7 +181,7 @@ public class EntityManagerImpl implements EntityManager {
 
                     this.systemEntities.put(mei.getName(), mei);
                     logger.warn("Build System metaEntity " + mei);
-                    logger.warn("Build System metaEntity fiels " + mei.getMetaFields());
+                    //logger.warn("Build System metaEntity fiels " + mei.getMetaFields());
                 }
 
             } catch (FileNotFoundException e) {
@@ -243,7 +243,7 @@ public class EntityManagerImpl implements EntityManager {
                     this.systemFields.put(fn, MetaFieldImpl.build(this, fMap));
                 }
 
-                logger.warn("System fields " + this.systemFields);
+                //logger.warn("System fields " + this.systemFields);
             } catch (FileNotFoundException e) {
                 logger.error("Load system field error", e);
                 return;

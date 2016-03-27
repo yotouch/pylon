@@ -91,7 +91,7 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
         
         MetaFieldImpl<?> mfi = null;
         
-        logger.info("Build MetaField " + fr.get("name") + " with dataType " + dataType + " with fieldType " + fieldType);
+        //logger.info("Build MetaField " + fr.get("name") + " with dataType " + dataType + " with fieldType " + fieldType);
         
         if (Consts.META_FIELD_TYPE_SINGLE_REFERENCE.equalsIgnoreCase(fieldType)) {
             String targetMetaEntity = (String) fr.get("targetMetaEntity");
@@ -129,7 +129,7 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
         mfi.setDefaultValue(fr.get("defaultValue"));
         mfi.setRequired("1".equals(fr.get("required")));
         
-        logger.info("Try to build MetaField " + fr);
+        //logger.info("Try to build MetaField " + fr);
         
         //mei.addField(mfi);
 

@@ -1,5 +1,6 @@
 package com.yotouch.core.entity.mf;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import com.yotouch.core.Consts;
@@ -7,7 +8,7 @@ import com.yotouch.core.entity.MetaFieldImpl;
 import com.yotouch.core.entity.fv.DateTimeFieldValueImpl;
 import com.yotouch.core.entity.fv.FieldValue;
 
-public class DateTimeMetaFieldImpl extends MetaFieldImpl<Date> {
+public class DateTimeMetaFieldImpl extends MetaFieldImpl<Calendar> {
     
     private boolean defaultNow = false;
 
@@ -34,16 +35,16 @@ public class DateTimeMetaFieldImpl extends MetaFieldImpl<Date> {
     }
     
     @Override
-    public Date getDefaultValue() {
+    public Calendar getDefaultValue() {
         if (this.defaultNow) {
-            return new Date();
+            return Calendar.getInstance();
         } else {
             return this.defaultValue.getValue();
         }
     }
 
     @Override
-    public FieldValue<Date> newFieldValue(Object value) {
+    public FieldValue<Calendar> newFieldValue(Object value) {
         return new DateTimeFieldValueImpl(this, value);
     }
 

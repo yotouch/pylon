@@ -4,15 +4,11 @@ import java.io.ByteArrayInputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
@@ -176,7 +172,7 @@ public class DbStoreImpl implements DbStore {
         boolean hasNew = false;
         for (MetaField<?> mf: me.getMetaFields()) {
             
-            logger.info("Scan field " + mf.getName());
+            //logger.info("Scan field " + mf.getName());
             
             String newFieldName = mf.getName();
             if (mf.isSingleReference()) {
@@ -216,7 +212,7 @@ public class DbStoreImpl implements DbStore {
         
         Object value = fv.getValue();
         
-        logger.info("Set ps value idx " + idx + " name " + fv.getField() + " value " + value + " value type " + (value == null ? "null" : value.getClass()));
+        //logger.info("Set ps value idx " + idx + " name " + fv.getField() + " value " + value + " value type " + (value == null ? "null" : value.getClass()));
         
         if (Consts.META_FIELD_DATA_TYPE_STRING.equals(mf.getDataType())
                 || Consts.META_FIELD_DATA_TYPE_TEXT.equalsIgnoreCase(mf.getDataType())
@@ -231,11 +227,11 @@ public class DbStoreImpl implements DbStore {
             ps.setString(idx, s);
             
         } else if (Consts.META_FIELD_DATA_TYPE_DATETIME.equals(mf.getDataType())) {
-            Date d = (Date) fv.getValue();
-            if (d == null) {
-                d = (Date) fv.getField().getDefaultValue();
+            Calendar cal = (Calendar) fv.getValue();
+            if (cal == null) {
+                cal = (Calendar) fv.getField().getDefaultValue();
             }
-            ps.setTimestamp(idx, new java.sql.Timestamp(d.getTime()));
+            ps.setTimestamp(idx, new java.sql.Timestamp(cal.getTimeInMillis()));
         } else if (Consts.META_FIELD_DATA_TYPE_INT.equals(mf.getDataType())) {
             if (fv.getValue() == null) {
                 ps.setObject(idx, null);

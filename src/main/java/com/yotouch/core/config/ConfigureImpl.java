@@ -28,10 +28,12 @@ public class ConfigureImpl implements Configure {
     
     @PostConstruct
     void init() {
+        /*
         logger.info("All properties " + System.getProperties());
         for (Object name: System.getProperties().keySet()) {
             logger.info("key " + name);
         }
+        */
         String ytRuntimeHome = System.getProperty("YT_HOME");
 
         logger.info("Get YT_HOME from VM property: " + ytRuntimeHome);
