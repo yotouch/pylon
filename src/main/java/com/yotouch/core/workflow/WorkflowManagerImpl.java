@@ -48,6 +48,10 @@ public class WorkflowManagerImpl implements WorkflowManager {
                 @SuppressWarnings("unchecked")
                 List<Object> workflows = (List<Object>) m.get("workflows");
                 logger.info("workflows " + workflows);
+
+                if (workflows == null) {
+                    return ;
+                }
                 
                 for (Object o: workflows) {
                     @SuppressWarnings("unchecked")

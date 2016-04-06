@@ -61,6 +61,11 @@ public class BizEntityManagerImpl implements BizEntityManager {
 
                 @SuppressWarnings("unchecked")
                 List<Map<String, String>> bizEntities =  (List<Map<String, String>>) m.get("bizEntities");
+
+                if (bizEntities == null) {
+                    return;
+                }
+
                 
                 for (Map<String, String> beMap: bizEntities) {
                     logger.info("BeMap " + beMap);
