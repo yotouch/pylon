@@ -55,7 +55,7 @@ public interface Consts {
     String WECHAT_TRADE_STATUS_SUCCESS      = "SUCCESS";
     
     
-   int AJAX_STATUS_FAIL                     = 1; 
+   int AJAX_STATUS_FAILED                   = 1; 
    int AJAX_STATUS_OK                       = 0; 
     
     
