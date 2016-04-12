@@ -36,7 +36,9 @@ dependencies {
 	compile('com.google.guava:guava:19.0')
     compile('com.zaxxer:HikariCP:2.4.1')
     compile('org.aspectj:aspectjweaver:1.8.8')
-    
+
+	compile('commons-httpclient:commons-httpclient:3.1')
+
     compile('org.apache.tika:tika-parsers:1.11')
     
 	runtime('mysql:mysql-connector-java')

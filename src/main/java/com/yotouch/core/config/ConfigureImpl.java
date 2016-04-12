@@ -65,11 +65,9 @@ public class ConfigureImpl implements Configure {
         if (f.exists() && f.isFile()) {
             Yaml yaml = new Yaml();
             try {
-                
                 @SuppressWarnings("unchecked")
                 Map<String, Object> load = (Map<String, Object>) yaml.load(new FileInputStream(f));
                 this.config = load;
-                
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
