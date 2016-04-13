@@ -91,12 +91,12 @@ public class EntityRowMapper implements RowMapper<Entity> {
             
             List<Entity> entities = dbSession.queryRawSql(mrf.getMappingMetaEntity().getName(), me.getName() + "Uuid = ?", new Object[]{e.getUuid()});
             
-            logger.info(" multi uuids " + entities.stream().map(ee -> ee.getValue(mrf.getTargetMetaEntity().getName() + "Uuid")));
+            logger.debug(" multi uuids " + entities.stream().map(ee -> ee.getValue(mrf.getTargetMetaEntity().getName() + "Uuid")));
             
             List<String> uuids = new ArrayList<>();
             entities.stream().forEach(ee -> uuids.add(ee.getValue(mrf.getTargetMetaEntity().getName() + "Uuid")));
             
-            logger.info(" multi uuids " + uuids);
+            logger.debug(" multi uuids " + uuids);
             
             e.setValue(mf.getName(), uuids);
             
