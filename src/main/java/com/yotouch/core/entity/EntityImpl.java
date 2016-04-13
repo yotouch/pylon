@@ -55,15 +55,12 @@ public class EntityImpl implements Entity {
         MetaField<?> mf = this.me.getMetaField(fieldName);
         
         if (mf == null) {
+            logger.warn("Set none-existing field `"+fieldName+"` for metaEntity `"+this.me.getName()+"`");
             mf = new ObjectMetaFieldImpl(this.me, fieldName, fieldName);
         }
         
-        FieldValue<?> fv = (AbstractFieldValue<?>) this.valueMap.get(mf.getName());
-        
-        if (mf.isMultiReference()) {
-            logger.info("Set value for mr " + mf.getName());
-        }
-        
+        FieldValue<?> fv = this.valueMap.get(mf.getName());
+
         if (fv == null) {
             fv = mf.newFieldValue(value);
         } else {
