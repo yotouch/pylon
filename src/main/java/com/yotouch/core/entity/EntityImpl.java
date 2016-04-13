@@ -55,6 +55,7 @@ public class EntityImpl implements Entity {
         MetaField<?> mf = this.me.getMetaField(fieldName);
         
         if (mf == null) {
+            logger.warn("Set none-existing field `"+fieldName+"` for metaEntity `"+this.me.getName()+"`");
             mf = new ObjectMetaFieldImpl(this.me, fieldName, fieldName);
         }
         
