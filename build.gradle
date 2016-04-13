@@ -32,7 +32,10 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-freemarker')
 	compile('org.springframework.boot:spring-boot-starter-jdbc')
 	compile('org.springframework.boot:spring-boot-starter-web')
-	
+
+	compile fileTree(dir: 'lib', include: '*.jar')
+
+
 	compile('com.google.guava:guava:19.0')
     compile('com.zaxxer:HikariCP:2.4.1')
     compile('org.aspectj:aspectjweaver:1.8.8')

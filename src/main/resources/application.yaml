@@ -6,8 +6,8 @@ spring.datasource:
     
 spring.freemarker:
     cache: false
-    
-    
+
 multipart:
     maxFileSize: 16MB
     maxRequestSize: 16MB
+
