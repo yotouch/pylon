@@ -212,7 +212,7 @@ public class DbStoreImpl implements DbStore {
         
         Object value = fv.getValue();
         
-        //logger.info("Set ps value idx " + idx + " name " + fv.getField() + " value " + value + " value type " + (value == null ? "null" : value.getClass()));
+        logger.debug("Set ps value idx " + idx + " name " + fv.getField() + " value " + value + " value type " + (value == null ? "null" : value.getClass()));
         
         if (Consts.META_FIELD_DATA_TYPE_STRING.equals(mf.getDataType())
                 || Consts.META_FIELD_DATA_TYPE_TEXT.equalsIgnoreCase(mf.getDataType())
