@@ -18,19 +18,19 @@ public class YuntongxunSmsServiceImpl implements SmsService {
 
     private static final Logger logger = LoggerFactory.getLogger(YuntongxunSmsServiceImpl.class);
 
-    @Value("${sms.yuntongxun.url}")
+    @Value("${sms.yuntongxun.url:}")
     private String apiUrl;
 
-    @Value("${sms.yuntongxun.port}")
+    @Value("${sms.yuntongxun.port:8883}")
     private String apiPort;
 
-    @Value("${sms.yuntongxun.accountSid}")
+    @Value("${sms.yuntongxun.accountSid:}")
     private String accountSid;
 
-    @Value("${sms.yuntongxun.authToken}")
+    @Value("${sms.yuntongxun.authToken:}")
     private String authToken;
 
-    @Value("${sms.yuntongxun.appId}")
+    @Value("${sms.yuntongxun.appId:}")
     private String appId;
 
     @Override
