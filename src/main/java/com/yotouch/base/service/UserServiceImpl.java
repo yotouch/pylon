@@ -134,13 +134,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Entity addDefaultRoleByEnterUrl(DbSession dbSession, Entity user, String enterUrl) {
+        Entity userRole = dbSession.newEntity("userRole");
+        userRole.setValue("user", user.getUuid());
         if (enterUrl.startsWith("/interview/genpaper/")) {
-            Entity userRole = dbSession.newEntity("userRole");
-            userRole.setValue("user", user.getUuid());
             userRole.setValue("role", roleService.getOrCreateByName(Consts.ROLE_INTERVIEWEE_NAME));
-            userRole.setValue("status", Consts.STATUS_NORMAL);
-            dbSession.save(userRole);
+        } else {
+            userRole.setValue("role", roleService.getOrCreateByName(Consts.ROLE_CUSTOMER_NAME));
         }
+        userRole.setValue("status", Consts.STATUS_NORMAL);
+        dbSession.save(userRole);
 
         return user;
     }
