@@ -55,10 +55,10 @@ public interface Consts {
     String WECHAT_TRADE_STATUS_SUCCESS      = "SUCCESS";
     
     
-   int AJAX_STATUS_FAILED                   = 1; 
-   int AJAX_STATUS_OK                       = 0; 
-    
-    
-    
+    int AJAX_STATUS_FAILED                   = 1;
+    int AJAX_STATUS_OK                       = 0;
+
+    String WALLET_TYPE_USER                 = "walletTypeUser";
+    String WALLET_TYPE_SHOP                 = "walletTypeShop";
     
 }

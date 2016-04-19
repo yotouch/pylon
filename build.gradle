@@ -35,6 +35,10 @@ dependencies {
 
 	compile fileTree(dir: 'lib', include: '*.jar')
 
+	compile('me.chanjar:weixin-java-mp:1.3.3')
+	compile('com.alibaba:fastjson:1.2.7')
+	compile('com.sun.xml.bind:jaxb-impl:2.1.12')
+	compile('redis.clients:jedis:2.7.3')
 
 	compile('com.google.guava:guava:19.0')
     compile('com.zaxxer:HikariCP:2.4.1')
