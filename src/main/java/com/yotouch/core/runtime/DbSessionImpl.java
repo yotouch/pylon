@@ -42,6 +42,13 @@ public class DbSessionImpl implements DbSession {
     }
 
     @Override
+    public Entity newEntity(String name, int status) {
+        Entity e = this.newEntity(name);
+        e.setValue("status", status);
+        return e;
+    }
+
+    @Override
     public Entity save(Entity e) {
         String uuid = e.getUuid();
 

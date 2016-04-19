@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
+
 import com.yotouch.core.Consts;
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.entity.MetaEntity;
@@ -130,11 +131,13 @@ public class WebUtil {
         
         return entity;
     }
-    
+
+    /*
     public Entity createNewEntity(DbSession dbSession, String entityName, int status) {
         Entity e = dbSession.newEntity(entityName);
         e.setValue("status", status);
         return dbSession.save(e);
     }
+    */
 
 }

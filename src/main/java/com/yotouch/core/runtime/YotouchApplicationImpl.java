@@ -7,6 +7,7 @@ import com.yotouch.core.Consts;
 import com.yotouch.core.config.Configure;
 import com.yotouch.core.entity.EntityManager;
 import com.yotouch.core.store.db.DbStore;
+import org.springframework.util.StringUtils;
 
 @Service
 public class YotouchApplicationImpl implements YotouchApplication {
@@ -32,7 +33,12 @@ public class YotouchApplicationImpl implements YotouchApplication {
 
     @Override
     public String getInstanceName() {
-        return (String) this.config.getProp(Consts.CONFIG_KEY_INSTANCE_NAME);
+        String name = (String) this.config.getProp(Consts.CONFIG_KEY_INSTANCE_NAME);
+        if (StringUtils.isEmpty(name)) {
+            return "yotouch";
+        }
+
+        return name;
     }
 
     @Override

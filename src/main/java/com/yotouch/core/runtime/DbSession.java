@@ -8,7 +8,9 @@ import com.yotouch.core.entity.MetaEntity;
 public interface DbSession {
 
     Entity newEntity(String entityName);
-    
+
+    Entity newEntity(String entityName, int status);
+
     Entity save(Entity e);
 
     Entity getEntity(String entityName, String uuid);
@@ -25,8 +27,4 @@ public interface DbSession {
 
     void deleteRawSql(MetaEntity me, String where, Object[] args);
 
-    
-
-    
-    
 }
