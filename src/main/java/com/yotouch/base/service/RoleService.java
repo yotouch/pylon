@@ -10,8 +10,8 @@ public interface RoleService {
 
     List<Entity> getMenu(List<Entity> userRoles);
     
-    void saveUserRole(Entity user, String[] role);
-    
+    void addUserRole(Entity user, String[] role);
+
     void deleteUserRoles(Entity user);
     
     List<Entity> getSubRoleList(String parentRoleUuid);

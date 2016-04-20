@@ -67,13 +67,11 @@ public class RoleServiceImpl implements RoleService {
     }
     
     @Transactional
-    public void saveUserRole(Entity user, String[] roles){
+    public void addUserRole(Entity user, String[] roles){
 
         YotouchRuntime rt = ytApp.getRuntime();
         DbSession dbSession = rt.createDbSession();
 
-        deleteUserRoles(user);
-        
         for (String roleUuid : roles) {
 
             Entity userRole = dbSession.newEntity("userRole", Consts.STATUS_NORMAL);
@@ -84,7 +82,8 @@ public class RoleServiceImpl implements RoleService {
         }
         
     }
-    
+
+    @Transactional
     public void deleteUserRoles(Entity user){
         YotouchRuntime rt = ytApp.getRuntime();
         DbSession dbSession = rt.createDbSession();
