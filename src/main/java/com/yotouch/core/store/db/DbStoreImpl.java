@@ -387,7 +387,9 @@ public class DbStoreImpl implements DbStore {
         String sql = "SELECT * FROM " + mei.getTableName();
         if (!StringUtils.isEmpty(where)) {
             sql += " WHERE " + where;
-            //logger.info("YT SQL SELECT : " + sql + " args [" + StringUtils.arrayToCommaDelimitedString(args) + "]");
+            if (!((MetaEntityImpl) me).getTableName().startsWith("mr_")) {
+                logger.info("YT SQL SELECT : " + sql + " args [" + StringUtils.arrayToCommaDelimitedString(args) + "]");
+            }
             return this.jdbcTpl.query(sql, args, mapper);
         } else {
             return this.jdbcTpl.query(sql, mapper);
