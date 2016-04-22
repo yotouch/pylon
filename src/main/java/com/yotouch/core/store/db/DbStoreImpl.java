@@ -231,7 +231,10 @@ public class DbStoreImpl implements DbStore {
             if (cal == null) {
                 cal = (Calendar) fv.getField().getDefaultValue();
             }
-            ps.setTimestamp(idx, new java.sql.Timestamp(cal.getTimeInMillis()));
+
+            if (cal != null) {
+                ps.setTimestamp(idx, new java.sql.Timestamp(cal.getTimeInMillis()));
+            }
         } else if (Consts.META_FIELD_DATA_TYPE_INT.equals(mf.getDataType())) {
             if (fv.getValue() == null) {
                 ps.setObject(idx, null);
