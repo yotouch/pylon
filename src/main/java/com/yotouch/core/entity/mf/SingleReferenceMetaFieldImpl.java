@@ -1,6 +1,7 @@
 package com.yotouch.core.entity.mf;
 
 import com.yotouch.core.Consts;
+import com.yotouch.core.entity.Entity;
 import com.yotouch.core.entity.EntityManager;
 import com.yotouch.core.entity.fv.FieldValue;
 import com.yotouch.core.entity.fv.StringFieldValueImpl;
@@ -29,7 +30,17 @@ public class SingleReferenceMetaFieldImpl extends ReferenceMetaFieldImpl<String>
 
     @Override
     public FieldValue<String> newFieldValue(Object value) {
-        return new StringFieldValueImpl(this, value, true);
+
+        String v = "";
+        if (value != null) {
+            if (value instanceof Entity) {
+                v = ((Entity) value).getUuid();
+            } else {
+                v = value.toString();
+            }
+        }
+
+        return new StringFieldValueImpl(this, v, true);
     }
     
     

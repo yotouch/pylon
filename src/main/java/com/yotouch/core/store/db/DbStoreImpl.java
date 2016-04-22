@@ -234,6 +234,8 @@ public class DbStoreImpl implements DbStore {
 
             if (cal != null) {
                 ps.setTimestamp(idx, new java.sql.Timestamp(cal.getTimeInMillis()));
+            } else {
+                ps.setObject(idx, null);
             }
         } else if (Consts.META_FIELD_DATA_TYPE_INT.equals(mf.getDataType())) {
             if (fv.getValue() == null) {
