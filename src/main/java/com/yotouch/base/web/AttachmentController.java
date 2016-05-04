@@ -22,6 +22,7 @@ import com.yotouch.core.entity.Entity;
 import com.yotouch.core.exception.Four04NotFoundException;
 import com.yotouch.core.runtime.DbSession;
 import com.yotouch.core.runtime.YotouchApplication;
+import com.yotouch.base.service.UploadFileService;
 
 @Controller
 public class AttachmentController {
@@ -30,6 +31,9 @@ public class AttachmentController {
     
     @Autowired
     private YotouchApplication ytApp;
+
+    @Autowired
+    private UploadFileService uploadFileService;
 
     @RequestMapping("/admin/attachment/test")
     public String testAttachment() {
@@ -45,36 +49,11 @@ public class AttachmentController {
         
         logger.info("Upload filename " + filename);
         
-        DbSession dbSession = ytApp.getRuntime().createDbSession();
-        
-        
+
         Map<String, Object> ret = new HashMap<>();
-        
-        try {
-            
-            byte[] bytes = uploadfile.getBytes();
-            
-            String md5 = DigestUtils.md5DigestAsHex(bytes);
-            
-            Entity att = dbSession.queryOneRawSql("attachment", "md5 = ?", new Object[]{md5});
-            
-            if (att == null) {
-                
-                Tika tika = new Tika();
-                String mime = tika.detect(bytes);
-                
-                att = dbSession.newEntity("attachment");
-                att.setValue("md5",  md5);
-                att.setValue("content", uploadfile.getBytes());
-                att.setValue("mime", mime);
-                att = dbSession.save(att);
-            }
-            ret.put("uuid", att.getUuid());
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        
+
+        ret = uploadFileService.saveAttachment(uploadfile);
+
         return ret;
     }
     
