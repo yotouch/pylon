@@ -50,7 +50,9 @@ public class AttachmentController {
 
         Map<String, Object> ret = new HashMap<>();
 
-        ret = attachmentService.saveAttachment(uploadfile);
+        Entity attachment = attachmentService.saveAttachment(uploadfile);
+
+        ret.put("uuid", attachment.getUuid());
 
         return ret;
     }

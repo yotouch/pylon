@@ -20,11 +20,11 @@ public class AttachmentServiceImpl implements AttachmentService {
     @Autowired
     protected YotouchApplication ytApp;
 
-    public Map<String, Object> saveAttachment(MultipartFile uploadfile){
+    public Entity saveAttachment(MultipartFile uploadfile){
 
         DbSession dbSession = ytApp.getRuntime().createDbSession();
 
-        Map<String, Object> ret = new HashMap<String, Object>();
+        Entity att = null;
 
         try {
 
@@ -32,7 +32,7 @@ public class AttachmentServiceImpl implements AttachmentService {
 
             String md5 = DigestUtils.md5DigestAsHex(bytes);
 
-            Entity att = dbSession.queryOneRawSql("attachment", "md5 = ?", new Object[]{md5});
+            att = dbSession.queryOneRawSql("attachment", "md5 = ?", new Object[]{md5});
 
             if (att == null) {
 
@@ -45,13 +45,12 @@ public class AttachmentServiceImpl implements AttachmentService {
                 att.setValue("mime", mime);
                 att = dbSession.save(att);
             }
-            ret.put("uuid", att.getUuid());
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
-        return ret;
+        return att;
 
     }
 }

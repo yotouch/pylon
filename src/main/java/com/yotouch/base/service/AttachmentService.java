@@ -9,7 +9,7 @@ import com.yotouch.core.entity.Entity;
 
 public interface AttachmentService {
 
-    Map<String, Object> saveAttachment(MultipartFile file);
+    Entity saveAttachment(MultipartFile file);
 
 }
 
