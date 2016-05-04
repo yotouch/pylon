@@ -20,35 +20,28 @@ public class AttachmentServiceImpl implements AttachmentService {
     @Autowired
     protected YotouchApplication ytApp;
 
-    public Entity saveAttachment(MultipartFile uploadfile){
+    public Entity saveAttachment(byte[] bytes) {
 
         DbSession dbSession = ytApp.getRuntime().createDbSession();
 
         Entity att = null;
 
-        try {
+        String md5 = DigestUtils.md5DigestAsHex(bytes);
 
-            byte[] bytes = uploadfile.getBytes();
+        att = dbSession.queryOneRawSql("attachment", "md5 = ?", new Object[]{md5});
 
-            String md5 = DigestUtils.md5DigestAsHex(bytes);
+        if (att == null) {
 
-            att = dbSession.queryOneRawSql("attachment", "md5 = ?", new Object[]{md5});
+            Tika tika = new Tika();
+            String mime = tika.detect(bytes);
 
-            if (att == null) {
-
-                Tika tika = new Tika();
-                String mime = tika.detect(bytes);
-
-                att = dbSession.newEntity("attachment");
-                att.setValue("md5",  md5);
-                att.setValue("content", uploadfile.getBytes());
-                att.setValue("mime", mime);
-                att = dbSession.save(att);
-            }
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            att = dbSession.newEntity("attachment");
+            att.setValue("md5",  md5);
+            att.setValue("content", bytes);
+            att.setValue("mime", mime);
+            att = dbSession.save(att);
         }
+
 
         return att;
 
