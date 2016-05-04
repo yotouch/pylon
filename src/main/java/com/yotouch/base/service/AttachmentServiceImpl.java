@@ -1,5 +1,6 @@
 package com.yotouch.base.service;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.io.IOException;
@@ -20,28 +21,33 @@ public class AttachmentServiceImpl implements AttachmentService {
     @Autowired
     protected YotouchApplication ytApp;
 
-    public Entity saveAttachment(byte[] bytes) {
+    public Entity saveAttachment(InputStream inputStream) {
 
         DbSession dbSession = ytApp.getRuntime().createDbSession();
 
         Entity att = null;
 
-        String md5 = DigestUtils.md5DigestAsHex(bytes);
+        try {
+            String md5 = DigestUtils.md5DigestAsHex(inputStream);
 
-        att = dbSession.queryOneRawSql("attachment", "md5 = ?", new Object[]{md5});
+            att = dbSession.queryOneRawSql("attachment", "md5 = ?", new Object[]{md5});
 
-        if (att == null) {
+            if (att == null) {
 
-            Tika tika = new Tika();
-            String mime = tika.detect(bytes);
+                Tika tika = new Tika();
+                String mime = tika.detect(inputStream);
 
-            att = dbSession.newEntity("attachment");
-            att.setValue("md5",  md5);
-            att.setValue("content", bytes);
-            att.setValue("mime", mime);
-            att = dbSession.save(att);
+                att = dbSession.newEntity("attachment");
+                att.setValue("md5",  md5);
+                att.setValue("content", inputStream);
+                att.setValue("mime", mime);
+                att = dbSession.save(att);
+            }
+
+        } catch (IOException e) {
+            e.getMessage();
+
         }
-
 
         return att;
 

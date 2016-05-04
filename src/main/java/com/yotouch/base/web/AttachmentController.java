@@ -1,6 +1,7 @@
 package com.yotouch.base.web;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,17 +51,14 @@ public class AttachmentController {
 
         Map<String, Object> ret = new HashMap<>();
 
-        byte[] inputBytes = new byte[0];
-
         try {
-            inputBytes = uploadfile.getBytes();
+            InputStream inputStream = uploadfile.getInputStream();
+            Entity attachment = attachmentService.saveAttachment(inputStream);
+
+            ret.put("uuid", attachment.getUuid());
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        Entity attachment = attachmentService.saveAttachment(inputBytes);
-
-        ret.put("uuid", attachment.getUuid());
 
         return ret;
     }
