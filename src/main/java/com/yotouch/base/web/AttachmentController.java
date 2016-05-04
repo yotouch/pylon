@@ -6,12 +6,10 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.tika.Tika;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.DigestUtils;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,7 +20,7 @@ import com.yotouch.core.entity.Entity;
 import com.yotouch.core.exception.Four04NotFoundException;
 import com.yotouch.core.runtime.DbSession;
 import com.yotouch.core.runtime.YotouchApplication;
-import com.yotouch.base.service.UploadFileService;
+import com.yotouch.base.service.AttachmentService;
 
 @Controller
 public class AttachmentController {
@@ -33,7 +31,7 @@ public class AttachmentController {
     private YotouchApplication ytApp;
 
     @Autowired
-    private UploadFileService uploadFileService;
+    private AttachmentService attachmentService;
 
     @RequestMapping("/admin/attachment/test")
     public String testAttachment() {
@@ -52,7 +50,7 @@ public class AttachmentController {
 
         Map<String, Object> ret = new HashMap<>();
 
-        ret = uploadFileService.saveAttachment(uploadfile);
+        ret = attachmentService.saveAttachment(uploadfile);
 
         return ret;
     }

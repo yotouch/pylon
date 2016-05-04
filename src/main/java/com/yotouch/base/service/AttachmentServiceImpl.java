@@ -15,7 +15,7 @@ import com.yotouch.core.entity.Entity;
 import com.yotouch.core.runtime.DbSession;
 
 @Service
-public class UploadFileServiceImpl implements UploadFileService{
+public class AttachmentServiceImpl implements AttachmentService {
 
     @Autowired
     protected YotouchApplication ytApp;
