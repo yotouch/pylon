@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -19,6 +20,9 @@ import weibo4j.model.WeiboException;
 import weibo4j.org.json.JSONException;
 import weibo4j.org.json.JSONObject;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
 @Controller
 public class WeiboConnectController extends BaseController {
 
@@ -27,7 +31,8 @@ public class WeiboConnectController extends BaseController {
     @RequestMapping("/connect/weibo/callback")
     public String weiboConnectCallback(
             @RequestParam("code") String code,
-            @RequestParam(value = "cbUrl", defaultValue = "") String cbUrl
+            @RequestParam(value = "state", defaultValue = "") String backUrl,
+            HttpServletResponse response
     ) throws WeiboException, JSONException {
 
         Oauth oauth = new Oauth();
@@ -41,8 +46,6 @@ public class WeiboConnectController extends BaseController {
             weiboUser = dbSession.newEntity("weiboUser");
             weiboUser.setValue("uid", weiboUid);
         }
-
-
 
         Users users = new Users(accessToken);
         User u = users.showUserById(weiboUid);
@@ -96,11 +99,17 @@ public class WeiboConnectController extends BaseController {
         dbSession.save(weiboUser);
 
         String url = null;
-        if (cbUrl.contains("?")) {
-            url = cbUrl + "&weiboUid=" + weiboUid;
+        if (backUrl.contains("?")) {
+            url = backUrl + "&weiboUid=" + weiboUid;
         } else {
-            url = cbUrl + "?weiboUid=" + weiboUid;
+            url = backUrl + "?weiboUid=" + weiboUid;
         }
+
+        Cookie c = new Cookie("cbUrl", "");
+        c.setDomain("/");
+        response.addCookie(c);
+
+        logger.info("Weibo redirect url " + url);
 
         return "redirect:" + url;
 
