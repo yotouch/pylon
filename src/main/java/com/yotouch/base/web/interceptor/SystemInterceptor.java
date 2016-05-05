@@ -24,8 +24,9 @@ public class SystemInterceptor implements HandlerInterceptor{
         request.setAttribute(Consts.RUNTIME_VARIABLE_WX_APPID, (String) ytApp.getProp("wechatAppId"));
         
         request.setAttribute("dbSession", ytApp.getRuntime().createDbSession());
-        
-        
+        request.setAttribute("entityMgr", ytApp.getEntityManager());
+        request.setAttribute("request", request);
+
         return true;
     }
 
