@@ -132,12 +132,12 @@ public class WebUtil {
         return entity;
     }
 
-    /*
-    public Entity createNewEntity(DbSession dbSession, String entityName, int status) {
-        Entity e = dbSession.newEntity(entityName);
-        e.setValue("status", status);
-        return dbSession.save(e);
+    public String getBaseUrl(HttpServletRequest request) {
+        if (request.getServerPort() == 80) {
+            return String.format("%s://%s",request.getScheme(),  request.getServerName());
+        } else {
+            return String.format("%s://%s:%d",request.getScheme(),  request.getServerName(), request.getServerPort());
+        }
     }
-    */
 
 }
