@@ -85,7 +85,5 @@ public class AttachmentController {
 
         FileCopyUtils.copy(content, resp.getOutputStream());
         resp.flushBuffer();
-
-        
     }
 }
