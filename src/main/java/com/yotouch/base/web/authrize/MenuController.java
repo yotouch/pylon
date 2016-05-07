@@ -1,11 +1,9 @@
 package com.yotouch.base.web.authrize;
 
-import com.yotouch.base.service.PaginationService;
-import com.yotouch.base.web.BaseController;
-import com.yotouch.core.Consts;
-import com.yotouch.core.entity.Entity;
-import com.yotouch.core.runtime.DbSession;
-import com.yotouch.core.runtime.YotouchRuntime;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,9 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
+import com.yotouch.core.Consts;
+import com.yotouch.core.entity.Entity;
+import com.yotouch.core.runtime.DbSession;
+import com.yotouch.base.service.PaginationService;
+import com.yotouch.base.web.BaseController;
 
 @Controller
 public class MenuController extends BaseController{
