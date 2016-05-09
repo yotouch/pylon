@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
+import com.yotouch.core.exception.YotouchException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -135,7 +136,7 @@ public class DbStoreImpl implements DbStore {
         if (mf.isSingleReference()) {
             name += "Uuid";
         }
-        
+
         if (Consts.META_FIELD_DATA_TYPE_STRING.equalsIgnoreCase(mf.getDataType())) {
             sql += name + " VARCHAR(255), "; 
         } else if (Consts.META_FIELD_DATA_TYPE_UUID.equalsIgnoreCase(mf.getDataType())) {
@@ -152,6 +153,8 @@ public class DbStoreImpl implements DbStore {
             sql += name + " LONGBLOB, ";
         } else if (Consts.META_FIELD_DATA_TYPE_BOOLEAN.equalsIgnoreCase(mf.getDataType())) {
             sql += name + " TINYINT, ";
+        } else {
+            throw new YotouchException("Unknow dataType " + mf.getDataType() + " for field " + mf);
         }
         return sql;
     }
