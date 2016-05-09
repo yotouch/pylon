@@ -25,7 +25,7 @@ import com.yotouch.base.service.PaginationService;
 import com.yotouch.base.web.BaseController;
 
 @Controller
-public class RoleController extends BaseController{
+public class RoleController extends BaseController {
     private static final Logger logger = LoggerFactory.getLogger(RoleController.class);
 
     @Autowired
@@ -38,13 +38,10 @@ public class RoleController extends BaseController{
     ) {
 
         int itemPerPage = Consts.itemPerPage;
-
         DbSession dbSession = this.ytApp.getRuntime().createDbSession();
-
         List<Entity> roles = dbSession.queryRawSql("role", "status=?", new Object[]{Consts.STATUS_NORMAL});
 
         int total = roles.size();
-
         if (total > 0){
             Object[] queryCondition = {Consts.STATUS_NORMAL};
             Map<String, Object> paginationInfo = paginationService.getPaginationInfo(currentPage, total, itemPerPage, "role", "status=? ", queryCondition, "/admin/role/list?currentPage=");
@@ -55,9 +52,7 @@ public class RoleController extends BaseController{
         }
 
         Map<String, List<Entity>> roleMenus = new HashMap<String, List<Entity>>();
-
         roleMenus = addMenus(roles);
-
         model.addAttribute("roleMenus", roleMenus);
 
         return "/admin/role/list";
@@ -67,39 +62,27 @@ public class RoleController extends BaseController{
     protected Map<String, List<Entity>> addMenus(List<Entity> roles){
 
         Map<String, List<Entity>> results = new HashMap<String, List<Entity>>();
-
         for(Entity role : roles) {
             List<Entity> menus = new ArrayList<Entity>();
-
             menus = getMenus(role);
-
             results.put(role.getUuid(), menus);
-
         }
-
         return results;
-
     }
 
     protected List<Entity> getMenus(Entity role){
 
         DbSession dbSession = this.ytApp.getRuntime().createDbSession();
-
         List<Entity> menus = new ArrayList<Entity>();
-
         List<Entity> roleMenus =  dbSession.queryRawSql("roleMenu", "roleUuid=? AND status=?", new Object[]{role.getUuid(), Consts.STATUS_NORMAL});
-
         if (roleMenus != null){
             for (Entity m : roleMenus) {
                 String uuid = m.v("menu");
                 Entity menu = dbSession.getEntity("menu", uuid);
-
                 if (menu != null) {
                     menus.add(menu);
                 }
-
             }
-
         }
 
         return menus;

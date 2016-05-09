@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.yotouch.base.service;
 
 import java.util.HashMap;
@@ -18,10 +13,7 @@ import com.yotouch.core.runtime.DbSession;
 import com.yotouch.core.runtime.YotouchApplication;
 import com.yotouch.core.runtime.YotouchRuntime;
 import com.yotouch.base.service.PaginationService;
-/**
- *
- * @author king
- */
+
 @Service
 public class PaginationServiceImpl implements PaginationService {
     
