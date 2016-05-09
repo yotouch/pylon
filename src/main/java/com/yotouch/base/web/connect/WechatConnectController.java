@@ -91,12 +91,20 @@ public class WechatConnectController extends BaseController {
             return "WRONG";
         }
 
+
+
         WxMpXmlMessage inMsg = null;
         if ("raw".equals(encryptType)) {
             inMsg = WxMpXmlMessage.fromXml(body);
         } else {
             inMsg = WxMpXmlMessage.fromEncryptedXml(body, wcService.getWechatConfig(), timestamp, nonce, msgSig);
         }
+
+        logger.info("Wechat event \n" +
+                "Event " + inMsg.getEvent() + "\n" +
+                "EventKey " + inMsg.getEventKey() + "\n" +
+                "MessageType " + inMsg.getMsgType()
+        );
 
         if (WxConsts.XML_MSG_EVENT.equals(inMsg.getMsgType())) {
             logger.info("Event " + inMsg.getEvent() + " " + inMsg.getEventKey());
