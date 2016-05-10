@@ -36,7 +36,7 @@ public class WechatConnectController extends BaseController {
     @Autowired
     private WechatManager wechatMgr;
 
-    @Value("${wechat.appId}")
+    @Value("${wechat.appId:}")
     private String defaultWechatAppId;
 
     private WeChatServiceImpl getWechatService(String wxUuid) {
@@ -90,8 +90,6 @@ public class WechatConnectController extends BaseController {
             logger.info("WECHAT WRONG");
             return "WRONG";
         }
-
-
 
         WxMpXmlMessage inMsg = null;
         if ("raw".equals(encryptType)) {
