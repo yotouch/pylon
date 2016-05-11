@@ -1,5 +1,6 @@
 package com.yotouch.base.service;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +11,9 @@ import com.yotouch.core.entity.Entity;
 
 public interface AttachmentService {
 
-    Entity saveAttachment(InputStream inputStream);
+    Entity saveAttachment(InputStream inputStream) throws IOException;
+
+    Entity saveAttachment(byte[] content, String contentType);
 
 }
 

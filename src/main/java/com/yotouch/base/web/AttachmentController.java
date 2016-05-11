@@ -47,13 +47,13 @@ public class AttachmentController {
         String filename = uploadfile.getOriginalFilename();
         
         logger.info("Upload filename " + filename);
-        
-
         Map<String, Object> ret = new HashMap<>();
 
         try {
-            InputStream inputStream = uploadfile.getInputStream();
-            Entity attachment = attachmentService.saveAttachment(inputStream);
+            Entity attachment = attachmentService.saveAttachment(
+                    uploadfile.getBytes(),
+                    uploadfile.getContentType()
+            );
 
             ret.put("uuid", attachment.getUuid());
         } catch (IOException e) {

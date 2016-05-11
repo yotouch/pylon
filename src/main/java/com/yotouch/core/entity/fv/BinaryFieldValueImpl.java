@@ -3,10 +3,16 @@ package com.yotouch.core.entity.fv;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.io.ByteStreams;
+
 import com.yotouch.core.entity.MetaField;
 
 public class BinaryFieldValueImpl extends AbstractFieldValue<byte[]> implements FieldValue<byte[]> {
+
+    private static final Logger logger = LoggerFactory.getLogger(BinaryFieldValueImpl.class);
 
     public BinaryFieldValueImpl(MetaField<byte[]> mf, Object value) {
         super(mf, value);
@@ -22,6 +28,7 @@ public class BinaryFieldValueImpl extends AbstractFieldValue<byte[]> implements 
             try {
                 return ByteStreams.toByteArray((InputStream)v);
             } catch (IOException e) {
+                logger.error(e.getMessage(), e);
                 return new byte[0];
             }
         } else {
