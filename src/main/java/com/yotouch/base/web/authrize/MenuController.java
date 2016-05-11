@@ -40,8 +40,8 @@ public class MenuController extends BaseController{
         Entity menu = dbSession.getEntity("menu", uuid);
         model.addAttribute("menu", menu);
 
-        List<Entity> topmenus = dbSession.queryRawSql("menu", "parentUuid = ? AND status = ?", new Object[]{"", Consts.STATUS_NORMAL});
-        model.addAttribute("topmenus", topmenus);
+        List<Entity> topMenus = dbSession.queryRawSql("menu", "parentUuid = ? AND status = ?", new Object[]{"", Consts.STATUS_NORMAL});
+        model.addAttribute("topMenus", topMenus);
 
         return "/admin/menu/edit";
     }
