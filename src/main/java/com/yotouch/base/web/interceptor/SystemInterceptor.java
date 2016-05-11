@@ -25,6 +25,7 @@ public class SystemInterceptor implements HandlerInterceptor{
         
         request.setAttribute("dbSession", ytApp.getRuntime().createDbSession());
         request.setAttribute("entityMgr", ytApp.getEntityManager());
+        request.setAttribute("entityManager", ytApp.getEntityManager());
         request.setAttribute("request", request);
 
         return true;
