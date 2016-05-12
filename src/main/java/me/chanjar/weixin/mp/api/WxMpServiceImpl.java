@@ -614,6 +614,7 @@ public class WxMpServiceImpl implements WxMpService {
     try {
       RequestExecutor<String, String> executor = new SimpleGetRequestExecutor();
       String responseText = executor.execute(getHttpclient(), httpProxy, url, null);
+      System.out.println("Wechat text " + responseText);
       return WxMpUser.fromJson(responseText);
     } catch (ClientProtocolException e) {
       throw new RuntimeException(e);

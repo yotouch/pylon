@@ -19,13 +19,10 @@ public class WechatMsgHandler implements WxMpMessageHandler {
     
     static final private Logger logger = LoggerFactory.getLogger(WechatMsgHandler.class);
 
-    private final String baseUrl;
-
     private WeChatServiceImpl wechatService;
 
-    public WechatMsgHandler(WeChatServiceImpl wechatService, String baseUrl) {
+    public WechatMsgHandler(WeChatServiceImpl wechatService) {
         this.wechatService = wechatService;
-        this.baseUrl = baseUrl;
     }
     
     @Override
@@ -42,7 +39,7 @@ public class WechatMsgHandler implements WxMpMessageHandler {
             String content = inMsg.getContent();
             if ("auth".equals(content)) {
                 String state = "S-" + (new Date()).getTime();
-                replyText = this.wechatService.genAuthUrl(baseUrl, "", state);
+                replyText = this.wechatService.genAuthUrl("", state);
             }
             
         }
