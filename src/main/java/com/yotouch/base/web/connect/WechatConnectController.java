@@ -4,6 +4,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Date;
 
 import org.slf4j.Logger;
@@ -141,7 +143,7 @@ public class WechatConnectController extends BaseController {
             @RequestParam(value="code", defaultValue = "") String code,
             HttpServletResponse response,
             HttpServletRequest request
-    ) throws WxErrorException {
+    ) throws WxErrorException, UnsupportedEncodingException {
         WeChatServiceImpl wcService = getWechatService(uuid);
 
         WxMpOAuth2AccessToken accessToken = wcService.oauth2getAccessToken(code);
@@ -185,6 +187,8 @@ public class WechatConnectController extends BaseController {
         response.addCookie(c);
 
         logger.info("WechatUser saved " + user.getUuid());
+
+        url = URLDecoder.decode(url, "utf8");
         logger.info("Redirect " + url);
 
         if (url.contains("?")) {
