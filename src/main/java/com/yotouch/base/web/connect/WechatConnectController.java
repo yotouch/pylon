@@ -187,6 +187,12 @@ public class WechatConnectController extends BaseController {
         logger.info("WechatUser saved " + user.getUuid());
         logger.info("Redirect " + url);
 
+        if (url.contains("?")) {
+            url = url + "&state=" + state;
+        } else {
+            url = url + "?state=" + state;
+        }
+
         return "redirect:" + url;
     }
 }
