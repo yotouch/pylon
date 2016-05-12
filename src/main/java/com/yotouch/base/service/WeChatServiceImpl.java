@@ -50,7 +50,7 @@ public class WeChatServiceImpl  {
         return this.wechat;
     }
 
-    public String genAuthUrl(String url, String state) {
+    public String genAuthUrl(String baseUrl, String url, String state) {
         
         try {
             url = URLEncoder.encode(url, "UTF-8");
@@ -58,8 +58,8 @@ public class WeChatServiceImpl  {
             e1.printStackTrace();
         }
         
-        String myHost = (String) ytApp.getProp("host");
-        String fullUrl = myHost + "/connect/wechat/oauthCallback?url=" + url;
+        //String myHost = (String) ytApp.getProp("host");
+        String fullUrl = baseUrl + "/connect/wechat/oauthCallback?url=" + url;
 
         /*
         try {

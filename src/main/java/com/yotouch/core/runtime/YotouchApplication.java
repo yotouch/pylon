@@ -7,10 +7,5 @@ public interface YotouchApplication {
     YotouchRuntime getRuntime();
     
     EntityManager getEntityManager();
-    
-    Object getProp(String key);
-
-    String getInstanceName();
-    
 
 }

@@ -123,7 +123,7 @@ public class WechatConnectController extends BaseController {
 
         String fullUrl = webUtil.getBaseUrl(request) + "/connect/wechat/"+uuid+"/oauthCallback?state="+state+"&amp;url=" +backUrl;
 
-        String authUrl = wcService.genAuthUrl(fullUrl, state);
+        String authUrl = wcService.genAuthUrl(webUtil.getBaseUrl(request), fullUrl, state);
         return "redirect:" + authUrl;
     }
 

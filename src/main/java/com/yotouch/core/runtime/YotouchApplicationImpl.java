@@ -18,27 +18,9 @@ public class YotouchApplicationImpl implements YotouchApplication {
     @Autowired
     private DbStore dbStore;
     
-    @Autowired
-    private Configure config;
-    
     @Override
     public YotouchRuntime getRuntime() {
         return new YotouchRuntimeImpl(this.entityMgr, this.dbStore);
-    }
-
-    @Override
-    public Object getProp(String key) {
-        return config.getProp(key);
-    }
-
-    @Override
-    public String getInstanceName() {
-        String name = (String) this.config.getProp(Consts.CONFIG_KEY_INSTANCE_NAME);
-        if (StringUtils.isEmpty(name)) {
-            return "yotouch";
-        }
-
-        return name;
     }
 
     @Override

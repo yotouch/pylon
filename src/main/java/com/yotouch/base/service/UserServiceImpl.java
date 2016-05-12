@@ -33,7 +33,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String genPassword(Entity user, String password) {
-        String instanceName = ytApp.getInstanceName();
+        //// TODO: 16/5/12 从 application.yaml 中获取 
+        String instanceName = "yotouch";
+        
         logger.info("Instance name " + instanceName);
         String pwdStr = "yotouch:" + instanceName + ":" + user.getUuid() + ":" + password;
         logger.info("Gen plain password " + pwdStr);

@@ -1,5 +1,6 @@
 package com.yotouch.base.service;
 
+import com.yotouch.base.web.util.WebUtil;
 import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.common.exception.WxErrorException;
 import me.chanjar.weixin.common.session.WxSessionManager;
@@ -17,11 +18,14 @@ import java.util.Map;
 public class WechatMsgHandler implements WxMpMessageHandler {
     
     static final private Logger logger = LoggerFactory.getLogger(WechatMsgHandler.class);
-    
+
+    private final String baseUrl;
+
     private WeChatServiceImpl wechatService;
-    
-    public WechatMsgHandler(WeChatServiceImpl wechatService) {
+
+    public WechatMsgHandler(WeChatServiceImpl wechatService, String baseUrl) {
         this.wechatService = wechatService;
+        this.baseUrl = baseUrl;
     }
     
     @Override
@@ -38,11 +42,10 @@ public class WechatMsgHandler implements WxMpMessageHandler {
             String content = inMsg.getContent();
             if ("auth".equals(content)) {
                 String state = "S-" + (new Date()).getTime();
-                replyText = this.wechatService.genAuthUrl("", state);
+                replyText = this.wechatService.genAuthUrl(baseUrl, "", state);
             }
             
         }
-        
 
         WxMpXmlOutTextMessage m = WxMpXmlOutMessage.TEXT().content(replyText).fromUser(inMsg.getToUserName())
                 .toUser(inMsg.getFromUserName()).build();

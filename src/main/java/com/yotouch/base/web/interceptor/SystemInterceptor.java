@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -17,11 +18,14 @@ public class SystemInterceptor implements HandlerInterceptor{
     @Autowired
     private YotouchApplication ytApp;
 
+    @Value("${wechat.appId:}")
+    private String wechatAppId;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
         
-        request.setAttribute(Consts.RUNTIME_VARIABLE_WX_APPID, (String) ytApp.getProp("wechatAppId"));
+        request.setAttribute(Consts.RUNTIME_VARIABLE_WX_APPID, wechatAppId);
         
         request.setAttribute("dbSession", ytApp.getRuntime().createDbSession());
         request.setAttribute("entityMgr", ytApp.getEntityManager());
