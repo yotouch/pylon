@@ -15,5 +15,6 @@ public interface AttachmentService {
 
     Entity saveAttachment(byte[] content, String contentType);
 
+    Entity saveAttachment(byte[] bytes);
 }
 

@@ -9,10 +9,12 @@ import me.chanjar.weixin.mp.api.*;
 import me.chanjar.weixin.mp.bean.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.WxMpXmlOutMessage;
 import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
+import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
@@ -41,9 +43,6 @@ public class WeChatServiceImpl  {
         mpService = new WxMpServiceImpl();
         mpService.setWxMpConfigStorage(mpConfig);
         wxMpMessageRouter = new WxMpMessageRouter(mpService);
-
-
-
     }
     
     public Entity getWechatEntity() {
@@ -108,6 +107,13 @@ public class WeChatServiceImpl  {
     public WxJsapiSignature createJsapiSignature(String fullUrl) throws WxErrorException {
         WxJsapiSignature jss = this.mpService.createJsapiSignature(fullUrl);
         return jss;        
+    }
+
+    public File generateQrcode(int id) throws WxErrorException {
+        WxMpQrCodeTicket ticket = this.mpService.qrCodeCreateLastTicket(id);
+        File codeFile = this.mpService.qrCodePicture(ticket);
+        return codeFile;
+
     }
 
 

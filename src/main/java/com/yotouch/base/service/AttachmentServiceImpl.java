@@ -32,11 +32,10 @@ public class AttachmentServiceImpl implements AttachmentService {
         return saveAttachment(bytes);
     }
 
-    private Entity saveAttachment(byte[] bytes) {
+    @Override
+    public Entity saveAttachment(byte[] bytes) {
         Tika tika = new Tika();
-        String mime = "";
-        mime = tika.detect(bytes);
-
+        String mime = tika.detect(bytes);
         return this.saveAttachment(bytes, mime);
     }
 
