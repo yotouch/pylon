@@ -1,5 +1,6 @@
 package com.yotouch.base.service;
 
+import com.yotouch.core.Consts;
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.runtime.YotouchApplication;
 import me.chanjar.weixin.common.api.WxConsts;
@@ -14,10 +15,12 @@ import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Date;
 import java.util.List;
 
 public class WeChatServiceImpl  {
@@ -121,6 +124,30 @@ public class WeChatServiceImpl  {
         WxMenu menu = new WxMenu();
         menu.setButtons(buttons);
         this.mpService.menuCreate(menu);
+    }
+
+    public Entity fillWechatUser(WxMpUser wxUser, Entity user) {
+        user.setValue("status", Consts.STATUS_NORMAL);
+        user.setValue("openId", wxUser.getOpenId());
+        user.setValue("city", wxUser.getCity());
+        user.setValue("country", wxUser.getCountry());
+        user.setValue("headImgUrl", wxUser.getHeadImgUrl());
+        user.setValue("language", wxUser.getLanguage());
+        if (StringUtils.isEmpty(user.getValue("nickname"))) {
+            user.setValue("nickname", wxUser.getNickname());
+        }
+        user.setValue("province", wxUser.getProvince());
+        user.setValue("gender", wxUser.getSexId());
+        logger.info("Subscribed " + wxUser.getSubscribe());
+        user.setValue("subscribed", wxUser.getSubscribe());
+        Long l = wxUser.getSubscribeTime();
+        if (l != null) {
+            user.setValue("subscribeTime", new Date(wxUser.getSubscribeTime()));
+        }
+
+        user.setValue("unionId", wxUser.getUnionId());
+
+        return user;
     }
 
 

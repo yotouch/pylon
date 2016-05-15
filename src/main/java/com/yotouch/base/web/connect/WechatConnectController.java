@@ -153,6 +153,7 @@ public class WechatConnectController extends BaseController {
         WxMpUser wxUser = wcService.oauth2getUserInfo(accessToken);
 
         DbSession dbSession = this.getDbSession();
+
         String openId = wxUser.getOpenId();
         Entity user = dbSession.queryOneRawSql("wechatUser", "openId = ?", new Object[]{openId});
 
@@ -162,28 +163,12 @@ public class WechatConnectController extends BaseController {
             user.setValue("status", Consts.STATUS_NORMAL);
         }
 
-        user.setValue("city", wxUser.getCity());
-        user.setValue("country", wxUser.getCountry());
-        user.setValue("headImgUrl", wxUser.getHeadImgUrl());
-        user.setValue("language", wxUser.getLanguage());
-        if (StringUtils.isEmpty(user.getValue("nickname"))) {
-            user.setValue("nickname", wxUser.getNickname());
-        }
-        user.setValue("province", wxUser.getProvince());
-        user.setValue("gender", wxUser.getSexId());
-        logger.info("Subscribed " + wxUser.getSubscribe());
-        user.setValue("subscribed", wxUser.getSubscribe());
-        Long l = wxUser.getSubscribeTime();
-        if (l != null) {
-            user.setValue("subscribeTime", new Date(wxUser.getSubscribeTime()));
-        }
-
-        user.setValue("unionId", wxUser.getUnionId());
+        user = wcService.fillWechatUser(wxUser, user);
         user.setValue("accessToken", accessToken.getAccessToken());
         user.setValue("tokenExpires", new Date(accessToken.getExpiresIn() + System.currentTimeMillis()));
         user.setValue("refreshToken", accessToken.getRefreshToken());
-
         user = dbSession.save(user);
+
 
         Cookie c = new Cookie(Consts.COOKIE_NAME_WX_USER_UUID, user.getUuid());
         c.setPath("/");
@@ -202,4 +187,6 @@ public class WechatConnectController extends BaseController {
 
         return "redirect:" + url;
     }
+
+
 }
