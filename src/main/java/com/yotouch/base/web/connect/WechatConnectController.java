@@ -8,6 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Date;
 
+import me.chanjar.weixin.mp.bean.WxMpXmlOutMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,11 +107,10 @@ public class WechatConnectController extends BaseController {
                 "MessageType " + inMsg.getMsgType()
         );
 
-        if (WxConsts.XML_MSG_EVENT.equals(inMsg.getMsgType())) {
-            logger.info("Event " + inMsg.getEvent() + " " + inMsg.getEventKey());
-        }
+        WxMpXmlOutMessage outMsg = getWechatService(uuid).route(inMsg);
 
-        return "";
+
+        return outMsg.toXml();
     }
 
     @RequestMapping("/connect/wechat/{uuid}/oauth")
