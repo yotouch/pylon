@@ -4,6 +4,7 @@ import com.yotouch.core.entity.Entity;
 import com.yotouch.core.runtime.YotouchApplication;
 import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.common.bean.WxJsapiSignature;
+import me.chanjar.weixin.common.bean.WxMenu;
 import me.chanjar.weixin.common.exception.WxErrorException;
 import me.chanjar.weixin.mp.api.*;
 import me.chanjar.weixin.mp.bean.WxMpXmlMessage;
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.List;
 
 public class WeChatServiceImpl  {
 
@@ -113,7 +115,12 @@ public class WeChatServiceImpl  {
         WxMpQrCodeTicket ticket = this.mpService.qrCodeCreateLastTicket(id);
         File codeFile = this.mpService.qrCodePicture(ticket);
         return codeFile;
+    }
 
+    public void createMenu(List<WxMenu.WxMenuButton> buttons) throws WxErrorException {
+        WxMenu menu = new WxMenu();
+        menu.setButtons(buttons);
+        this.mpService.menuCreate(menu);
     }
 
 
