@@ -96,9 +96,15 @@ public class LoginController extends BaseController {
 
         } else {
 
+            String userPwd = user.v("password");
+            if (userPwd.startsWith("plain:")) {
+                userPwd = userPwd.replace("plain:", "");
+                userPwd = userService.genPassword(user, userPwd);
+            }
+
             String md5Pwd = userService.genPassword(user, password);
 
-            if (!md5Pwd.equals(user.getValue("password"))) {
+            if (!md5Pwd.equals(userPwd)) {
                 redirectAttr.addAttribute("errorCode", ErrorCode.LOGIN_FAILED_WRONG_PASSWORD);
             } else {
                 userService.seedLoginCookie(response, user);
