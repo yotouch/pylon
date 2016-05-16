@@ -31,7 +31,7 @@ public class LoginController extends BaseController {
     @Autowired
     private UserService userService;
 
-    @Value("${defaultHome}")
+    @Value("${defaultHome:/}")
     private String defaultHome;
 
     @RequestMapping(value="/login", method = RequestMethod.GET)
@@ -119,7 +119,7 @@ public class LoginController extends BaseController {
 
         if (isLogined) {
             if (StringUtils.isEmpty(backUrl)) {
-                backUrl = "/";
+                backUrl = defaultHome;
             }
             model.addAttribute("toUrl", backUrl);
             return "/common/jsRedirect";
