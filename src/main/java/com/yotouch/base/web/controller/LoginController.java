@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -30,6 +31,9 @@ public class LoginController extends BaseController {
     @Autowired
     private UserService userService;
 
+    @Value("${defaultHome}")
+    private String defaultHome;
+
     @RequestMapping(value="/login", method = RequestMethod.GET)
     public String login(
             @RequestParam(value="backUrl", defaultValue="") String backUrl,
@@ -45,7 +49,7 @@ public class LoginController extends BaseController {
             if (!StringUtils.isEmpty(backUrl)) {
                 return "redirect:" + backUrl;
             } else {
-                return "redirect:/";
+                return "redirect:" + defaultHome;
             }
         }
 
@@ -137,7 +141,7 @@ public class LoginController extends BaseController {
             return "redirect:" + backUrl;
         }
 
-        return "redirect:/";
+        return "redirect:" + defaultHome;
     }
 
 
