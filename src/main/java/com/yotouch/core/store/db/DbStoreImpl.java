@@ -114,21 +114,7 @@ public class DbStoreImpl implements DbStore {
 
     
     
-    @Override
-    public void createTable(MetaEntity me) {
-        MetaEntityImpl mei = (MetaEntityImpl) me;
 
-        String sql = "CREATE TABLE " + mei.getTableName() + "(";
-        
-        for (MetaField<?> mf: me.getMetaFields()) {
-            sql = appendFieldDDL(sql, mf, "");
-        }
-        
-        sql += " primary key (uuid) ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
-        
-        logger.info("Create table " + me.getName() + " sql: " + sql);
-        this.jdbcTpl.execute(sql);
-    }
 
     private String appendFieldDDL(String sql, MetaField<?> mf, String prefix) {
         String name = prefix + mf.getName();
@@ -157,6 +143,27 @@ public class DbStoreImpl implements DbStore {
             throw new YotouchException("Unknow dataType " + mf.getDataType() + " for field " + mf);
         }
         return sql;
+    }
+
+    @Override
+    public void createTable(MetaEntity me) {
+        MetaEntityImpl mei = (MetaEntityImpl) me;
+
+        String sql = "CREATE TABLE " + mei.getTableName() + "(";
+
+        for (MetaField<?> mf: me.getMetaFields()) {
+
+            if (mf.isMultiReference()) {
+                continue; // TODO: yinwm - Add multi reference field
+            }
+
+            sql = appendFieldDDL(sql, mf, "");
+        }
+
+        sql += " primary key (uuid) ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+
+        logger.info("Create table " + me.getName() + " sql: " + sql);
+        this.jdbcTpl.execute(sql);
     }
 
     @Override
