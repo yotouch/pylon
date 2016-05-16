@@ -1,24 +1,21 @@
 package com.yotouch.base.web.connect;
 
-import com.yotouch.base.web.BaseController;
+import com.yotouch.base.web.controller.BaseController;
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.runtime.DbSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import weibo4j.Account;
 import weibo4j.Oauth;
 import weibo4j.Users;
 import weibo4j.http.AccessToken;
 import weibo4j.model.User;
 import weibo4j.model.WeiboException;
 import weibo4j.org.json.JSONException;
-import weibo4j.org.json.JSONObject;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;

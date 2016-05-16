@@ -1,4 +1,4 @@
-package com.yotouch.base.web;
+package com.yotouch.base.web.controller;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;

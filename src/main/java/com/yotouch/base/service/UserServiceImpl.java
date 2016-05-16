@@ -16,6 +16,8 @@ import org.springframework.util.Base64Utils;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -132,6 +134,15 @@ public class UserServiceImpl implements UserService {
         u.setValue("password", genPassword(u, newPassword));
 
         return dbSession.save(u);
+    }
+
+    @Override
+    public void seedLoginCookie(HttpServletResponse response, Entity user) {
+        String userToken = this.genLoginToken(user);
+        logger.info("userToken: " + userToken);
+        Cookie c = new Cookie("userToken", userToken);
+        c.setPath("/");
+        response.addCookie(c);
     }
 
 

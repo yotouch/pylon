@@ -1,0 +1,85 @@
+package com.yotouch.base.web.interceptor;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.yotouch.base.service.UserService;
+import com.yotouch.core.entity.Entity;
+import com.yotouch.core.runtime.YotouchApplication;
+
+import java.io.IOException;
+
+@Component
+public abstract class LoginInterceptor implements HandlerInterceptor {
+
+    static final private Logger logger = LoggerFactory.getLogger(LoginInterceptor.class);
+
+    @Autowired
+    private YotouchApplication ytApp;
+
+    @Autowired
+    private UserService userService;
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws Exception {
+
+        String uri = request.getRequestURI();
+
+        logger.info("Check login " + uri);
+
+        if (uri.startsWith("/login")) {
+            return true;
+        }
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie c : cookies) {
+                if ("userToken".equalsIgnoreCase(c.getName())) {
+                    String userToken = c.getValue();
+                    logger.info("Checking userToken " + userToken);
+
+                    Entity user = userService.checkLoginUser(userToken);
+                    if (user != null) {
+                        request.setAttribute("loginUser", user);
+
+                        // TODO add role menu
+
+                        return true;
+                    } else {
+                        Cookie cookie = new Cookie("userToken", "");
+                        cookie.setPath("/");
+                        response.addCookie(cookie);
+                    }
+                }
+            }
+        }
+
+        return this.loginFailed(request, response, handler);
+    }
+
+    protected abstract boolean loginFailed(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException;
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+                           ModelAndView modelAndView) throws Exception {
+
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
+            throws Exception {
+
+    }
+
+}
+

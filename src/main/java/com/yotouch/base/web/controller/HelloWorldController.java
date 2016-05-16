@@ -1,4 +1,4 @@
-package com.yotouch.base.web;
+package com.yotouch.base.web.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

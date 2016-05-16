@@ -22,7 +22,7 @@ import com.yotouch.core.Consts;
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.runtime.DbSession;
 import com.yotouch.base.service.PaginationService;
-import com.yotouch.base.web.BaseController;
+import com.yotouch.base.web.controller.BaseController;
 
 @Controller
 public class RoleController extends BaseController {

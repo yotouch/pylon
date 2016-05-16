@@ -1,7 +1,6 @@
 package com.yotouch.base.web.authrize;
 
 import java.util.List;
-import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.yotouch.core.Consts;
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.runtime.DbSession;
-import com.yotouch.base.web.BaseController;
+import com.yotouch.base.web.controller.BaseController;
 
 @Controller
 public class MenuController extends BaseController{

@@ -1,4 +1,4 @@
-package com.yotouch.base.web;
+package com.yotouch.base.web.controller;
 
 import com.yotouch.base.service.AttachmentService;
 import com.yotouch.base.service.WechatManager;

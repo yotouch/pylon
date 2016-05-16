@@ -19,7 +19,6 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.common.exception.WxErrorException;
 import me.chanjar.weixin.mp.bean.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
@@ -27,7 +26,7 @@ import me.chanjar.weixin.mp.bean.result.WxMpUser;
 
 import com.yotouch.base.service.WeChatServiceImpl;
 import com.yotouch.base.service.WechatManager;
-import com.yotouch.base.web.BaseController;
+import com.yotouch.base.web.controller.BaseController;
 import com.yotouch.core.Consts;
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.runtime.DbSession;
