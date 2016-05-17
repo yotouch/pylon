@@ -17,6 +17,8 @@ import com.yotouch.core.entity.Entity;
 import com.yotouch.core.runtime.YotouchApplication;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public abstract class LoginInterceptor implements HandlerInterceptor {
@@ -29,6 +31,29 @@ public abstract class LoginInterceptor implements HandlerInterceptor {
     @Autowired
     private UserService userService;
 
+    private List<String> ignoredList;
+
+    public LoginInterceptor() {
+        this(new ArrayList<>());
+    }
+
+    public LoginInterceptor(List<String> ignoredList) {
+        this.ignoredList = new ArrayList<>(ignoredList);
+
+        tryAdd("/login");
+        tryAdd("/connect");
+
+    }
+
+    private void tryAdd(String s) {
+        if (this.ignoredList.contains(s)) {
+            return;
+        }
+
+        this.ignoredList.add(s);
+    }
+
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
@@ -37,8 +62,10 @@ public abstract class LoginInterceptor implements HandlerInterceptor {
 
         logger.info("Check login " + uri);
 
-        if (uri.startsWith("/login")) {
-            return true;
+        for (String iu: this.ignoredList) {
+            if (uri.startsWith(iu)) {
+                return true;
+            }
         }
 
         Cookie[] cookies = request.getCookies();
