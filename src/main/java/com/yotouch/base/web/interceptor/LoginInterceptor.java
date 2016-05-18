@@ -60,13 +60,9 @@ public abstract class LoginInterceptor implements HandlerInterceptor {
 
         String uri = request.getRequestURI();
 
-        logger.info("Check login " + uri);
+        logger.info("Check login " + uri + " USER " + request.getAttribute("loginUser"));
 
-        for (String iu: this.ignoredList) {
-            if (uri.startsWith(iu)) {
-                return true;
-            }
-        }
+        boolean isLogin = false;
 
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -81,7 +77,7 @@ public abstract class LoginInterceptor implements HandlerInterceptor {
 
                         // TODO add role menu
 
-                        return true;
+                        isLogin = true;
                     } else {
                         Cookie cookie = new Cookie("userToken", "");
                         cookie.setPath("/");
@@ -91,7 +87,17 @@ public abstract class LoginInterceptor implements HandlerInterceptor {
             }
         }
 
-        return this.loginFailed(request, response, handler);
+        for (String iu: this.ignoredList) {
+            if (uri.startsWith(iu)) {
+                return true;
+            }
+        }
+
+        if (isLogin) {
+            return true;
+        } else {
+            return this.loginFailed(request, response, handler);
+        }
     }
 
     protected abstract boolean loginFailed(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException;

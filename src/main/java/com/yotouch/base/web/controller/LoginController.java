@@ -36,6 +36,7 @@ public class LoginController extends BaseController {
 
     @RequestMapping(value="/login", method = RequestMethod.GET)
     public String login(
+            @RequestParam(value="errorCode", defaultValue="0") int errorCode,
             @RequestParam(value="backUrl", defaultValue="") String backUrl,
             Model model,
             HttpServletRequest request
@@ -45,6 +46,7 @@ public class LoginController extends BaseController {
         model.addAttribute("companyName", mainCompany);
 
         Entity user = (Entity) request.getAttribute("loginUser");
+        logger.info("Try to get user " + user);
         if (user != null) {
             if (!StringUtils.isEmpty(backUrl)) {
                 return "redirect:" + backUrl;
@@ -53,6 +55,7 @@ public class LoginController extends BaseController {
             }
         }
 
+        model.addAttribute("errorCode", errorCode);
 
         if (!StringUtils.isEmpty(backUrl)) {
             model.addAttribute("backUrl", backUrl);
@@ -68,10 +71,12 @@ public class LoginController extends BaseController {
             @RequestParam(value="type", defaultValue = "name") String type,
             @RequestParam(value="password") String password,
             @RequestParam(value="backUrl", defaultValue="") String backUrl,
+            HttpServletRequest request,
             RedirectAttributes redirectAttr,
             Model model,
             HttpServletResponse response
     ) {
+
 
         DbSession dbSession = this.getDbSession();
 
