@@ -61,9 +61,6 @@ public interface Consts {
     String WALLET_TYPE_USER                 = "walletTypeUser";
     String WALLET_TYPE_SHOP                 = "walletTypeShop";
 
-    String ROLE_CUSTOMER_NAME               = "客户";
-    String ROLE_INTERVIEWEE_NAME            = "应聘者";
-
     String ROLE_EMPLOYEE_NAME               = "员工";
     String ROLE_USER_NAME                   = "用户";
 
