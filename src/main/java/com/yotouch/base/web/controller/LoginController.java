@@ -57,10 +57,6 @@ public class LoginController extends BaseController {
 
         model.addAttribute("errorCode", errorCode);
 
-        if (!StringUtils.isEmpty(backUrl)) {
-            model.addAttribute("backUrl", backUrl);
-        }
-
         return "/common/login";
     }
 
