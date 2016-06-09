@@ -24,6 +24,25 @@ entities:
         mchKey:
             dataType: STRING
 
+    user:
+        nickname:
+            dataType: STRING
+
+    party:
+        name:
+            dataType: STRING
+
+    item:
+        name:
+            dataType: STRING
+        itemProps:
+            fieldType: MULTI_REFERENCE
+            targetMetaEntity: itemProp
+
+    itemProp:
+        name:
+            dataType: STRING
+
 
         
         

@@ -56,7 +56,7 @@ public class ConfigureImpl implements Configure {
         }
 
         if (this.ytHome == null) {
-            this.ytHome = new File("/Users/yinwm/eclipse/projs/app-interview");
+            //this.ytHome = new File("/Users/yinwm/eclipse/projs/app-interview");
         }
         logger.warn("Init configure YT RUNTIME HOME " + this.ytHome);
         
