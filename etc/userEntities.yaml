@@ -27,6 +27,8 @@ entities:
     user:
         nickname:
             dataType: STRING
+        age:
+            dataType: INT
 
     party:
         name:

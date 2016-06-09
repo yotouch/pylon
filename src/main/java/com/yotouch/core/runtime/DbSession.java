@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.entity.MetaEntity;
+import com.yotouch.core.entity.query.Query;
 
 public interface DbSession {
 
@@ -27,4 +28,5 @@ public interface DbSession {
 
     void deleteRawSql(MetaEntity me, String where, Object[] args);
 
+    Entity queryOne(String entityName, Query q);
 }

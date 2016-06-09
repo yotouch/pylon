@@ -38,6 +38,11 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
     }
 
     @Override
+    public String asSql() {
+        return this.getName();
+    }
+
+    @Override
     public String getDisplayName() {
         return this.displayName;
     }

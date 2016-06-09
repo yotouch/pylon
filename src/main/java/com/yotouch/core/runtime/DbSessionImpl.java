@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.yotouch.core.entity.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -128,6 +129,8 @@ public class DbSessionImpl implements DbSession {
         this.dbStore.deleteRawSql(me, where, args);
     }
 
+
+
     @Override
     public void deleteEntity(MetaEntity me, String u) {
         
@@ -157,8 +160,6 @@ public class DbSessionImpl implements DbSession {
         MetaEntity me = entityMgr.getMetaEntity(entityName);
         return this.dbStore.querySql(me, where, args, new EntityRowMapper(this, me));
     }
-    
-    
 
     @Override
     public List<Entity> getAll(String entityName) {
@@ -177,6 +178,21 @@ public class DbSessionImpl implements DbSession {
         return el.get(0);
     }
 
-    
+    @Override
+    public Entity queryOne(String entityName, Query q) {
+        MetaEntity me = entityMgr.getMetaEntity(entityName);
+        List<Entity> el = this.dbStore.querySql(me, q.getFields(), q.getWhere(), q.getArgs(), new EntityRowMapper(this, me));
+        if (el.isEmpty()) {
+            return null;
+        } else {
+            return el.get(0);
+        }
+    }
+
+
+
+
+
+
 
 }

@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
+import com.yotouch.core.entity.query.QueryField;
 import com.yotouch.core.exception.YotouchException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -398,8 +399,29 @@ public class DbStoreImpl implements DbStore {
 
     @Override
     public List<Entity> querySql(MetaEntity me, String where, Object[] args, EntityRowMapper mapper) {
+        return this.querySql(me, null, where, args, mapper);
+    }
+
+    @Override
+    public List<Entity> querySql(MetaEntity me, List<QueryField> fields, String where, Object[] args, EntityRowMapper mapper) {
         MetaEntityImpl mei = (MetaEntityImpl) me;
-        String sql = "SELECT * FROM " + mei.getTableName();
+        String sql = "SELECT ";
+        if (fields == null || fields.isEmpty()) {
+            sql += " * ";
+        } else {
+            for (int i = 0; i < fields.size(); i++) {
+                if (i > 0) {
+                    sql += " , ";
+                }
+
+                QueryField qf = fields.get(i);
+                sql += qf.asSql();
+            }
+
+            mapper.setFields(fields);
+        }
+
+        sql += " FROM " + mei.getTableName();
         if (!StringUtils.isEmpty(where)) {
             sql += " WHERE " + where;
             if (!((MetaEntityImpl) me).getTableName().startsWith("mr_")) {

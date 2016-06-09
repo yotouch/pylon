@@ -34,10 +34,12 @@ public class EntityImpl implements Entity {
     private MetaEntity me;
     
     private Map<String, FieldValue<?>> valueMap;
-    
+    //private Map<String, Object> extraFields;
+
     public EntityImpl(MetaEntity me) {
         this.me = me;
         this.valueMap = new HashMap<>();
+        //this.extraFields = new HashMap<>();
     }
 
     @Override
@@ -72,9 +74,8 @@ public class EntityImpl implements Entity {
 
     @Override
     public <T> T getValue(String fieldName) throws NoSuchMetaFieldException {
-        
         MetaField<?> mf = this.me.getMetaField(fieldName);
-        if (mf == null) {
+        if (mf == null && !this.valueMap.containsKey(fieldName)) {
             throw new NoSuchMetaFieldException(this.me, fieldName);
         }
         
