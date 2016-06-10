@@ -49,6 +49,7 @@ public interface Consts {
     String RUNTIME_VARIABLE_WX_USER         = "wxUser";
     String RUNTIME_VARIABLE_WX_APPID        = "wechatAppId";
     String RUNTIME_VARIABLE_WX_JS_ARGS      = "wechatJsArgs";
+    String RUNTIME_VARIABLE_YT_APP          = "ytApp";
     
     
     String PAYMENT_VENDOR_WECHAT            = "payment_wechat";

@@ -1,5 +1,6 @@
 package com.yotouch.base.service;
 
+import com.yotouch.base.wechat.ContextInterceptor;
 import com.yotouch.core.Consts;
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.runtime.YotouchApplication;
@@ -86,7 +87,9 @@ public class WeChatServiceImpl  {
     }
 
     public void setMessageHandler(WxMpMessageHandler msgHandler) {
-        wxMpMessageRouter.rule().async(false).handler(msgHandler).end();
+        wxMpMessageRouter.rule().interceptor(
+                new ContextInterceptor(this.ytApp)
+        ).async(false).handler(msgHandler).end();
     }
 
     public boolean checkSignature(String timestamp, String nonce, String signature) {

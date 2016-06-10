@@ -3,6 +3,7 @@ package com.yotouch.base.service;
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.runtime.DbSession;
 import com.yotouch.core.runtime.YotouchApplication;
+import me.chanjar.weixin.mp.api.WxMpMessageHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,21 +30,24 @@ public class WechatManagerImpl implements WechatManager {
 
     @Override
     public WeChatServiceImpl getService(String appid) {
-        
         logger.info("Wechat AppId " + appid);
-        
         WeChatServiceImpl wechatService = this.wechatMap.get(appid);
-        if (wechatService != null) {
-            return wechatService;
-        }
-        
+        return wechatService;
+    }
+
+    @Override
+    public WeChatServiceImpl setService(String appId, WxMpMessageHandler msgHandler) {
         DbSession dbSession = this.ytApp.getRuntime().createDbSession();
-        Entity wechat = dbSession.queryOneRawSql("wechat", "appId = ?", new Object[]{appid});
-        
-        wechatService = new WeChatServiceImpl(ytApp, wechat);
-        
-        this.wechatMap.put(appid, wechatService);
-        
+        Entity wechat = dbSession.queryOneRawSql("wechat", "appId = ?", new Object[]{appId});
+
+        WeChatServiceImpl wechatService = new WeChatServiceImpl(ytApp, wechat);
+
+        if (msgHandler != null) {
+            wechatService.setMessageHandler(msgHandler);
+        }
+
+        this.wechatMap.put(appId, wechatService);
+
         return wechatService;
     }
 
