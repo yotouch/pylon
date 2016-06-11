@@ -24,9 +24,9 @@ import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 
-public class WeChatServiceImpl  {
+public class WechatServiceImpl {
 
-    static final private Logger logger = LoggerFactory.getLogger(WeChatServiceImpl.class);
+    static final private Logger logger = LoggerFactory.getLogger(WechatServiceImpl.class);
 
     private YotouchApplication ytApp;
     private WxMpInMemoryConfigStorage mpConfig;
@@ -35,7 +35,7 @@ public class WeChatServiceImpl  {
     
     private Entity wechat;
     
-    public WeChatServiceImpl(YotouchApplication ytApp, Entity wechat) {
+    public WechatServiceImpl(YotouchApplication ytApp, Entity wechat) {
         this.ytApp = ytApp;
         this.wechat = wechat;
 
@@ -88,7 +88,7 @@ public class WeChatServiceImpl  {
 
     public void setMessageHandler(WxMpMessageHandler msgHandler) {
         wxMpMessageRouter.rule().interceptor(
-                new ContextInterceptor(this.ytApp, this.wechat.v("appId"))
+                new ContextInterceptor(this.ytApp, this.wechat.v("appId"), this)
         ).async(false).handler(msgHandler).end();
     }
 
