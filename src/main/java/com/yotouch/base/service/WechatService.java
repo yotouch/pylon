@@ -24,9 +24,9 @@ import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 
-public class WechatServiceImpl {
+public class WechatService {
 
-    static final private Logger logger = LoggerFactory.getLogger(WechatServiceImpl.class);
+    static final private Logger logger = LoggerFactory.getLogger(WechatService.class);
 
     private YotouchApplication ytApp;
     private WxMpInMemoryConfigStorage mpConfig;
@@ -35,7 +35,7 @@ public class WechatServiceImpl {
     
     private Entity wechat;
     
-    public WechatServiceImpl(YotouchApplication ytApp, Entity wechat) {
+    public WechatService(YotouchApplication ytApp, Entity wechat) {
         this.ytApp = ytApp;
         this.wechat = wechat;
 

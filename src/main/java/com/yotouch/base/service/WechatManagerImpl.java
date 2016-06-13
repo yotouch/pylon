@@ -21,7 +21,7 @@ public class WechatManagerImpl implements WechatManager {
     @Autowired
     private YotouchApplication ytApp;
     
-    private Map<String, WechatServiceImpl> wechatMap;
+    private Map<String, WechatService> wechatMap;
     
     @PostConstruct
     private void init() {
@@ -29,18 +29,18 @@ public class WechatManagerImpl implements WechatManager {
     }
 
     @Override
-    public WechatServiceImpl getService(String appid) {
+    public WechatService getService(String appid) {
         logger.info("Wechat AppId " + appid);
-        WechatServiceImpl wechatService = this.wechatMap.get(appid);
+        WechatService wechatService = this.wechatMap.get(appid);
         return wechatService;
     }
 
     @Override
-    public WechatServiceImpl setService(String appId, WxMpMessageHandler msgHandler) {
+    public WechatService setService(String appId, WxMpMessageHandler msgHandler) {
         DbSession dbSession = this.ytApp.getRuntime().createDbSession();
         Entity wechat = dbSession.queryOneRawSql("wechat", "appId = ?", new Object[]{appId});
 
-        WechatServiceImpl wechatService = new WechatServiceImpl(ytApp, wechat);
+        WechatService wechatService = new WechatService(ytApp, wechat);
 
         if (msgHandler != null) {
             wechatService.setMessageHandler(msgHandler);

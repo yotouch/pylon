@@ -24,7 +24,7 @@ import me.chanjar.weixin.mp.bean.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
 
-import com.yotouch.base.service.WechatServiceImpl;
+import com.yotouch.base.service.WechatService;
 import com.yotouch.base.service.WechatManager;
 import com.yotouch.base.web.controller.BaseController;
 import com.yotouch.core.Consts;
@@ -42,7 +42,7 @@ public class WechatConnectController extends BaseController {
     @Value("${wechat.appId:}")
     private String defaultWechatAppId;
 
-    private WechatServiceImpl getWechatService(String wxUuid) {
+    private WechatService getWechatService(String wxUuid) {
         String wechatId = "";
         if (StringUtils.isEmpty(wxUuid)) {
             wechatId = defaultWechatAppId;
@@ -51,7 +51,7 @@ public class WechatConnectController extends BaseController {
             wechatId = defaultWechatAppId;
         }
 
-        WechatServiceImpl wcService = this.wechatMgr.getService(wechatId);
+        WechatService wcService = this.wechatMgr.getService(wechatId);
         return wcService;
     }
 
@@ -66,7 +66,7 @@ public class WechatConnectController extends BaseController {
             @RequestParam(value = "echostr", defaultValue = "") String echostr,
             HttpServletRequest request
     ) {
-        WechatServiceImpl wcService = getWechatService(wxUuid);
+        WechatService wcService = getWechatService(wxUuid);
 
         if (wcService.checkSignature(timestamp, nonce, signature)) {
             return echostr;
@@ -88,7 +88,7 @@ public class WechatConnectController extends BaseController {
             @RequestBody String body,
             HttpServletRequest request) throws IOException {
 
-        WechatServiceImpl wcService = getWechatService(uuid);
+        WechatService wcService = getWechatService(uuid);
         if (!wcService.checkSignature(timestamp, nonce, signature)) {
             logger.info("WECHAT WRONG");
             return "WRONG";
@@ -124,7 +124,7 @@ public class WechatConnectController extends BaseController {
             HttpServletRequest request
     ) {
 
-        WechatServiceImpl wcService = getWechatService(uuid);
+        WechatService wcService = getWechatService(uuid);
 
         String fullUrl = webUtil.getBaseUrl(request) + "/connect/wechat/"+uuid+"/oauthCallback?state="+state+"&amp;url=" +backUrl;
 
@@ -148,7 +148,7 @@ public class WechatConnectController extends BaseController {
             HttpServletResponse response,
             HttpServletRequest request
     ) throws WxErrorException, UnsupportedEncodingException {
-        WechatServiceImpl wcService = getWechatService(uuid);
+        WechatService wcService = getWechatService(uuid);
 
         WxMpOAuth2AccessToken accessToken = wcService.oauth2getAccessToken(code);
         WxMpUser wxUser = wcService.oauth2getUserInfo(accessToken);

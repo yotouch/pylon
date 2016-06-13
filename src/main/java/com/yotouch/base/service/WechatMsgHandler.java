@@ -18,9 +18,9 @@ public class WechatMsgHandler implements WxMpMessageHandler {
     
     static final private Logger logger = LoggerFactory.getLogger(WechatMsgHandler.class);
 
-    private WechatServiceImpl wechatService;
+    private WechatService wechatService;
 
-    public WechatMsgHandler(WechatServiceImpl wechatService) {
+    public WechatMsgHandler(WechatService wechatService) {
         this.wechatService = wechatService;
     }
     
