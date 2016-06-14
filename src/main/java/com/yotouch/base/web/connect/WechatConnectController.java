@@ -52,7 +52,7 @@ public class WechatConnectController extends BaseController {
             wechatId = defaultWechatAppId;
         } else {
             // TODO: 16/5/6 here should read wechat info from db
-            wechatId = wechat.v("appId");s
+            wechatId = wechat.v("appId");
         }
 
         logger.info("Get wechat with wechat uuid " + wechatId);
