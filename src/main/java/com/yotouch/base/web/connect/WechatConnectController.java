@@ -43,13 +43,19 @@ public class WechatConnectController extends BaseController {
     private String defaultWechatAppId;
 
     private WechatService getWechatService(String wxUuid) {
+
+
         String wechatId = "";
-        if (StringUtils.isEmpty(wxUuid)) {
+
+        Entity wechat = this.getDbSession().getEntity("wechat", wxUuid);
+        if (wechat == null) {
             wechatId = defaultWechatAppId;
         } else {
             // TODO: 16/5/6 here should read wechat info from db
-            wechatId = wxUuid;
+            wechatId = wechat.v("appId");s
         }
+
+        logger.info("Get wechat with wechat uuid " + wechatId);
 
         WechatService wcService = this.wechatMgr.getService(wechatId);
         return wcService;
