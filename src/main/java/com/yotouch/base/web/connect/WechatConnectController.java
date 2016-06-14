@@ -48,7 +48,7 @@ public class WechatConnectController extends BaseController {
             wechatId = defaultWechatAppId;
         } else {
             // TODO: 16/5/6 here should read wechat info from db
-            wechatId = defaultWechatAppId;
+            wechatId = wxUuid;
         }
 
         WechatService wcService = this.wechatMgr.getService(wechatId);
