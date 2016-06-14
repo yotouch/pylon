@@ -57,7 +57,9 @@ public class DbSessionImpl implements DbSession {
         
         MetaEntity me = e.getMetaEntity();
 
-        if (ei.isNew()) {
+        boolean isNew = ei.isNew();
+
+        if (isNew) {
             e.setValue("createdAt", new Date());
             if (e.v("status") == null) {
                 e.setValue("status", Consts.STATUS_NORMAL);
@@ -70,55 +72,54 @@ public class DbSessionImpl implements DbSession {
         
         // save multi reference
         for (MetaField<?> mf : me.getMetaFields()) {
-            if (mf.isMultiReference() && e.isFieldChanged(mf.getName())) {
-                
-                
+            if (mf.isMultiReference() &&
+                    (e.isFieldChanged(mf.getName()) || isNew)) {
                 MultiReferenceMetaFieldImpl mmf = (MultiReferenceMetaFieldImpl) mf;
                 MetaEntity mappingMe = mmf.getMappingMetaEntity();
                 String targetEntityName = mmf.getTargetMetaEntity().getName();
-                
+
                 Set<String> s1 = new HashSet<>();
-                
+
                 List<String> values = e.getValue(mf.getName());
                 if (values != null && !values.isEmpty()) {
                     s1 = new HashSet<>(values);
                 }
-                
+
                 logger.info("Save MR " + mf.getName() + " targetMe " + mappingMe.getName() + " values " + s1);
-                
+
                 List<String> oldValues = e.getOldValue(mf.getName());
 
-                
+
                 Set<String> s2 = new HashSet<>();
                 if (oldValues != null && !oldValues.isEmpty()) {
                     s2 = new HashSet<>(oldValues);
-                    
+
                     logger.info("Set 1 and 2 " + s1 + ":" + s2 + (s1.equals(s2)));
-                    
+
                     if (s1.equals(s2)) {
                         continue;
                     }
                 }
                 logger.info("Save MR " + mf.getName() + " old values " + s2);
-                
+
                 Set<String> newUuids = Sets.difference(s1, s2);
                 Set<String> removeUuids = Sets.difference(s2, s1);
-                
-                for (String u: removeUuids) {
-                    this.deleteRawSql(mappingMe, me.getName() + "Uuid=? AND " + targetEntityName + "Uuid=?", new Object[]{uuid, u});
+
+                for (String u : removeUuids) {
+                    this.deleteRawSql(mappingMe, "s_" + me.getName() + "Uuid=? AND t_" + targetEntityName + "Uuid=?", new Object[]{uuid, u});
                 }
-                
-                
-                
-                for (String targetUuid: newUuids) {
+
+
+                for (String targetUuid : newUuids) {
                     Entity mr = this.newEntity(mappingMe.getName());
-                    mr.setValue(me.getName() + "Uuid", uuid);
-                    mr.setValue(targetEntityName + "Uuid", targetUuid);
+                    mr.setValue("s_" + me.getName() + "Uuid", uuid);
+                    mr.setValue("t_" + targetEntityName + "Uuid", targetUuid);
                     mr.setValue("status", Consts.STATUS_NORMAL);
                     this.save(mr);
                 }
             }
         }
+
         
 
         return this.getEntity(e.getMetaEntity().getName(), uuid);

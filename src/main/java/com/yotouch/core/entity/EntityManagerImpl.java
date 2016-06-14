@@ -35,26 +35,28 @@ public class EntityManagerImpl implements EntityManager {
     private Configure config;
 
     private Map<String, MetaEntity> userEntities;
-    private Map<String, MetaEntity> systemEntities;
     private Map<String, MetaEntity> mfEntities;
 
     private Map<String, MetaFieldImpl<?>> systemFields;
 
     public EntityManagerImpl() {
         this.userEntities = new HashMap<>();
-        this.systemEntities = new HashMap<>();
         this.mfEntities = new HashMap<>();
     }
 
     @PostConstruct
     private void initMetaEntities() {
         this.userEntities = new HashMap<>();
-        this.systemEntities = new HashMap<>();
         this.mfEntities = new HashMap<>();
         
         loadSystemMetaFields();
         loadFileMetaEntities("systemEntities.yaml", "");
         loadFileMetaEntities("userEntities.yaml", "usr_");
+
+        // Check the addons configure file
+
+
+
         loadDbMetaEntities();
         loadDbMetaFields();
         
@@ -64,7 +66,6 @@ public class EntityManagerImpl implements EntityManager {
     }
 
     private void buildMultiReferenceEntities() {
-        scanMrEntities(this.systemEntities.values());
         scanMrEntities(this.userEntities.values());
     }
 
@@ -91,7 +92,7 @@ public class EntityManagerImpl implements EntityManager {
         
         Map<String, Object> fMap = new HashMap<>();
         fMap.put("dataType", Consts.META_FIELD_DATA_TYPE_UUID);
-        fMap.put("name", me.getName() + "Uuid");
+        fMap.put("name", "s_" + me.getName() + "Uuid");
         
         MetaFieldImpl<?> mfi = MetaFieldImpl.build(this, fMap);
         mei.addField(mfi);
@@ -100,7 +101,7 @@ public class EntityManagerImpl implements EntityManager {
         
         fMap = new HashMap<>();
         fMap.put("dataType", Consts.META_FIELD_DATA_TYPE_UUID);
-        fMap.put("name", targetEntityName + "Uuid");
+        fMap.put("name", "t_" + targetEntityName + "Uuid");
         
         mfi = MetaFieldImpl.build(this, fMap);
         mei.addField(mfi);
@@ -126,7 +127,6 @@ public class EntityManagerImpl implements EntityManager {
 
         logger.info("Tables " + tables);
 
-        scanExistingDbTable(tables, this.systemEntities);
         scanExistingDbTable(tables, this.userEntities);
         scanExistingDbTable(tables, this.mfEntities);
     }
@@ -179,7 +179,7 @@ public class EntityManagerImpl implements EntityManager {
 
                     appendSysFields(uuid, mei);
 
-                    this.systemEntities.put(mei.getName(), mei);
+                    this.userEntities.put(mei.getName(), mei);
                     logger.warn("Build System metaEntity " + mei);
                     //logger.warn("Build System metaEntity fiels " + mei.getMetaFields());
                 }
@@ -319,25 +319,16 @@ public class EntityManagerImpl implements EntityManager {
     @Override
     public List<MetaEntity> getMetaEntities() {
         List<MetaEntity> l = new ArrayList<>(userEntities.values());
-        l.addAll(this.systemEntities.values());
+        l.addAll(this.userEntities.values());
         return l;
     }
 
     @Override
     public MetaEntity getMetaEntity(String name) {
-        MetaEntity me = this.systemEntities.get(name);
-        if (me == null) {
-            me = this.userEntities.get(name);
-        }
-        
+        MetaEntity me = this.userEntities.get(name);
+
         if (me == null) {
             me = this.mfEntities.get(name);
-        }
-        
-        for (MetaEntity mmee: this.systemEntities.values()) {
-            if (mmee.getUuid().equals(name)) {
-                return mmee;
-            }
         }
         
         for (MetaEntity mmee: this.userEntities.values()) {
