@@ -3,6 +3,7 @@ package com.yotouch.base.web.interceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.yotouch.base.web.util.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -21,6 +22,9 @@ public class SystemInterceptor implements HandlerInterceptor{
     @Value("${wechat.appId:}")
     private String wechatAppId;
 
+    @Autowired
+    private WebUtil webUtil;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
@@ -31,6 +35,7 @@ public class SystemInterceptor implements HandlerInterceptor{
         request.setAttribute("entityMgr", ytApp.getEntityManager());
         request.setAttribute("entityManager", ytApp.getEntityManager());
         request.setAttribute("request", request);
+        request.setAttribute("webUtil", webUtil);
 
         return true;
     }

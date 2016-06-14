@@ -94,11 +94,13 @@ public abstract class LoginInterceptor implements HandlerInterceptor {
         }
 
         if (isLogin) {
-            return true;
+            return this.loginSuccess(request, response, handler);
         } else {
             return this.loginFailed(request, response, handler);
         }
     }
+
+    protected abstract boolean loginSuccess(HttpServletRequest request, HttpServletResponse response, Object handler);
 
     protected abstract boolean loginFailed(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException;
 
