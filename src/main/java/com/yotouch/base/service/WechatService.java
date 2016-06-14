@@ -1,5 +1,6 @@
 package com.yotouch.base.service;
 
+import com.yotouch.base.wechat.ContextInterceptor;
 import com.yotouch.core.Consts;
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.runtime.YotouchApplication;
@@ -23,9 +24,9 @@ import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 
-public class WeChatServiceImpl  {
+public class WechatService {
 
-    static final private Logger logger = LoggerFactory.getLogger(WeChatServiceImpl.class);
+    static final private Logger logger = LoggerFactory.getLogger(WechatService.class);
 
     private YotouchApplication ytApp;
     private WxMpInMemoryConfigStorage mpConfig;
@@ -34,7 +35,7 @@ public class WeChatServiceImpl  {
     
     private Entity wechat;
     
-    public WeChatServiceImpl(YotouchApplication ytApp, Entity wechat) {
+    public WechatService(YotouchApplication ytApp, Entity wechat) {
         this.ytApp = ytApp;
         this.wechat = wechat;
 
@@ -86,7 +87,9 @@ public class WeChatServiceImpl  {
     }
 
     public void setMessageHandler(WxMpMessageHandler msgHandler) {
-        wxMpMessageRouter.rule().async(false).handler(msgHandler).end();
+        wxMpMessageRouter.rule().interceptor(
+                new ContextInterceptor(this.ytApp, this.wechat.v("appId"), this)
+        ).async(false).handler(msgHandler).end();
     }
 
     public boolean checkSignature(String timestamp, String nonce, String signature) {

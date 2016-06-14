@@ -1,6 +1,5 @@
 package com.yotouch.base.service;
 
-import com.yotouch.base.web.util.WebUtil;
 import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.common.exception.WxErrorException;
 import me.chanjar.weixin.common.session.WxSessionManager;
@@ -19,9 +18,9 @@ public class WechatMsgHandler implements WxMpMessageHandler {
     
     static final private Logger logger = LoggerFactory.getLogger(WechatMsgHandler.class);
 
-    private WeChatServiceImpl wechatService;
+    private WechatService wechatService;
 
-    public WechatMsgHandler(WeChatServiceImpl wechatService) {
+    public WechatMsgHandler(WechatService wechatService) {
         this.wechatService = wechatService;
     }
     

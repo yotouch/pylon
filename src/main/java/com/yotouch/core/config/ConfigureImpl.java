@@ -3,6 +3,7 @@ package com.yotouch.core.config;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.net.URL;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -56,7 +57,7 @@ public class ConfigureImpl implements Configure {
         }
 
         if (this.ytHome == null) {
-            //this.ytHome = new File("/Users/yinwm/eclipse/projs/app-interview");
+            this.ytHome = new File("/Users/yinwm/eclipse/projs/pylon");
         }
         logger.warn("Init configure YT RUNTIME HOME " + this.ytHome);
         

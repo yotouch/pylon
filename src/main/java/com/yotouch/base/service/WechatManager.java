@@ -1,7 +1,11 @@
 package com.yotouch.base.service;
 
+import me.chanjar.weixin.mp.api.WxMpMessageHandler;
+
 public interface WechatManager {
     
-    WeChatServiceImpl getService(String appid);
+    WechatService getService(String appid);
+
+    WechatService setService(String appId, WxMpMessageHandler msgHandler);
 
 }
