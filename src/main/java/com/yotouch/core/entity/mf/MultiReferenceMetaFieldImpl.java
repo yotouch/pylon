@@ -33,7 +33,9 @@ public class MultiReferenceMetaFieldImpl extends ReferenceMetaFieldImpl<List<Str
 
     @Override
     public FieldValue<List<String>> newFieldValue(Object value) {
-        return new MultiReferenceFieldValue(this, value);
+        FieldValue<List<String>> v = new MultiReferenceFieldValue(this, value);
+        //v.setChanged(true);
+        return v;
     }
     
     public void setMappingMetaEntity(MetaEntity me) {

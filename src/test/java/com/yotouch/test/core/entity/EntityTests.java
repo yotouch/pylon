@@ -170,7 +170,7 @@ public class EntityTests {
         assertTrue(uuids.contains(ips.get(0).getUuid()));
         assertTrue(uuids.contains(ips.get(1).getUuid()));
         
-        List<Entity> mappings = dbSession.queryRawSql("item_itemProps_itemProp", "itemUuid = ?", new Object[]{item.getUuid()});
+        List<Entity> mappings = dbSession.queryRawSql("item_itemProps_itemProp", "s_itemUuid = ?", new Object[]{item.getUuid()});
         assertEquals(2, mappings.size());
         
         List<String> mappingUuids = mappings.stream().map((e)->e.getUuid()).collect(Collectors.toList());
@@ -182,7 +182,7 @@ public class EntityTests {
         item.setValue("itemProps", uuids);
         item = dbSession.save(item);
         
-        mappings = dbSession.queryRawSql("item_itemProps_itemProp", "itemUuid = ?", new Object[]{item.getUuid()});
+        mappings = dbSession.queryRawSql("item_itemProps_itemProp", "s_itemUuid = ?", new Object[]{item.getUuid()});
         assertEquals(2, mappings.size());
         
         assertTrue(mappingUuids.contains(mappings.get(0).getUuid()));
@@ -199,7 +199,7 @@ public class EntityTests {
         assertTrue(uuids.contains(ips.get(1).getUuid()));
         
         
-        List<Entity> newMappings = dbSession.queryRawSql("item_itemProps_itemProp", "itemUuid = ?", new Object[]{item.getUuid()});
+        List<Entity> newMappings = dbSession.queryRawSql("item_itemProps_itemProp", "s_itemUuid = ?", new Object[]{item.getUuid()});
         assertEquals(2, newMappings.size());
         int contains = 0;
         Set<String> m1 = mappings.stream().map(m->m.getUuid()).collect(Collectors.toSet());
@@ -218,9 +218,20 @@ public class EntityTests {
         ips = item.mr(dbSession, "itemProps");
         assertEquals(0, ips.size());
         
-        mappings = dbSession.queryRawSql("item_itemProps_itemProp", "itemUuid = ?", new Object[]{item.getUuid()});
+        mappings = dbSession.queryRawSql("item_itemProps_itemProp", "s_itemUuid = ?", new Object[]{item.getUuid()});
         assertEquals(0, mappings.size());
-        
+
+
+        Entity item2 = dbSession.newEntity("item");
+        List<Entity> related = new ArrayList<>();
+        related.add(item);
+        item2.setValue("relatedItems", related);
+        item2 = dbSession.save(item2);
+        List<Entity> newRelated = item2.mr(dbSession, "relatedItems");
+        assertEquals(1, newRelated.size());
+        assertEquals(item, newRelated.get(0));
+
+
         
     }
     

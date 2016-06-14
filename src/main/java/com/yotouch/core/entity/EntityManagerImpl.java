@@ -3,11 +3,7 @@ package com.yotouch.core.entity;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.annotation.PostConstruct;
 
@@ -35,23 +31,20 @@ public class EntityManagerImpl implements EntityManager {
     private Configure config;
 
     private Map<String, MetaEntityImpl> userEntities;
-    //private Map<String, MetaEntity> systemEntities;
     private Map<String, MetaEntityImpl> mfEntities;
 
     private Map<String, MetaFieldImpl<?>> systemFields;
 
     public EntityManagerImpl() {
         this.userEntities = new HashMap<>();
-        //this.systemEntities = new HashMap<>();
         this.mfEntities = new HashMap<>();
     }
 
     @PostConstruct
     private void initMetaEntities() {
         this.userEntities = new HashMap<>();
-        //this.systemEntities = new HashMap<>();
         this.mfEntities = new HashMap<>();
-        
+
         loadSystemMetaFields();
         loadSystemMetaEntities();
         loadUserEntities();
@@ -71,7 +64,6 @@ public class EntityManagerImpl implements EntityManager {
     }
 
     private void buildMultiReferenceEntities() {
-        //scanMrEntities(this.systemEntities.values());
         scanMrEntities(this.userEntities.values());
     }
 
@@ -98,7 +90,7 @@ public class EntityManagerImpl implements EntityManager {
         
         Map<String, Object> fMap = new HashMap<>();
         fMap.put("dataType", Consts.META_FIELD_DATA_TYPE_UUID);
-        fMap.put("name", me.getName() + "Uuid");
+        fMap.put("name", "s_" + me.getName() + "Uuid");
         
         MetaFieldImpl<?> mfi = MetaFieldImpl.build(this, fMap);
         mei.addField(mfi);
@@ -107,7 +99,7 @@ public class EntityManagerImpl implements EntityManager {
         
         fMap = new HashMap<>();
         fMap.put("dataType", Consts.META_FIELD_DATA_TYPE_UUID);
-        fMap.put("name", targetEntityName + "Uuid");
+        fMap.put("name", "t_" + targetEntityName + "Uuid");
         
         mfi = MetaFieldImpl.build(this, fMap);
         mei.addField(mfi);
@@ -133,7 +125,6 @@ public class EntityManagerImpl implements EntityManager {
 
         logger.info("Tables " + tables);
 
-        //scanExistingDbTable(tables, this.systemEntities);
         scanExistingDbTable(tables, this.userEntities);
         scanExistingDbTable(tables, this.mfEntities);
     }
@@ -151,21 +142,33 @@ public class EntityManagerImpl implements EntityManager {
 
     private void loadUserEntities() {
         File ytHome = config.getRuntimeHome();
+
         for (File ah: ytHome.listFiles()) {
-            if (ah.getName().startsWith("addon-")
-                    || ah.getName().startsWith("app-")) {
-                File etcHome = new File(ah, "etc");
+            if (ah.isDirectory()) {
+                if (ah.getName().startsWith("addon-")
+                        || ah.getName().startsWith("app-")) {
 
-                logger.info("Checking user entities in dir " + etcHome);
+                    scanEtcUserEntities(ah);
+                }
+            }
+        }
 
-                if (etcHome.exists()) {
-                    for (File f: etcHome.listFiles()) {
+        if (ytHome.getName().equals("pylon")) {
+            scanEtcUserEntities(ytHome);
+        }
 
-                        if (f.getName().equals("userEntities.yaml")
-                                || f.getName().endsWith(".entities.yaml")) {
-                            loadFileMetaEntities(f, "usr_");
-                        }
-                    }
+    }
+
+    private void scanEtcUserEntities(File ah) {
+        File etcHome = new File(ah, "etc");
+
+        logger.info("Checking user entities in dir " + etcHome);
+
+        if (etcHome.exists()) {
+            for (File f: etcHome.listFiles()) {
+                if (f.getName().equals("userEntities.yaml")
+                        || f.getName().endsWith(".entities.yaml")) {
+                    loadFileMetaEntities(f, "usr_");
                 }
             }
         }
@@ -190,7 +193,9 @@ public class EntityManagerImpl implements EntityManager {
         logger.info("APP   HOME " + appHome);
 
         loadFileMetaEntities(new File(pylonHome, "etc/systemEntities.yaml"), "");
-        loadFileMetaEntities(new File(appHome, "etc/systemEntities.yaml"), "");
+        if (appHome != null) {
+            loadFileMetaEntities(new File(appHome, "etc/systemEntities.yaml"), "");
+        }
 
 
     }
@@ -232,6 +237,9 @@ public class EntityManagerImpl implements EntityManager {
             try {
                 @SuppressWarnings("unchecked")
                 Map<String, Object> m = (Map<String, Object>) yaml.load(new FileInputStream(file));
+                if (m == null) {
+                    return;
+                }
 
                 if (m.containsKey("format")) {
                     int format = (int) m.get("format");
@@ -261,7 +269,6 @@ public class EntityManagerImpl implements EntityManager {
 
                     appendSysFields(uuid, mei);
 
-                    //this.systemEntities.put(mei.getName(), mei);
                     this.userEntities.put(mei.getName(), mei);
                     logger.warn("Build System metaEntity " + mei);
                     //logger.warn("Build System metaEntity fiels " + mei.getMetaFields());
@@ -446,6 +453,7 @@ public class EntityManagerImpl implements EntityManager {
     @Override
     public MetaEntity getMetaEntity(String name) {
         MetaEntity me = this.userEntities.get(name);
+
         if (me == null) {
             me = this.mfEntities.get(name);
         }

@@ -40,6 +40,9 @@ entities:
         itemProps:
             fieldType: MULTI_REFERENCE
             targetMetaEntity: itemProp
+        relatedItems:
+            fieldType: MULTI_REFERENCE
+            targetMetaEntity: item
 
     itemProp:
         name:
