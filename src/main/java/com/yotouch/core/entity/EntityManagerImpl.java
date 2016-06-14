@@ -237,6 +237,9 @@ public class EntityManagerImpl implements EntityManager {
             try {
                 @SuppressWarnings("unchecked")
                 Map<String, Object> m = (Map<String, Object>) yaml.load(new FileInputStream(file));
+                if (m == null) {
+                    return;
+                }
 
                 if (m.containsKey("format")) {
                     int format = (int) m.get("format");
