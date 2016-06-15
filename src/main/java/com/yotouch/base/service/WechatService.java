@@ -9,6 +9,7 @@ import me.chanjar.weixin.common.bean.WxJsapiSignature;
 import me.chanjar.weixin.common.bean.WxMenu;
 import me.chanjar.weixin.common.exception.WxErrorException;
 import me.chanjar.weixin.mp.api.*;
+import me.chanjar.weixin.mp.bean.WxMpCustomMessage;
 import me.chanjar.weixin.mp.bean.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.WxMpXmlOutMessage;
 import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
@@ -153,5 +154,9 @@ public class WechatService {
         return user;
     }
 
+    public void sendTextMessage(String openId, String content) throws WxErrorException {
+        WxMpCustomMessage msg = WxMpCustomMessage.TEXT().toUser(openId).content(content).build();
+        this.mpService.customMessageSend(msg);
+    }
 
 }
