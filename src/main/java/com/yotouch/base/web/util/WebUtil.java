@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -138,6 +139,20 @@ public class WebUtil {
         } else {
             return String.format("%s://%s:%d",request.getScheme(),  request.getServerName(), request.getServerPort());
         }
+    }
+
+    public String getBid(HttpServletRequest request){
+        String bid = "";
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie c : cookies) {
+                if ("bid".equalsIgnoreCase(c.getName())) {
+                    bid = c.getValue();
+                }
+            }
+        }
+
+        return bid;
     }
 
 }
