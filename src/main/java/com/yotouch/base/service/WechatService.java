@@ -146,7 +146,7 @@ public class WechatService {
         user.setValue("subscribed", wxUser.getSubscribe());
         Long l = wxUser.getSubscribeTime();
         if (l != null) {
-            user.setValue("subscribeTime", new Date(wxUser.getSubscribeTime()));
+            user.setValue("subscribeTime", new Date(wxUser.getSubscribeTime() * 1000));
         }
 
         user.setValue("unionId", wxUser.getUnionId());
