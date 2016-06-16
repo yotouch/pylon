@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -26,6 +27,10 @@ import com.yotouch.core.runtime.DbSession;
 public class WebUtil {
 
     static final private Logger logger = LoggerFactory.getLogger(WebUtil.class);
+
+    @Value("${app.host:}")
+    private String appHost;
+
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public Map<String, Object> asRetJson(Map<String, Object> ret) {
@@ -106,13 +111,13 @@ public class WebUtil {
     }
 
     public String getFullUrl(HttpServletRequest request) {
-        StringBuffer requestURL = request.getRequestURL();
+        String requestURL = request.getRequestURI();
         String queryString = request.getQueryString();
         
         if (queryString == null) {
-            return requestURL.toString();
+            return appHost + requestURL.toString();
         } else {
-            return requestURL.append('?').append(queryString).toString();
+            return appHost + requestURL + "?" + queryString;
         }
     }
 

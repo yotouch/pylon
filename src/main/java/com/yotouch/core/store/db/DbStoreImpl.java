@@ -392,7 +392,7 @@ public class DbStoreImpl implements DbStore {
         MetaEntityImpl mei = (MetaEntityImpl) me;
         String sql = "SELECT * FROM " + mei.getTableName() + " WHERE uuid=?";
         Object[] args = new Object[]{uuid};
-        //logger.info("Yotouch SQL " + sql + " args [" + StringUtils.arrayToCommaDelimitedString(args) + "]");
+        logger.debug("Yotouch SQL " + sql + " args [" + StringUtils.arrayToCommaDelimitedString(args) + "]");
         List<Entity> el = this.jdbcTpl.query(sql, args, mapper);
         return el;
     }
@@ -424,9 +424,6 @@ public class DbStoreImpl implements DbStore {
         sql += " FROM " + mei.getTableName();
         if (!StringUtils.isEmpty(where)) {
             sql += " WHERE " + where;
-            if (!((MetaEntityImpl) me).getTableName().startsWith("mr_")) {
-                logger.info("YT SQL SELECT : " + sql + " args [" + StringUtils.arrayToCommaDelimitedString(args) + "]");
-            }
             return this.jdbcTpl.query(sql, args, mapper);
         } else {
             return this.jdbcTpl.query(sql, mapper);
