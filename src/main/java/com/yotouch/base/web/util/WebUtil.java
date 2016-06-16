@@ -155,4 +155,13 @@ public class WebUtil {
         return bid;
     }
 
+    public boolean isWechat(HttpServletRequest request) {
+        // Mozilla/5.0 (iPhone; CPU iPhone OS 8_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile/12F70 MicroMessenger/6.2.6 NetType/WIFI Language/zh_CN
+
+        String userAgent = request.getHeader("User-Agent");
+
+        logger.info("UserAgent " + userAgent);
+
+        return userAgent.toLowerCase().contains("micromessenger");
+    }
 }

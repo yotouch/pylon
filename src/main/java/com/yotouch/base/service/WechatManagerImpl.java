@@ -38,9 +38,8 @@ public class WechatManagerImpl implements WechatManager {
     @Override
     public WechatService setService(String appId, WxMpMessageHandler msgHandler) {
         DbSession dbSession = this.ytApp.getRuntime().createDbSession();
-        Entity wechat = dbSession.queryOneRawSql("wechat", "appId = ?", new Object[]{appId});
 
-        WechatService wechatService = new WechatService(ytApp, wechat);
+        WechatService wechatService = new WechatService(ytApp, appId);
 
         if (msgHandler != null) {
             wechatService.setMessageHandler(msgHandler);

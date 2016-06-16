@@ -3,6 +3,7 @@ package com.yotouch.base.service;
 import com.yotouch.base.wechat.ContextInterceptor;
 import com.yotouch.core.Consts;
 import com.yotouch.core.entity.Entity;
+import com.yotouch.core.runtime.DbSession;
 import com.yotouch.core.runtime.YotouchApplication;
 import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.common.bean.WxJsapiSignature;
@@ -33,12 +34,16 @@ public class WechatService {
     private WxMpInMemoryConfigStorage mpConfig;
     private WxMpService mpService;
     private WxMpMessageRouter wxMpMessageRouter;
+
+    private String appId;
     
-    private Entity wechat;
-    
-    public WechatService(YotouchApplication ytApp, Entity wechat) {
+    public WechatService(YotouchApplication ytApp, String appId) {
+        this.appId = appId;
         this.ytApp = ytApp;
-        this.wechat = wechat;
+
+        DbSession dbSession = this.ytApp.getRuntime().createDbSession();
+
+        Entity wechat = dbSession.queryOneRawSql("wechat", "appId = ?", new Object[]{appId});
 
         mpConfig = new WxMpInMemoryConfigStorage();
 
@@ -53,7 +58,9 @@ public class WechatService {
     }
     
     public Entity getWechatEntity() {
-        return this.wechat;
+        DbSession dbSession = this.ytApp.getRuntime().createDbSession();
+        Entity wechat = dbSession.queryOneRawSql("wechat", "appId = ?", new Object[]{this.appId});
+        return wechat;
     }
 
     public String genAuthUrl(String url, String state) {
@@ -65,8 +72,9 @@ public class WechatService {
         }
         
         //String myHost = (String) ytApp.getProp("host");
-        String domain = this.wechat.v("oauthDomain");
-        String fullUrl = "http://" + domain + "/connect/wechat/"+this.wechat.v("appId")+"/oauthCallback?url=" + url;
+        Entity wechat = this.getWechatEntity();
+        String domain = wechat.v("oauthDomain");
+        String fullUrl = "http://" + domain + "/connect/wechat/"+this.appId+"/oauthCallback?url=" + url;
 
         /*
         try {
@@ -89,7 +97,7 @@ public class WechatService {
 
     public void setMessageHandler(WxMpMessageHandler msgHandler) {
         wxMpMessageRouter.rule().interceptor(
-                new ContextInterceptor(this.ytApp, this.wechat.v("appId"), this)
+                new ContextInterceptor(this.ytApp, this.appId, this)
         ).async(false).handler(msgHandler).end();
     }
 
