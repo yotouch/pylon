@@ -167,6 +167,10 @@ public class WebUtil {
 
         logger.info("UserAgent " + userAgent);
 
+        if (userAgent == null) {
+            return false;
+        }
+
         return userAgent.toLowerCase().contains("micromessenger");
     }
 }
