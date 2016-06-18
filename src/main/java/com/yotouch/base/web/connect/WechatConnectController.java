@@ -126,7 +126,7 @@ public class WechatConnectController extends BaseController {
 
         logger.info(" Back content " + outMsg.toXml());
 
-        logger.info(" Back content " + outMsg.toEncryptedXml(wxService.getWechatConfig());
+        logger.info(" Back content " + outMsg.toEncryptedXml(wxService.getWechatConfig()));
 
         //return outMsg.toXml();
         return outMsg.toEncryptedXml(wxService.getWechatConfig());
