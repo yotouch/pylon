@@ -14,14 +14,16 @@ import me.chanjar.weixin.mp.bean.WxMpXmlMessage;
 public class ContextInterceptor implements WxMpMessageInterceptor {
 
 
+    private String appHost;
     private WechatService wechatService;
     private String appId;
     private YotouchApplication ytApp;
 
-    public ContextInterceptor(YotouchApplication ytApp, String wechatAppId, WechatService weChatService) {
+    public ContextInterceptor(YotouchApplication ytApp, String appId, String appHost, WechatService wechatService) {
         this.ytApp = ytApp;
-        this.appId = wechatAppId;
-        this.wechatService = weChatService;
+        this.appId = appId;
+        this.wechatService = wechatService;
+        this.appHost = appHost;
     }
 
     @Override
@@ -35,6 +37,7 @@ public class ContextInterceptor implements WxMpMessageInterceptor {
         context.put(Consts.RUNTIME_VARIABLE_WX_APPID, this.appId);
         context.put(Consts.RUNTIME_VARIABLE_YT_APP, this.ytApp);
         context.put(Consts.RUNTIME_VARIABLE_WX_SERVICE, this.wechatService);
+        context.put(Consts.RUNTIME_VARIABLE_APP_HOST, this.appHost);
 
 
         return true;

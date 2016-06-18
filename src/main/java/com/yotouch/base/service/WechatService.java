@@ -95,9 +95,9 @@ public class WechatService {
 
     }
 
-    public void setMessageHandler(WxMpMessageHandler msgHandler) {
+    public void setMessageHandler(WxMpMessageHandler msgHandler, String appHost) {
         wxMpMessageRouter.rule().interceptor(
-                new ContextInterceptor(this.ytApp, this.appId, this)
+                new ContextInterceptor(this.ytApp, this.appId, appHost, this)
         ).async(false).handler(msgHandler).end();
     }
 

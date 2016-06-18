@@ -7,6 +7,7 @@ import me.chanjar.weixin.mp.api.WxMpMessageHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -21,8 +22,11 @@ public class WechatManagerImpl implements WechatManager {
     @Autowired
     private YotouchApplication ytApp;
     
+    @Value("${app.host:}")
+    private String appHost;
+
     private Map<String, WechatService> wechatMap;
-    
+
     @PostConstruct
     private void init() {
         this.wechatMap = new HashMap<>();
@@ -42,7 +46,7 @@ public class WechatManagerImpl implements WechatManager {
         WechatService wechatService = new WechatService(ytApp, appId);
 
         if (msgHandler != null) {
-            wechatService.setMessageHandler(msgHandler);
+            wechatService.setMessageHandler(msgHandler, appHost);
         }
 
         this.wechatMap.put(appId, wechatService);

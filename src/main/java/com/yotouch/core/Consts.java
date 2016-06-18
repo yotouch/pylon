@@ -51,6 +51,7 @@ public interface Consts {
     String RUNTIME_VARIABLE_WX_JS_ARGS      = "wechatJsArgs";
     String RUNTIME_VARIABLE_WX_SERVICE      = "wechatService";
     String RUNTIME_VARIABLE_YT_APP          = "ytApp";
+    String RUNTIME_VARIABLE_APP_HOST        = "appHost";
 
     
     
@@ -69,5 +70,6 @@ public interface Consts {
 
     int paginationWidth                     = 5;
     int itemPerPage                         = 20;
+
 
 }
