@@ -83,9 +83,7 @@ public class WechatConnectController extends BaseController {
     }
 
     @RequestMapping(value = "/connect/wechat/{uuid}", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    String doConnect(
+    public void doConnect(
             @PathVariable("uuid") String uuid,
             @RequestParam(value = "signature", defaultValue = "") String signature,
             @RequestParam(value = "nonce", defaultValue = "") String nonce,
@@ -93,7 +91,8 @@ public class WechatConnectController extends BaseController {
             @RequestParam(value = "encrypt_type", defaultValue = "raw") String encryptType,
             @RequestParam(value = "msg_signature", defaultValue = "") String msgSig,
             @RequestBody String body,
-            HttpServletRequest request) throws IOException {
+            HttpServletResponse response
+    ) throws IOException {
 
         WechatService wcService = getWechatService(uuid);
         WxMpConfigStorage cfg = wcService.getWechatConfig();
@@ -123,7 +122,7 @@ public class WechatConnectController extends BaseController {
         logger.info(" Back content " + outMsg);
 
         if (outMsg == null) {
-            return "";
+            return ;
         }
 
         logger.info(" Back content " + outMsg.toXml());
@@ -134,13 +133,18 @@ public class WechatConnectController extends BaseController {
         logger.info(" Back content " + xml);
         logger.info(" Back content " + outMsg.toEncryptedXml(wcService.getWechatConfig()));
 
+        response.setContentType("text/html;charset=utf-8");
+        response.setStatus(HttpServletResponse.SC_OK);
+
         if ("raw".equals(encryptType)) {
-            return outMsg.toXml();
+            response.getWriter().write(outMsg.toXml());
         } else if ("aes".equals(encryptType)) {
-            return xml;
+            response.getWriter().write(xml);
         }
 
-        return "";
+        response.flushBuffer();
+
+        return;
     }
 
     @RequestMapping("/connect/wechat/{uuid}/oauth")
