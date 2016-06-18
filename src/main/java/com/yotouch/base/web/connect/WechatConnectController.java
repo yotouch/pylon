@@ -128,11 +128,11 @@ public class WechatConnectController extends BaseController {
 
         logger.info(" Back content " + outMsg.toXml());
 
-        String xml = outMsg.toEncryptedXml(cfg);
+        String xml = outMsg.toEncryptedXml(wcService.getWechatConfig());
 
 
         logger.info(" Back content " + xml);
-        logger.info(" Back content " + outMsg.toEncryptedXml(cfg));
+        logger.info(" Back content " + outMsg.toEncryptedXml(wcService.getWechatConfig()));
 
         if ("raw".equals(encryptType)) {
             return outMsg.toXml();
