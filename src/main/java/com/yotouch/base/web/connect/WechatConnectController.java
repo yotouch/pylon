@@ -8,6 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Date;
 
+import me.chanjar.weixin.mp.api.WxMpConfigStorage;
 import me.chanjar.weixin.mp.bean.WxMpXmlOutMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,6 +96,7 @@ public class WechatConnectController extends BaseController {
             HttpServletRequest request) throws IOException {
 
         WechatService wcService = getWechatService(uuid);
+        WxMpConfigStorage cfg = wcService.getWechatConfig();
         if (!wcService.checkSignature(timestamp, nonce, signature)) {
             logger.info("WECHAT WRONG");
             return "WRONG";
@@ -104,7 +106,7 @@ public class WechatConnectController extends BaseController {
         if ("raw".equals(encryptType)) {
             inMsg = WxMpXmlMessage.fromXml(body);
         } else {
-            inMsg = WxMpXmlMessage.fromEncryptedXml(body, wcService.getWechatConfig(), timestamp, nonce, msgSig);
+            inMsg = WxMpXmlMessage.fromEncryptedXml(body, cfg, timestamp, nonce, msgSig);
         }
 
         logger.info("Wechat event \n" +
@@ -114,7 +116,7 @@ public class WechatConnectController extends BaseController {
         );
 
 
-        WechatService wxService = getWechatService(uuid);
+        //WechatService wxService = getWechatService(uuid);
 
         WxMpXmlOutMessage outMsg = wcService.route(inMsg);
 
@@ -126,10 +128,17 @@ public class WechatConnectController extends BaseController {
 
         logger.info(" Back content " + outMsg.toXml());
 
-        logger.info(" Back content " + outMsg.toEncryptedXml(wxService.getWechatConfig()));
+        String xml = outMsg.toEncryptedXml(cfg);
 
-        //return outMsg.toXml();
-        return outMsg.toEncryptedXml(wxService.getWechatConfig());
+
+        logger.info(" Back content " + xml);
+        logger.info(" Back content " + outMsg.toEncryptedXml(cfg));
+
+        if ("raw".equals(encryptType)) {
+            return outMsg.toXml();
+        } else if ("aes".equals(encryptType)) {
+            return xml;
+        }
     }
 
     @RequestMapping("/connect/wechat/{uuid}/oauth")
