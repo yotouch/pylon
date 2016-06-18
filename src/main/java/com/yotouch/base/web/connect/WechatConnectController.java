@@ -139,6 +139,8 @@ public class WechatConnectController extends BaseController {
         } else if ("aes".equals(encryptType)) {
             return xml;
         }
+
+        return "";
     }
 
     @RequestMapping("/connect/wechat/{uuid}/oauth")
