@@ -113,7 +113,10 @@ public class WechatConnectController extends BaseController {
                 "MessageType " + inMsg.getMsgType()
         );
 
-        WxMpXmlOutMessage outMsg = getWechatService(uuid).route(inMsg);
+
+        WechatService wxService = getWechatService(uuid);
+
+        WxMpXmlOutMessage outMsg = wcService.route(inMsg);
 
         logger.info(" Back content " + outMsg);
 
@@ -121,7 +124,12 @@ public class WechatConnectController extends BaseController {
             return "";
         }
 
-        return outMsg.toXml();
+        logger.info(" Back content " + outMsg.toXml());
+
+        logger.info(" Back content " + outMsg.toEncryptedXml(wxService.getWechatConfig());
+
+        //return outMsg.toXml();
+        return outMsg.toEncryptedXml(wxService.getWechatConfig());
     }
 
     @RequestMapping("/connect/wechat/{uuid}/oauth")
