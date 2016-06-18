@@ -98,7 +98,7 @@ public class WechatConnectController extends BaseController {
         WxMpConfigStorage cfg = wcService.getWechatConfig();
         if (!wcService.checkSignature(timestamp, nonce, signature)) {
             logger.info("WECHAT WRONG");
-            return "WRONG";
+            response.getWriter().write("Wrong");
         }
 
         WxMpXmlMessage inMsg = null;
