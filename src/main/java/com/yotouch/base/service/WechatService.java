@@ -11,6 +11,7 @@ import me.chanjar.weixin.common.bean.WxMenu;
 import me.chanjar.weixin.common.exception.WxErrorException;
 import me.chanjar.weixin.mp.api.*;
 import me.chanjar.weixin.mp.bean.WxMpCustomMessage;
+import me.chanjar.weixin.mp.bean.WxMpTemplateMessage;
 import me.chanjar.weixin.mp.bean.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.WxMpXmlOutMessage;
 import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
@@ -31,18 +32,25 @@ public class WechatService {
     static final private Logger logger = LoggerFactory.getLogger(WechatService.class);
 
     private YotouchApplication ytApp;
-    //private WxMpInMemoryConfigStorage mpConfig;
+    private WxMpInMemoryConfigStorage mpConfig;
     private WxMpService mpService;
     private WxMpMessageRouter wxMpMessageRouter;
-
     private String appId;
     
     public WechatService(YotouchApplication ytApp, String appId) {
         this.appId = appId;
         this.ytApp = ytApp;
 
+        DbSession dbSession = this.ytApp.getRuntime().createDbSession();
+        Entity wechat = dbSession.queryOneRawSql("wechat", "appId = ?", new Object[]{appId});
+        mpConfig = new WxMpInMemoryConfigStorage();
+        mpConfig.setAppId(wechat.v("appId"));   // 设置微信公众号的appid
+        mpConfig.setSecret(wechat.v("secret")); // 设置微信公众号的app corpSecret
+        mpConfig.setToken(wechat.v("token"));   // 设置微信公众号的token
+        mpConfig.setAesKey(wechat.v("aeskey")); // 设置微信公众号的EncodingAESKey
+
         mpService = new WxMpServiceImpl();
-        mpService.setWxMpConfigStorage(this.getWechatConfig());
+        mpService.setWxMpConfigStorage(mpConfig);
         wxMpMessageRouter = new WxMpMessageRouter(mpService);
     }
     
@@ -95,13 +103,7 @@ public class WechatService {
     }
 
     public WxMpConfigStorage getWechatConfig() {
-        DbSession dbSession = this.ytApp.getRuntime().createDbSession();
-        Entity wechat = dbSession.queryOneRawSql("wechat", "appId = ?", new Object[]{appId});
-        WxMpInMemoryConfigStorage mpConfig = new WxMpInMemoryConfigStorage();
-        mpConfig.setAppId(wechat.v("appId"));   // 设置微信公众号的appid
-        mpConfig.setSecret(wechat.v("secret")); // 设置微信公众号的app corpSecret
-        mpConfig.setToken(wechat.v("token"));   // 设置微信公众号的token
-        mpConfig.setAesKey(wechat.v("aeskey")); // 设置微信公众号的EncodingAESKey
+
 
         return mpConfig;
     }
@@ -164,4 +166,7 @@ public class WechatService {
         this.mpService.customMessageSend(msg);
     }
 
+    public void sendTemplateMessage(WxMpTemplateMessage tplMsg) throws WxErrorException {
+        this.mpService.templateSend(tplMsg);
+    }
 }
