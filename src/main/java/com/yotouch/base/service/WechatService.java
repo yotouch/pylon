@@ -31,7 +31,7 @@ public class WechatService {
     static final private Logger logger = LoggerFactory.getLogger(WechatService.class);
 
     private YotouchApplication ytApp;
-    private WxMpInMemoryConfigStorage mpConfig;
+    //private WxMpInMemoryConfigStorage mpConfig;
     private WxMpService mpService;
     private WxMpMessageRouter wxMpMessageRouter;
 
@@ -41,19 +41,8 @@ public class WechatService {
         this.appId = appId;
         this.ytApp = ytApp;
 
-        DbSession dbSession = this.ytApp.getRuntime().createDbSession();
-
-        Entity wechat = dbSession.queryOneRawSql("wechat", "appId = ?", new Object[]{appId});
-
-        mpConfig = new WxMpInMemoryConfigStorage();
-
-        mpConfig.setAppId(wechat.v("appId"));   // 设置微信公众号的appid
-        mpConfig.setSecret(wechat.v("secret")); // 设置微信公众号的app corpSecret
-        mpConfig.setToken(wechat.v("token"));   // 设置微信公众号的token
-        mpConfig.setAesKey(wechat.v("aeskey")); // 设置微信公众号的EncodingAESKey
-
         mpService = new WxMpServiceImpl();
-        mpService.setWxMpConfigStorage(mpConfig);
+        mpService.setWxMpConfigStorage(this.getWechatConfig());
         wxMpMessageRouter = new WxMpMessageRouter(mpService);
     }
     
@@ -106,7 +95,15 @@ public class WechatService {
     }
 
     public WxMpConfigStorage getWechatConfig() {
-        return this.mpConfig;
+        DbSession dbSession = this.ytApp.getRuntime().createDbSession();
+        Entity wechat = dbSession.queryOneRawSql("wechat", "appId = ?", new Object[]{appId});
+        WxMpInMemoryConfigStorage mpConfig = new WxMpInMemoryConfigStorage();
+        mpConfig.setAppId(wechat.v("appId"));   // 设置微信公众号的appid
+        mpConfig.setSecret(wechat.v("secret")); // 设置微信公众号的app corpSecret
+        mpConfig.setToken(wechat.v("token"));   // 设置微信公众号的token
+        mpConfig.setAesKey(wechat.v("aeskey")); // 设置微信公众号的EncodingAESKey
+
+        return mpConfig;
     }
 
     public WxMpOAuth2AccessToken oauth2getAccessToken(String code) throws WxErrorException {
