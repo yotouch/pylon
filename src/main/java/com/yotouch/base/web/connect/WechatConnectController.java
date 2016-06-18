@@ -115,6 +115,8 @@ public class WechatConnectController extends BaseController {
 
         WxMpXmlOutMessage outMsg = getWechatService(uuid).route(inMsg);
 
+        logger.info(" Back content " + outMsg);
+
         if (outMsg == null) {
             return "";
         }
