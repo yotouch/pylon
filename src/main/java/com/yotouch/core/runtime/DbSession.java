@@ -26,7 +26,11 @@ public interface DbSession {
 
     void deleteEntity(MetaEntity me, String uuid);
 
+    void deleteEntity(String entityName, String uuid);
+
     void deleteRawSql(MetaEntity me, String where, Object[] args);
 
     Entity queryOne(String entityName, Query q);
+
+    List<Entity> queryIn(String entityName, List<String> entityUuids);
 }

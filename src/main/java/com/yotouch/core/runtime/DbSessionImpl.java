@@ -1,10 +1,9 @@
 package com.yotouch.core.runtime;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 import com.yotouch.core.entity.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,9 +133,13 @@ public class DbSessionImpl implements DbSession {
 
     @Override
     public void deleteEntity(MetaEntity me, String u) {
-        
-        this.dbStore.deleteRawSql(me, "uuid=?", new Object[]{});
+        this.dbStore.deleteRawSql(me, "uuid=?", new Object[]{u});
+    }
 
+    @Override
+    public void deleteEntity(String entityName, String uuid) {
+        MetaEntity me = entityMgr.getMetaEntity(entityName);
+        this.deleteEntity(me, uuid);
     }
 
     @Override
@@ -190,10 +193,18 @@ public class DbSessionImpl implements DbSession {
         }
     }
 
+    @Override
+    public List<Entity> queryIn(String entityName, List<String> entityUuids) {
+        if (entityUuids.size() == 0) {
+            return new ArrayList<>();
+        } else {
+            String[] qa = new String[entityUuids.size()];
+            Arrays.fill(qa, "?");
+            String where = Joiner.on(",").join(qa);
 
-
-
-
+            return this.queryRawSql(entityName, " uuid IN (" + where + ")", entityUuids.toArray());
+        }
+    }
 
 
 }
