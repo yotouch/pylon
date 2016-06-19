@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.yotouch.core.Consts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -200,6 +201,17 @@ public class EntityImpl implements Entity {
     @Override
     public Entity sr(DbSession dbSession, String fieldName) {
         return this.getSingleReference(dbSession, fieldName);
+    }
+
+    @Override
+    public Map<String, Object> asMap() {
+        Map<String, Object> m = new HashMap<>();
+        for (MetaField<?> mf: this.me.getMetaFields()) {
+            if (mf.getFieldType().equals(Consts.META_FIELD_TYPE_DATA_FIELD)) {
+                m.put(mf.getName(), v(mf.getName()));
+            }
+        }
+        return m;
     }
 
     @Override

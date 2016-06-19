@@ -45,4 +45,5 @@ public interface Entity {
      */
     Entity sr(DbSession dbSession, String fieldName);
 
+    Map<String, Object> asMap();
 }
