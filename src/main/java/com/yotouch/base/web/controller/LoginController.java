@@ -139,7 +139,8 @@ public class LoginController extends BaseController {
         response.addCookie(cookie);
 
         if (!StringUtils.isEmpty(backUrl)) {
-            return "redirect:" + backUrl;
+            backUrl = java.net.URLEncoder.encode(backUrl);
+            return "redirect:/" + backUrl;
         }
 
         return "redirect:" + defaultHome;

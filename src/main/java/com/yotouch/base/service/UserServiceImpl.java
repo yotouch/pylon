@@ -19,7 +19,9 @@ import org.springframework.util.StringUtils;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -143,6 +145,40 @@ public class UserServiceImpl implements UserService {
         Cookie c = new Cookie("userToken", userToken);
         c.setPath("/");
         response.addCookie(c);
+    }
+
+    public List<Entity> getUsersByRole(DbSession dbSession, Entity role, int status) {
+
+        List<Entity> users = new ArrayList<Entity>();
+        List<Entity> roles = roleService.getAllChildRoles(dbSession, role);
+        List<Entity> userRoles = getUserRoles(dbSession, roles);
+
+        for (Entity userRole : userRoles) {
+            Entity user = dbSession.getEntity("user", userRole.v("user")) ;
+            if (user != null && !users.contains(user) && user.v("status").equals(status)) {
+                users.add(user);
+            }
+        }
+
+        return users;
+    }
+
+    public List<Entity> getUserRoles(DbSession dbSession, List<Entity> roles) {
+        List<Entity> results = new ArrayList<Entity>();
+
+        for (Entity role : roles) {
+            List<Entity> tmpUserRoles = dbSession.queryRawSql(
+                    "userRole",
+                    "roleUuid = ? AND status = ?",
+                    new Object[]{role.getUuid(), Consts.STATUS_NORMAL}
+            );
+
+            if (tmpUserRoles.size() > 0) {
+                results.addAll(tmpUserRoles);
+            }
+        }
+
+        return results;
     }
 
 
