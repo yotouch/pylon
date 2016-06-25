@@ -46,7 +46,7 @@ public interface Consts {
     
     String COOKIE_NAME_WX_USER_UUID         = "wxUserUuid";
     
-    String RUNTIME_VARIABLE_WX_USER         = "wxUser";
+    String RUNTIME_VARIABLE_WECHAT_USER     = "wechatUser";
     String RUNTIME_VARIABLE_WX_APPID        = "wechatAppId";
     String RUNTIME_VARIABLE_WX_JS_ARGS      = "wechatJsArgs";
     String RUNTIME_VARIABLE_WX_SERVICE      = "wechatService";
