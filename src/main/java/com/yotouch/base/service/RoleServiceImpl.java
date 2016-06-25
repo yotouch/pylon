@@ -170,4 +170,25 @@ public class RoleServiceImpl implements RoleService {
         return roles.contains(role);
     }
 
+    public Entity getTopRole(DbSession dbSession, String topRoleName) {
+        Entity topRole = dbSession.queryOneRawSql(
+                "role",
+                "name = ? AND status = ?",
+                new Object[]{topRoleName, Consts.STATUS_NORMAL}
+        );
+
+        return topRole;
+    }
+
+    public List<Entity> getAllChildRoles(DbSession dbSession, Entity topRole) {
+        List<Entity> roles = dbSession.queryRawSql(
+                "role",
+                "parentUuid = ? AND status = ?",
+                new Object[]{topRole.getUuid(), Consts.STATUS_NORMAL}
+        );
+
+        return roles;
+    }
+
+
 }

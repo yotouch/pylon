@@ -3,6 +3,7 @@ package com.yotouch.base.service;
 import java.util.List;
 
 import com.yotouch.core.entity.Entity;
+import com.yotouch.core.runtime.DbSession;
 
 public interface RoleService {
     
@@ -21,4 +22,9 @@ public interface RoleService {
     Entity getOrCreateByName(String name);
 
     boolean hasRole(Entity user, Entity role);
+
+    Entity getTopRole(DbSession dbSession, String topRoleName);
+
+    List<Entity> getAllChildRoles(DbSession dbSession, Entity topRole);
+
 }

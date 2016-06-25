@@ -1,8 +1,10 @@
 package com.yotouch.base.service;
 
 import com.yotouch.core.entity.Entity;
+import com.yotouch.core.runtime.DbSession;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 public interface UserService {
 
@@ -15,4 +17,10 @@ public interface UserService {
     Entity modifyPassword(Entity currentuser, String password, String newPassword);
 
     void seedLoginCookie(HttpServletResponse response, Entity user);
+
+    List<Entity> getUsersByRole(DbSession dbSession, Entity role, int status);
+
+    List<Entity> getUserRoles(DbSession dbSession, List<Entity> roles);
+
+
 }
