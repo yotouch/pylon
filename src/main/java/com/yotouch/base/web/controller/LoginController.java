@@ -140,7 +140,7 @@ public class LoginController extends BaseController {
 
         if (!StringUtils.isEmpty(backUrl)) {
             backUrl = java.net.URLEncoder.encode(backUrl);
-            return "redirect:" + backUrl;
+            return "redirect:/" + backUrl;
         }
 
         return "redirect:" + defaultHome;
