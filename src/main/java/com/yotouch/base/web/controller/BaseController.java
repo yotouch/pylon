@@ -1,15 +1,24 @@
 package com.yotouch.base.web.controller;
 
-import com.yotouch.base.service.AttachmentService;
-import com.yotouch.base.service.WechatManager;
-import com.yotouch.base.web.util.PropUtil;
+import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.yotouch.base.web.util.WebUtil;
 import com.yotouch.core.runtime.DbSession;
 import com.yotouch.core.runtime.YotouchApplication;
+import com.yotouch.base.service.AttachmentService;
+import com.yotouch.base.service.WechatManager;
+import com.yotouch.base.web.util.PropUtil;
+import com.yotouch.core.entity.Entity;
 
 public abstract class BaseController {
+
+    private static final Logger logger = LoggerFactory.getLogger(BaseController.class);
+
     
     @Autowired
     protected YotouchApplication ytApp;
@@ -28,6 +37,15 @@ public abstract class BaseController {
 
     protected DbSession getDbSession() {
         return this.ytApp.getRuntime().createDbSession();        
+    }
+
+    protected DbSession getDbSession(HttpServletRequest request) {
+        DbSession dbSession = this.getDbSession();
+
+        Entity loginUser = (Entity) request.getAttribute("loginUser");
+        //logger.info("Create dbSession with LoginUser " + loginUser);
+        dbSession.setLoginUser(loginUser);
+        return dbSession;
     }
 
 }

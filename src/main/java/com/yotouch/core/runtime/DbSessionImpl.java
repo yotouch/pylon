@@ -26,6 +26,7 @@ public class DbSessionImpl implements DbSession {
     private EntityManager entityMgr;
 
     private DbStore dbStore;
+    private Entity loginUser;
 
     public DbSessionImpl(EntityManager entityMgr, DbStore dbStore) {
         this.entityMgr = entityMgr;
@@ -59,12 +60,19 @@ public class DbSessionImpl implements DbSession {
         boolean isNew = ei.isNew();
 
         if (isNew) {
+            if (this.loginUser != null) {
+                e.setValue("creatorUuid", this.loginUser.getUuid());
+            }
             e.setValue("createdAt", new Date());
             if (e.v("status") == null) {
                 e.setValue("status", Consts.STATUS_NORMAL);
             }
             uuid = this.dbStore.insert(me, ei.getFieldValueList());
         } else {
+            if (this.loginUser != null) {
+                e.setValue("updaterUuid", this.loginUser.getUuid());
+            }
+            e.setValue("updatedAt", new Date());
             // Do Update
             this.dbStore.update(me, uuid, ei.getFieldValueList());
         }
@@ -204,6 +212,11 @@ public class DbSessionImpl implements DbSession {
 
             return this.queryRawSql(entityName, " uuid IN (" + where + ")", entityUuids.toArray());
         }
+    }
+
+    @Override
+    public void setLoginUser(Entity loginUser) {
+        this.loginUser = loginUser;
     }
 
 

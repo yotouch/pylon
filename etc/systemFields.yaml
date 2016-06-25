@@ -13,6 +13,8 @@ systemFields:
     updatedAt:
         dataType: DATETIME
         defaultValue: ${NOW}
+    updaterUuid:
+        dataType: UUID
     status:
         dataType: INT
         displayName: 状态
