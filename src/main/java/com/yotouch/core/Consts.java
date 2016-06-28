@@ -52,8 +52,8 @@ public interface Consts {
     String RUNTIME_VARIABLE_WX_SERVICE      = "wechatService";
     String RUNTIME_VARIABLE_YT_APP          = "ytApp";
     String RUNTIME_VARIABLE_APP_HOST        = "appHost";
+    String RUNTIME_VARIABLE_CUSTOMER        = "customer";
 
-    
     
     String PAYMENT_VENDOR_WECHAT            = "payment_wechat";
     String WECHAT_TRADE_STATUS_SUCCESS      = "SUCCESS";
@@ -70,6 +70,7 @@ public interface Consts {
 
     int paginationWidth                     = 5;
     int itemPerPage                         = 20;
+
 
 
 }

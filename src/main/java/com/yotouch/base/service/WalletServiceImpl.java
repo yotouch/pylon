@@ -16,16 +16,11 @@ public class WalletServiceImpl implements WalletService {
     private YotouchApplication ytApp;
 
     @Override
-    public Entity getUserWallet(String userUuid) {
-
-        return getWallet(Consts.WALLET_TYPE_USER, userUuid);
+    public Entity getUserWallet(DbSession dbSession, String userUuid) {
+        return getWallet(dbSession, Consts.WALLET_TYPE_USER, userUuid);
     }
     
-    private Entity getWallet(String type, String uuid) {
-        
-        DbSession dbSession = ytApp.getRuntime().createDbSession();
-        
-
+    private Entity getWallet(DbSession dbSession, String type, String uuid) {
         Entity wallet = dbSession.queryOneRawSql("wallet", "ownerType=? AND ownerUuid=?",
                 new Object[] { type, uuid });
 
@@ -41,21 +36,19 @@ public class WalletServiceImpl implements WalletService {
     }
     
     @Override
-    public Entity getShopWallet(String shopUuid) {
-        return getWallet(Consts.WALLET_TYPE_SHOP, shopUuid);
+    public Entity getShopWallet(DbSession dbSession, String shopUuid) {
+        return getWallet(dbSession, Consts.WALLET_TYPE_SHOP, shopUuid);
     }
 
     @Override
     public void addToShopWallet(DbSession dbSession, String shopUuid, double amount) {
-        Entity wallet = this.getShopWallet(shopUuid);
+        Entity wallet = this.getShopWallet(dbSession, shopUuid);
         this.doAddWallet(dbSession, wallet, amount);
     }
 
-    
-
     @Override
     public void addToUserWallet(DbSession dbSession, String userUuid, double amount) {
-        Entity wallet = this.getUserWallet(userUuid);
+        Entity wallet = this.getUserWallet(dbSession, userUuid);
         this.doAddWallet(dbSession, wallet, amount);
         
     }
