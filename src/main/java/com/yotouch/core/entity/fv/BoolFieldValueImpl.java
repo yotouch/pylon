@@ -16,8 +16,6 @@ public class BoolFieldValueImpl extends AbstractFieldValue<Boolean> implements F
     @Override
     protected Boolean parseValue(Object v) {
         
-        logger.info("Set boolean field " + v);
-        
         if (v == null) {
             return null;
         } else if (v instanceof Boolean) {

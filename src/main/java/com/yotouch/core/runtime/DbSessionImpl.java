@@ -35,9 +35,6 @@ public class DbSessionImpl implements DbSession {
 
     @Override
     public Entity newEntity(String entityName) {
-
-        logger.info("EntityManager : " + this.entityMgr);
-
         MetaEntity me = entityMgr.getMetaEntity(entityName);
         return me.newEntity();
     }
