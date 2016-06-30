@@ -125,6 +125,12 @@ public class WechatService {
         return jss;        
     }
 
+    public File generateTempQrcode(int id) throws WxErrorException {
+        WxMpQrCodeTicket ticket = this.mpService.qrCodeCreateTmpTicket(id, 2592000);
+        File qrcodeFile = this.mpService.qrCodePicture(ticket);
+        return qrcodeFile;
+    }
+
     public File generateQrcode(int id) throws WxErrorException {
         WxMpQrCodeTicket ticket = this.mpService.qrCodeCreateLastTicket(id);
         File codeFile = this.mpService.qrCodePicture(ticket);
