@@ -4,6 +4,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +24,8 @@ import com.yotouch.core.Consts;
 import com.yotouch.core.ErrorCode;
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.runtime.DbSession;
+
+import java.util.List;
 
 @Controller
 public class LoginController extends BaseController {
@@ -139,6 +143,8 @@ public class LoginController extends BaseController {
         response.addCookie(cookie);
 
         if (!StringUtils.isEmpty(backUrl)) {
+            List<String> urlList = Splitter.on("/").trimResults().omitEmptyStrings().splitToList(backUrl);
+            backUrl = Joiner.on("/").skipNulls().join(urlList);
             backUrl = java.net.URLEncoder.encode(backUrl);
             return "redirect:/" + backUrl;
         }
