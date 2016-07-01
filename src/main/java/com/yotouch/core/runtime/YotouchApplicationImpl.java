@@ -1,6 +1,7 @@
 package com.yotouch.core.runtime;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import com.yotouch.core.Consts;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
+@Scope(value = "singleton")
 public class YotouchApplicationImpl implements YotouchApplication {
     
     @Autowired
