@@ -23,13 +23,8 @@ public class YotouchApplicationImpl implements YotouchApplication {
     private DbStore dbStore;
 
     @Autowired
-    private Map<String, Object> attrs;
+    private Map<String, Object> attrs = new HashMap<>();
 
-    @PostConstruct
-    void init() {
-        this.attrs = new HashMap<>();
-    }
-    
     @Override
     public YotouchRuntime getRuntime() {
         return new YotouchRuntimeImpl(this.entityMgr, this.dbStore);
