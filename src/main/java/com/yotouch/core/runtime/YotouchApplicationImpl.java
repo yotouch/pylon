@@ -11,6 +11,7 @@ import com.yotouch.core.config.Configure;
 import com.yotouch.core.entity.EntityManager;
 import com.yotouch.core.store.db.DbStore;
 import org.springframework.util.StringUtils;
+import org.springframework.util.SystemPropertyUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
@@ -28,7 +29,13 @@ public class YotouchApplicationImpl implements YotouchApplication {
     @Autowired
     private DbStore dbStore;
 
-    private Map<String, Object> attrs = new HashMap<>();
+    private Map<String, Object> attrs ;
+
+    @PostConstruct
+    void init() {
+        this.attrs = new HashMap<>();
+        logger.info("=========================================" + System.identityHashCode(this.attrs));
+    }
 
     @Override
     public YotouchRuntime getRuntime() {
