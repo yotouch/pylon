@@ -28,7 +28,6 @@ public class YotouchApplicationImpl implements YotouchApplication {
     @Autowired
     private DbStore dbStore;
 
-    @Autowired
     private Map<String, Object> attrs = new HashMap<>();
 
     @Override
