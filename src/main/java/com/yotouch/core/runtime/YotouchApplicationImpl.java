@@ -9,6 +9,10 @@ import com.yotouch.core.entity.EntityManager;
 import com.yotouch.core.store.db.DbStore;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.PostConstruct;
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 public class YotouchApplicationImpl implements YotouchApplication {
     
@@ -17,6 +21,14 @@ public class YotouchApplicationImpl implements YotouchApplication {
         
     @Autowired
     private DbStore dbStore;
+
+    @Autowired
+    private Map<String, Object> attrs;
+
+    @PostConstruct
+    void init() {
+        this.attrs = new HashMap<>();
+    }
     
     @Override
     public YotouchRuntime getRuntime() {
@@ -26,6 +38,16 @@ public class YotouchApplicationImpl implements YotouchApplication {
     @Override
     public EntityManager getEntityManager() {
         return this.entityMgr;
+    }
+
+    @Override
+    public void setAttribute(String key, Object value) {
+        this.attrs.put(key, value);
+    }
+
+    @Override
+    public Object getAttribute(String key) {
+        return this.attrs.get(key);
     }
 
 }
