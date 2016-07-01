@@ -43,15 +43,16 @@ public class YotouchApplicationImpl implements YotouchApplication {
     @Override
     public void setAttribute(String key, Object value) {
 
-        logger.info("Set attr " + key + " value " + value);
+        logger.info("Set attr " + key + " value " + value + this.attrs.getClass());
         this.attrs.put(key, value);
 
-        logger.info("Get attr " + key + " value " + this.getAttribute(key));
-
+        this.getAttribute(key);
     }
 
     @Override
     public Object getAttribute(String key) {
+        logger.info("Get attr " + key + " value " + this.getAttribute(key));
+
         return this.attrs.get(key);
     }
 
