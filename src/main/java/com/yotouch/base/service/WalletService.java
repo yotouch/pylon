@@ -4,15 +4,14 @@ import com.yotouch.core.entity.Entity;
 import com.yotouch.core.runtime.DbSession;
 
 public interface WalletService {
-    
-    
-    Entity getUserWallet(DbSession dbSession, String userUuid);
+
+    Entity getCustomerWallet(DbSession dbSession, String customerUuid);
 
     Entity getShopWallet(DbSession dbSession, String shopUuid);
     
-    void addToShopWallet(DbSession dbSession, String shopUuid, double amount);
+    void addToShopWallet(DbSession dbSession, String shopUuid, int amount);
 
-    void addToUserWallet(DbSession dbSession, String userUuid, double payed);
+    void addToCustomerWallet(DbSession dbSession, String customerUuid, int amount);
 
 
     
