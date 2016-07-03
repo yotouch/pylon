@@ -55,10 +55,10 @@ public interface Consts {
     String RUNTIME_VARIABLE_APP_HOST        = "APP_HOST";
     String RUNTIME_VARIABLE_CUSTOMER        = "CUSTOMER";
 
-
     String CASHFLOW_SCENE_PAY_ORDER         = "SCENE_PAY_ORDER";
     String CASHFLOW_SCENE_PAY_COMMISSION    = "SCENE_PAY_COMMISSION";
     String CASHFLOW_SCENE_CUSTOMER_WITHDRAW = "SCENE_CUSTOMER_WITHDRAW";
+    String CASHFLOW_SCENE_SETTLE_ORDER      = "SCENE_SETTLE_ORDER";
 
     String CASHFLOW_TYPE_WECHAT             = "CF_TYPE_WECHAT";
     String CASHFLOW_TYPE_ORDER              = "CF_TYPE_ORDER";
@@ -67,7 +67,6 @@ public interface Consts {
 
     String PAYMENT_VENDOR_WECHAT            = "PAYMENT_WECHAT";
     String WECHAT_TRADE_STATUS_SUCCESS      = "SUCCESS";
-    
     
     int AJAX_STATUS_FAILED                  = 1;
     int AJAX_STATUS_OK                      = 0;
