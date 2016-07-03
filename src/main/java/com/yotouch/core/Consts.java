@@ -39,7 +39,7 @@ public interface Consts {
     
     int STATUS_NORMAL                       = 1000;
     int STATUS_DELETED                      = 1001;
-    int STATUS_PAYMENT_CONFIRM_PENDING      = 6001;
+    int STATUS_PAYMENT_DEPOSIT_PENDING      = 6001;
     int STATUS_PAYMENT_DEPOSITED            = 6050;
     int STATUS_PAYMENT_WITHDRAWN            = 6100;
     
