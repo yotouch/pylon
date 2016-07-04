@@ -113,12 +113,19 @@ public class WebUtil {
     public String getFullUrl(HttpServletRequest request) {
         String requestURL = request.getRequestURI();
         String queryString = request.getQueryString();
-        
+
+        String url = "";
         if (queryString == null) {
-            return appHost + requestURL.toString();
+            url = appHost + requestURL.toString();
         } else {
-            return appHost + requestURL + "?" + queryString;
+            url = appHost + requestURL + "?" + queryString;
         }
+
+        if (!url.startsWith("http://")) {
+            url = "http://" + url;
+        }
+
+        return url;
     }
 
     public Entity updateEntityVariables(Entity entity, HttpServletRequest request) {
