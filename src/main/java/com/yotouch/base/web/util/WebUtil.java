@@ -147,9 +147,9 @@ public class WebUtil {
 
     public String getBaseUrl(HttpServletRequest request) {
         if (request.getServerPort() == 80) {
-            return String.format("%s://%s",request.getScheme(),  request.getServerName());
+            return String.format("%s://%s",request.getScheme(),  this.appHost);
         } else {
-            return String.format("%s://%s:%d",request.getScheme(),  request.getServerName(), request.getServerPort());
+            return String.format("%s://%s:%d",request.getScheme(), this.appHost, request.getServerPort());
         }
     }
 
