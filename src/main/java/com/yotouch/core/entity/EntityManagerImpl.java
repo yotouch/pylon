@@ -104,6 +104,14 @@ public class EntityManagerImpl implements EntityManager {
         mfi = MetaFieldImpl.build(this, fMap);
         mei.addField(mfi);
         mfi.setMetaEntity(mei);
+
+        fMap = new HashMap<>();
+        fMap.put("dataType", Consts.META_FIELD_DATA_TYPE_INT);
+        fMap.put("name", "weight");
+
+        mfi = MetaFieldImpl.build(this, fMap);
+        mei.addField(mfi);
+        mfi.setMetaEntity(mei);
         
         appendSysFields(uuid, mei);
         

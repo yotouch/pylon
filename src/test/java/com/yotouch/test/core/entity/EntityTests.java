@@ -169,6 +169,8 @@ public class EntityTests {
         assertEquals(2, ips.size());
         assertTrue(uuids.contains(ips.get(0).getUuid()));
         assertTrue(uuids.contains(ips.get(1).getUuid()));
+        assertEquals(ip1.getUuid(), ips.get(0).getUuid());
+        assertEquals(ip2.getUuid(), ips.get(1).getUuid());
         
         List<Entity> mappings = dbSession.queryRawSql("item_itemProps_itemProp", "s_itemUuid = ?", new Object[]{item.getUuid()});
         assertEquals(2, mappings.size());
@@ -187,16 +189,20 @@ public class EntityTests {
         
         assertTrue(mappingUuids.contains(mappings.get(0).getUuid()));
         assertTrue(mappingUuids.contains(mappings.get(1).getUuid()));
-        
-        logger.info("-----------------------------------------");
+
+        logger.info("----------------------------------------");
         uuids = Arrays.asList(ip2.getUuid(), ip3.getUuid());
         item.setValue("itemProps", uuids);
         item = dbSession.save(item);
-        
+
+        logger.info("Set mr " + uuids);
         ips = item.mr(dbSession, "itemProps");
+        logger.info("Get mr " + ips);
         assertEquals(2, ips.size());
         assertTrue(uuids.contains(ips.get(0).getUuid()));
         assertTrue(uuids.contains(ips.get(1).getUuid()));
+        assertEquals(ip2.getUuid(), ips.get(0).getUuid());
+        assertEquals(ip3.getUuid(), ips.get(1).getUuid());
         
         
         List<Entity> newMappings = dbSession.queryRawSql("item_itemProps_itemProp", "s_itemUuid = ?", new Object[]{item.getUuid()});
