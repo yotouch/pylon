@@ -90,6 +90,10 @@ public class QiniuUtil {
     }
 
     public String getQiniuUrl(Entity att) {
+        if (att == null) {
+            return "";
+        }
+
         String qiniuUrl = att.v("qiniuUrl");
         if (StringUtils.isEmpty(qiniuUrl)) {
             return "/attachment/" + att.getUuid();
@@ -98,6 +102,10 @@ public class QiniuUtil {
     }
 
     public String getQiniuUrl(DbSession dbSession, Entity att) throws IOException {
+        if (att == null) {
+            return "";
+        }
+
         String qiniuUrl = att.v("qiniuUrl");
         if (StringUtils.isEmpty(qiniuUrl)) {
             qiniuUrl = this.upload(att);
