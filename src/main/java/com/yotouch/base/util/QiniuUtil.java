@@ -90,7 +90,11 @@ public class QiniuUtil {
     }
 
     public String getQiniuUrl(Entity att) {
-        return this.getQiniuUrl(att);
+        String qiniuUrl = att.v("qiniuUrl");
+        if (StringUtils.isEmpty(qiniuUrl)) {
+            return "/attachment/" + att.getUuid();
+        }
+        return qiniuUrl;
     }
 
     public String getQiniuUrl(DbSession dbSession, Entity att) throws IOException {
