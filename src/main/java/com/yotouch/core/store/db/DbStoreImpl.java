@@ -329,7 +329,9 @@ public class DbStoreImpl implements DbStore {
                 }
             }
         });
-        
+
+        logger.info("INSERT INTO " + mei.getTableName() + " uuid " + uuid);
+
         return uuid;        
     }
 
