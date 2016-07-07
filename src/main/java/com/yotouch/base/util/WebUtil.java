@@ -1,4 +1,4 @@
-package com.yotouch.base.web.util;
+package com.yotouch.base.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +21,6 @@ import com.yotouch.core.Consts;
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.entity.MetaEntity;
 import com.yotouch.core.entity.MetaField;
-import com.yotouch.core.runtime.DbSession;
 
 @Component
 public class WebUtil {

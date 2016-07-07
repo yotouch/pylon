@@ -1,4 +1,4 @@
-package com.yotouch.base.web.util;
+package com.yotouch.base.util;
 
 import org.springframework.stereotype.Component;
 

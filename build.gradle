@@ -52,6 +52,8 @@ dependencies {
 
 	compile('com.thoughtworks.xstream:xstream:1.4.9')
 
+	compile('com.qiniu:qiniu-java-sdk:7.1.+')
+
 	runtime('mysql:mysql-connector-java')
 	testCompile('org.springframework.boot:spring-boot-starter-test') 
 	
