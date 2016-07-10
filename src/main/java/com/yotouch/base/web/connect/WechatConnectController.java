@@ -193,6 +193,7 @@ public class WechatConnectController extends BaseController {
             user = dbSession.newEntity("wechatUser");
             user.setValue("openId", openId);
             user.setValue("status", Consts.STATUS_NORMAL);
+            user.setValue("appId", wcService.getWechatEntity().v("appId"));
         }
 
         user = wcService.fillWechatUser(wxUser, user);
