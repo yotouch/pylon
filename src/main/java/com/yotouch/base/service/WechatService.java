@@ -84,7 +84,7 @@ public class WechatService {
         logger.info("Gen wechat auth url " + fullUrl);
         
 
-        String redirectUrl = this.mpService.oauth2buildAuthorizationUrl(fullUrl, WxConsts.OAUTH2_SCOPE_USER_INFO,
+        String redirectUrl = this.mpService.oauth2buildAuthorizationUrl(fullUrl, WxConsts.OAUTH2_SCOPE_BASE,
                 state);
 
         logger.info("Gen wechat redirect auth url " + redirectUrl);
