@@ -41,3 +41,5 @@ entities:
             dataType: STRING
         md5:
             dataType: STRING
+        qiniuUrl:
+            dataType: STRING

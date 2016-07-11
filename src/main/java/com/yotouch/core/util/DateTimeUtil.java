@@ -10,6 +10,8 @@ public class DateTimeUtil {
             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"),
             new SimpleDateFormat("yyyyMMddHHmmss"),
     };
+
+    static final SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
     
     
     public static final Date parseString(String dt) {
@@ -21,6 +23,10 @@ public class DateTimeUtil {
         }
         
         return null;
+    }
+
+    public static final String formatDate(Date d) {
+        return sdfDate.format(d);
     }
 
 

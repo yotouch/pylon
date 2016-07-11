@@ -7,12 +7,12 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.yotouch.base.web.util.WebUtil;
+import com.yotouch.base.util.WebUtil;
 import com.yotouch.core.runtime.DbSession;
 import com.yotouch.core.runtime.YotouchApplication;
 import com.yotouch.base.service.AttachmentService;
 import com.yotouch.base.service.WechatManager;
-import com.yotouch.base.web.util.PropUtil;
+import com.yotouch.base.util.PropUtil;
 import com.yotouch.core.entity.Entity;
 
 public abstract class BaseController {

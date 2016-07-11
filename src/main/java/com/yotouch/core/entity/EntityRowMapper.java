@@ -83,7 +83,7 @@ public class EntityRowMapper implements RowMapper<Entity> {
 
             MultiReferenceMetaFieldImpl mrf = (MultiReferenceMetaFieldImpl) mf;
 
-            List<Entity> entities = dbSession.queryRawSql(mrf.getMappingMetaEntity().getName(), "s_" + me.getName() + "Uuid = ?", new Object[]{e.getUuid()});
+            List<Entity> entities = dbSession.queryRawSql(mrf.getMappingMetaEntity().getName(), "s_" + me.getName() + "Uuid = ? ORDER BY weight", new Object[]{e.getUuid()});
 
             logger.debug(" multi uuids " + entities.stream().map(ee -> ee.getValue("t_" + mrf.getTargetMetaEntity().getName() + "Uuid")));
 

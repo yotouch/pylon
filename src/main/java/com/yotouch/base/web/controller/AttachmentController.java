@@ -6,11 +6,13 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.yotouch.base.util.QiniuUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,7 +26,7 @@ import com.yotouch.core.runtime.YotouchApplication;
 import com.yotouch.base.service.AttachmentService;
 
 @Controller
-public class AttachmentController {
+public class AttachmentController extends BaseController {
     
     static final private Logger logger = LoggerFactory.getLogger(AttachmentController.class);
     
@@ -33,6 +35,9 @@ public class AttachmentController {
 
     @Autowired
     private AttachmentService attachmentService;
+
+    @Autowired
+    private QiniuUtil qnUtil;
 
     @RequestMapping("/admin/attachment/test")
     public String testAttachment() {
@@ -96,5 +101,17 @@ public class AttachmentController {
 
         FileCopyUtils.copy(content, resp.getOutputStream());
         resp.flushBuffer();
+    }
+
+    @RequestMapping("/attachment/qnurl/{uuid}")
+    public @ResponseBody  String qiniuUrl(
+            @PathVariable("uuid") String uuid
+    ) throws IOException {
+
+        DbSession dbSession = this.getDbSession();
+        Entity att = dbSession.getEntity("attachment", uuid);
+
+        return qnUtil.getQiniuUrl(dbSession, att);
+
     }
 }

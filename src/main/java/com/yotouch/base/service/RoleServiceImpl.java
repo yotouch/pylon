@@ -13,7 +13,7 @@ import com.yotouch.core.entity.Entity;
 import com.yotouch.core.runtime.DbSession;
 import com.yotouch.core.runtime.YotouchApplication;
 import com.yotouch.core.runtime.YotouchRuntime;
-import com.yotouch.base.web.util.WebUtil;
+import com.yotouch.base.util.WebUtil;
 
 @Service
 public class RoleServiceImpl implements RoleService {

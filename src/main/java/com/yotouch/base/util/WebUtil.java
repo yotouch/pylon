@@ -1,4 +1,4 @@
-package com.yotouch.base.web.util;
+package com.yotouch.base.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +21,6 @@ import com.yotouch.core.Consts;
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.entity.MetaEntity;
 import com.yotouch.core.entity.MetaField;
-import com.yotouch.core.runtime.DbSession;
 
 @Component
 public class WebUtil {
@@ -113,12 +112,19 @@ public class WebUtil {
     public String getFullUrl(HttpServletRequest request) {
         String requestURL = request.getRequestURI();
         String queryString = request.getQueryString();
-        
+
+        String url = "";
         if (queryString == null) {
-            return appHost + requestURL.toString();
+            url = appHost + requestURL.toString();
         } else {
-            return appHost + requestURL + "?" + queryString;
+            url = appHost + requestURL + "?" + queryString;
         }
+
+        if (!url.startsWith("http://")) {
+            url = "http://" + url;
+        }
+
+        return url;
     }
 
     public Entity updateEntityVariables(Entity entity, HttpServletRequest request) {
@@ -140,9 +146,9 @@ public class WebUtil {
 
     public String getBaseUrl(HttpServletRequest request) {
         if (request.getServerPort() == 80) {
-            return String.format("%s://%s",request.getScheme(),  request.getServerName());
+            return String.format("%s://%s",request.getScheme(),  this.appHost);
         } else {
-            return String.format("%s://%s:%d",request.getScheme(),  request.getServerName(), request.getServerPort());
+            return String.format("%s://%s:%d",request.getScheme(), this.appHost, request.getServerPort());
         }
     }
 

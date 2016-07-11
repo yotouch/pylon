@@ -14,7 +14,9 @@ public class IntFieldValueImpl extends AbstractFieldValue<Integer> implements Fi
             return null;
         } else if (v instanceof Integer || v instanceof Long) {
             return (Integer) v;
-        } else if (v instanceof Double || v instanceof Float) {
+        } else if (v instanceof Double) {
+            return (int) Math.round((double) v);
+        } else if (v instanceof Float) {
             return Math.round((float) v);
         } else {
             return Integer.parseInt(v.toString());

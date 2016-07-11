@@ -85,7 +85,11 @@ public class DbSessionImpl implements DbSession {
                 Set<String> s1 = new HashSet<>();
 
                 List<String> values = e.getValue(mf.getName());
-                if (values != null && !values.isEmpty()) {
+                if (values == null) {
+                    values = new ArrayList<>();
+                }
+
+                if (!values.isEmpty()) {
                     s1 = new HashSet<>(values);
                 }
 
@@ -114,12 +118,28 @@ public class DbSessionImpl implements DbSession {
                 }
 
 
-                for (String targetUuid : newUuids) {
+                int weight = 0;
+                Entity lastMr = this.queryOneRawSql(mappingMe.getName(), "s_" + me.getName() + "Uuid = ? ORDER BY weight DESC", new Object[]{uuid});
+                if (lastMr != null) {
+                    weight = lastMr.v("weight");
+                }
+
+                weight += 1;
+
+                for (String targetUuid: values) {
+
+                    if (!newUuids.contains(targetUuid)) {
+                        continue;
+                    }
+
                     Entity mr = this.newEntity(mappingMe.getName());
                     mr.setValue("s_" + me.getName() + "Uuid", uuid);
                     mr.setValue("t_" + targetEntityName + "Uuid", targetUuid);
                     mr.setValue("status", Consts.STATUS_NORMAL);
+                    mr.setValue("weight", weight);
                     this.save(mr);
+
+                    weight += 1;
                 }
             }
         }

@@ -8,4 +8,7 @@ public interface YotouchApplication {
     
     EntityManager getEntityManager();
 
+    void setAttribute(String key, Object value);
+
+    Object getAttribute(String key);
 }

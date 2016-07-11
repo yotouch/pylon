@@ -39,31 +39,40 @@ public interface Consts {
     
     int STATUS_NORMAL                       = 1000;
     int STATUS_DELETED                      = 1001;
-    int STATUS_PAYMENT_CONFIRM_PENDING      = 6001;
-    int STATUS_PAYMENT_SUCCESS              = 6002;
+    int STATUS_PAYMENT_DEPOSIT_PENDING      = 6001;
+    int STATUS_PAYMENT_DEPOSITED            = 6050;
+    int STATUS_PAYMENT_WITHDRAWN            = 6100;
     
     String WECHAT_STATE_REDIRECT            = "urlRedirect";
     
     String COOKIE_NAME_WX_USER_UUID         = "wxUserUuid";
     
-    String RUNTIME_VARIABLE_WECHAT_USER     = "wechatUser";
-    String RUNTIME_VARIABLE_WX_APPID        = "wechatAppId";
-    String RUNTIME_VARIABLE_WX_JS_ARGS      = "wechatJsArgs";
-    String RUNTIME_VARIABLE_WX_SERVICE      = "wechatService";
-    String RUNTIME_VARIABLE_YT_APP          = "ytApp";
-    String RUNTIME_VARIABLE_APP_HOST        = "appHost";
-    String RUNTIME_VARIABLE_CUSTOMER        = "customer";
+    String RUNTIME_VARIABLE_WECHAT_USER     = "WECHAT_USER";
+    String RUNTIME_VARIABLE_WX_APPID        = "WECHAT_APPID";
+    String RUNTIME_VARIABLE_WX_JS_ARGS      = "WECHAT_JS_ARGS";
+    String RUNTIME_VARIABLE_WX_SERVICE      = "WECHAT_SERVICE";
+    String RUNTIME_VARIABLE_YT_APP          = "YT_APP";
+    String RUNTIME_VARIABLE_APP_HOST        = "APP_HOST";
+    String RUNTIME_VARIABLE_CUSTOMER        = "CUSTOMER";
 
-    
-    String PAYMENT_VENDOR_WECHAT            = "payment_wechat";
+    String CASHFLOW_SCENE_PAY_ORDER         = "SCENE_PAY_ORDER";
+    String CASHFLOW_SCENE_PAY_COMMISSION    = "SCENE_PAY_COMMISSION";
+    String CASHFLOW_SCENE_CUSTOMER_WITHDRAW = "SCENE_CUSTOMER_WITHDRAW";
+    String CASHFLOW_SCENE_SETTLE_ORDER      = "SCENE_SETTLE_ORDER";
+
+    String CASHFLOW_TYPE_WECHAT             = "CF_TYPE_WECHAT";
+    String CASHFLOW_TYPE_ORDER              = "CF_TYPE_ORDER";
+    String CASHFLOW_TYPE_SHOP               = "CF_TYPE_SHOP";
+    String CASHFLOW_TYPE_CUSTOMER           = "CF_TYPE_CUSTOMER";
+
+    String PAYMENT_VENDOR_WECHAT            = "PAYMENT_WECHAT";
     String WECHAT_TRADE_STATUS_SUCCESS      = "SUCCESS";
     
-    
-    int AJAX_STATUS_FAILED                   = 1;
-    int AJAX_STATUS_OK                       = 0;
+    int AJAX_STATUS_FAILED                  = 1;
+    int AJAX_STATUS_OK                      = 0;
 
-    String WALLET_TYPE_USER                 = "walletTypeUser";
-    String WALLET_TYPE_SHOP                 = "walletTypeShop";
+    String WALLET_TYPE_CUSTOMER             = "WALLET_TYPE_CUSTOMER";
+    String WALLET_TYPE_SHOP                 = "WALLET_TYPE_SHOP";
 
     String ROLE_EMPLOYEE                    = "员工";
     String ROLE_USER                        = "用户";
