@@ -19,6 +19,7 @@ import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
@@ -36,7 +37,10 @@ public class WechatService {
     private WxMpService mpService;
     private WxMpMessageRouter wxMpMessageRouter;
     private String appId;
-    
+
+    @Value(("${wechat.oauth2_scope:snsapi_userinfo}"))
+    private String oauth2_scope;
+
     public WechatService(YotouchApplication ytApp, String appId) {
         this.appId = appId;
         this.ytApp = ytApp;
@@ -84,7 +88,7 @@ public class WechatService {
         logger.info("Gen wechat auth url " + fullUrl);
         
 
-        String redirectUrl = this.mpService.oauth2buildAuthorizationUrl(fullUrl, WxConsts.OAUTH2_SCOPE_BASE,
+        String redirectUrl = this.mpService.oauth2buildAuthorizationUrl(fullUrl, oauth2_scope,
                 state);
 
         logger.info("Gen wechat redirect auth url " + redirectUrl);
