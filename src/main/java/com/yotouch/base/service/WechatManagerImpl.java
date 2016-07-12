@@ -41,9 +41,14 @@ public class WechatManagerImpl implements WechatManager {
 
     @Override
     public WechatService setService(String appId, WxMpMessageHandler msgHandler) {
+        return this.setService(appId, msgHandler, "snsapi_userinfo");
+    }
+
+    @Override
+    public WechatService setService(String appId, WxMpMessageHandler msgHandler, String scope) {
         DbSession dbSession = this.ytApp.getRuntime().createDbSession();
 
-        WechatService wechatService = new WechatService(ytApp, appId);
+        WechatService wechatService = new WechatService(ytApp, appId, scope);
 
         if (msgHandler != null) {
             wechatService.setMessageHandler(msgHandler, appHost);
