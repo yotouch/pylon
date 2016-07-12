@@ -5,7 +5,6 @@ import com.yotouch.core.Consts;
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.runtime.DbSession;
 import com.yotouch.core.runtime.YotouchApplication;
-import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.common.bean.WxJsapiSignature;
 import me.chanjar.weixin.common.bean.WxMenu;
 import me.chanjar.weixin.common.exception.WxErrorException;
@@ -38,12 +37,16 @@ public class WechatService {
     private WxMpMessageRouter wxMpMessageRouter;
     private String appId;
 
-    @Value(("${wechat.oauth2_scope:snsapi_userinfo}"))
-    private String oauth2_scope;
-
+    private String oauth2Scope;
     public WechatService(YotouchApplication ytApp, String appId) {
+        this(ytApp, appId, "snsapi_userinfo");
+    }
+
+
+    public WechatService(YotouchApplication ytApp, String appId, String oauth2Scope) {
         this.appId = appId;
         this.ytApp = ytApp;
+        this.oauth2Scope = oauth2Scope;
 
         DbSession dbSession = this.ytApp.getRuntime().createDbSession();
         Entity wechat = dbSession.queryOneRawSql("wechat", "appId = ?", new Object[]{appId});
@@ -86,10 +89,8 @@ public class WechatService {
         */
         
         logger.info("Gen wechat auth url " + fullUrl);
-        
 
-        String redirectUrl = this.mpService.oauth2buildAuthorizationUrl(fullUrl, oauth2_scope,
-                state);
+        String redirectUrl = this.mpService.oauth2buildAuthorizationUrl(fullUrl, oauth2Scope, state);
 
         logger.info("Gen wechat redirect auth url " + redirectUrl);
         return redirectUrl;
