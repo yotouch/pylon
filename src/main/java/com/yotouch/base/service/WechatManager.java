@@ -8,4 +8,5 @@ public interface WechatManager {
 
     WechatService setService(String appId, WxMpMessageHandler msgHandler);
 
+    WechatService setService(String appId, WxMpMessageHandler msgHandler, String scope);
 }
