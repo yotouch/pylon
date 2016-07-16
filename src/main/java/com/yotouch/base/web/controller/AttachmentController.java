@@ -111,7 +111,7 @@ public class AttachmentController extends BaseController {
         DbSession dbSession = this.getDbSession();
         Entity att = dbSession.getEntity("attachment", uuid);
 
-        return qnUtil.getQiniuUrl(dbSession, att);
+        return qnUtil.getAndUploadQiniuUrl(dbSession, att);
 
     }
 }

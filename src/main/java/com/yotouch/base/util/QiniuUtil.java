@@ -101,7 +101,7 @@ public class QiniuUtil {
         return qiniuUrl;
     }
 
-    public String getQiniuUrl(DbSession dbSession, Entity att) throws IOException {
+    public String getAndUploadQiniuUrl(DbSession dbSession, Entity att) throws IOException {
         if (att == null) {
             return "";
         }
