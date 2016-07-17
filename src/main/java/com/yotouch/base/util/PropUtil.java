@@ -31,7 +31,7 @@ public class PropUtil {
         return entity.v("value");
     }
 
-    public int nextSeq(DbSession dbSession, String name) {
+    public synchronized int nextSeq(DbSession dbSession, String name) {
         Entity prop = this.getProp(dbSession, name);
         int seq = 0;
 
