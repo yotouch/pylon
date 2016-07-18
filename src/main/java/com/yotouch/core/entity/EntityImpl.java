@@ -185,7 +185,7 @@ public class EntityImpl implements Entity {
         MultiReferenceMetaFieldImpl mrf = (MultiReferenceMetaFieldImpl) mf;
         
         List<String> uuids = this.getValue(fieldName);
-        logger.info("Get multi reference " + fieldName + " uuids " + uuids);
+        //logger.info("Get multi reference " + fieldName + " uuids " + uuids);
         List<Entity> entities = new ArrayList<>();
         
         for (String id: uuids) {
@@ -193,7 +193,7 @@ public class EntityImpl implements Entity {
             entities.add(e);
         }
         
-        logger.info("Get multi reference " + entities);
+        //logger.info("Get multi reference " + entities);
         
         return entities;
     }
