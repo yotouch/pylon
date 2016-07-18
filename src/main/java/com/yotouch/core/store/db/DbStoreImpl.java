@@ -60,7 +60,7 @@ public class DbStoreImpl implements DbStore {
 
     @Override
     public List<Map<String, Object>> fetchAll(MetaEntity me) {
-        logger.info("Fetch all data from table " + me.getName());
+        //logger.info("Fetch all data from table " + me.getName());
         return this.fetchList(me, "", new Object[] {});
     }
 
@@ -309,7 +309,7 @@ public class DbStoreImpl implements DbStore {
         
         sql += ") VALUE ( "+qStr+")";
         
-        logger.info("Do INSERT " + sql);
+        logger.debug("Do INSERT " + sql);
         
         this.jdbcTpl.update(sql, new PreparedStatementSetter() {
 
@@ -330,7 +330,7 @@ public class DbStoreImpl implements DbStore {
             }
         });
 
-        logger.info("INSERT INTO " + mei.getTableName() + " uuid " + uuid);
+        logger.debug("INSERT INTO " + mei.getTableName() + " uuid " + uuid);
 
         return uuid;        
     }
@@ -438,7 +438,7 @@ public class DbStoreImpl implements DbStore {
         MetaEntityImpl mei = (MetaEntityImpl) me;
         
         String sql = "DELETE FROM " + mei.getTableName() + " WHERE " + where;
-        logger.info("Yotouch DELETE SQL " + sql + " args [" + StringUtils.arrayToCommaDelimitedString(args) + "]");
+        logger.debug("Yotouch DELETE SQL " + sql + " args [" + StringUtils.arrayToCommaDelimitedString(args) + "]");
         this.jdbcTpl.update(sql, args);
         
     }
