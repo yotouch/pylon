@@ -15,8 +15,8 @@ import com.google.common.base.Objects;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
+
 import com.yotouch.core.entity.fv.FieldValue;
-import com.yotouch.core.entity.fv.AbstractFieldValue;
 import com.yotouch.core.entity.mf.MultiReferenceMetaFieldImpl;
 import com.yotouch.core.entity.mf.ObjectMetaFieldImpl;
 import com.yotouch.core.entity.mf.SingleReferenceMetaFieldImpl;
@@ -58,7 +58,7 @@ public class EntityImpl implements Entity {
         MetaField<?> mf = this.me.getMetaField(fieldName);
         
         if (mf == null) {
-            logger.warn("Set none-existing field `"+fieldName+"` for metaEntity `"+this.me.getName()+"`");
+            logger.debug("Set none-existing field `"+fieldName+"` for metaEntity `"+this.me.getName()+"`");
             mf = new ObjectMetaFieldImpl(this.me, fieldName, fieldName);
         }
         

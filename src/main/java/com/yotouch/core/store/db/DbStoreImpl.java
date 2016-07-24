@@ -371,7 +371,7 @@ public class DbStoreImpl implements DbStore {
         
         sql += " WHERE uuid = ?";
         
-        logger.info("Yotouch Update SQL " + sql);
+        logger.debug("Yotouch Update SQL " + sql);
         
         this.jdbcTpl.update(sql, new PreparedStatementSetter() {
 
