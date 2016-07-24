@@ -35,4 +35,6 @@ public interface DbSession {
     List<Entity> queryIn(String entityName, List<String> entityUuids);
 
     void setLoginUser(Entity loginUser);
+
+
 }

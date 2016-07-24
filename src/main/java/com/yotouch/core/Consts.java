@@ -39,6 +39,7 @@ public interface Consts {
     
     int STATUS_NORMAL                       = 1000;
     int STATUS_DELETED                      = 1001;
+    int STATUS_SHADOW                       = 404;
     int STATUS_PAYMENT_DEPOSIT_PENDING      = 6001;   // 钱等待存入
     int STATUS_PAYMENT_DEPOSITED            = 6050;   // 钱已经存入
     int STATUS_PAYMENT_WITHDRAWN            = 6100;   // 钱已经支出
