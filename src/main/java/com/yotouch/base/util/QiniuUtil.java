@@ -33,7 +33,7 @@ public class QiniuUtil {
     @Value("${qiniu.bucket:}")
     private String bucket;
 
-    @Value("${qiniu.domain}")
+    @Value("${qiniu.domain:}")
     private String domain;
 
     private Auth auth;
