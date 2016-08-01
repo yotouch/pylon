@@ -35,6 +35,7 @@ public class XmlResponseHandler{
 	                    HttpEntity entity = response.getEntity();
 	                    String str = EntityUtils.toString(entity);
 	                    logger.info("Pay response " + str);
+						logger.info("Pay response " + (new String(str.getBytes("iso-8859-1"), "UTF8")));
 	                    Header contentType = response.getEntity().getContentType();
 	                    if(contentType!=null&&contentType.toString().matches(".*[uU][tT][fF]-8$")){
 	                    	return XMLConverUtil.convertToObject(clazz,str);
