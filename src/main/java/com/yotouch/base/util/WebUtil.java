@@ -152,6 +152,10 @@ public class WebUtil {
         }
     }
 
+    public String getBaseUrl() {
+        return "http://" + this.appHost;
+    }
+
     public String getBid(HttpServletRequest request){
         String bid = "";
         Cookie[] cookies = request.getCookies();
