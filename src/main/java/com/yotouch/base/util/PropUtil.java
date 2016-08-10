@@ -2,6 +2,7 @@ package com.yotouch.base.util;
 
 import javax.annotation.PostConstruct;
 
+import com.yotouch.core.Consts;
 import org.springframework.stereotype.Component;
 
 import com.yotouch.core.entity.Entity;
@@ -15,6 +16,15 @@ public class PropUtil {
     @PostConstruct
     public void initDefaultValue() {
                 
+    }
+
+    public Entity getOrCreateProp(DbSession dbSession, String name) {
+        Entity prop = this.getProp(dbSession, name);
+        if (prop == null) {
+            prop = dbSession.newEntity("prop", Consts.STATUS_NORMAL);
+            prop.setValue("name", name);
+        }
+        return prop;
     }
     
     public Entity getProp(DbSession dbSession, String name) {
@@ -56,6 +66,10 @@ public class PropUtil {
         return seq;
     }
 
-        
 
+    public Entity setProp(DbSession dbSession, String name, String value) {
+        Entity prop = this.getOrCreateProp(dbSession, name);
+        prop.setValue("value", value);
+        return dbSession.save(prop);
+    }
 }
