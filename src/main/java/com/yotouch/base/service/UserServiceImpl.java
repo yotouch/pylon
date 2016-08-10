@@ -105,8 +105,7 @@ public class UserServiceImpl implements UserService {
                 }
                 
                 infoStr = new String(Base64Utils.decodeFromString(infoStr));
-                logger.info("info str " + infoStr);
-                
+
                 ObjectMapper mapper = new ObjectMapper();
                 try {
                     Map<String, String> map = mapper.readValue(infoStr, new TypeReference<Map<String, String>>() {});
