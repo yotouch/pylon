@@ -13,6 +13,10 @@ public class IntFieldValueImpl extends AbstractFieldValue<Integer> implements Fi
         if (v == null) {
             return null;
         } else if (v instanceof Integer || v instanceof Long) {
+            int value = (Integer) v;
+            if (value == 0) {
+                this.setChanged(true); // // TODO: 16/8/11  Hack for zero value 
+            }
             return (Integer) v;
         } else if (v instanceof Double) {
             return (int) Math.round((double) v);

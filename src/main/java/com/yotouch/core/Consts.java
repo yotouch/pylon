@@ -60,7 +60,7 @@ public interface Consts {
     String CASHFLOW_SCENE_PAY_COMMISSION       = "SCENE_PAY_COMMISSION";       // 支付佣金
     String CASHFLOW_SCENE_CUSTOMER_WITHDRAW    = "SCENE_CUSTOMER_WITHDRAW";    // 客户取款
     String CASHFLOW_SCENE_CONFIRM_SUBORDER     = "SCENE_CONFIRM_SUBORDER";     // 结算到子订单
-    String CASHFLOW_SCENE_SETTLE_TO_ORDER_ITEM = "SCENE_SETTLE_TO_ORDER_ITM";  // 订单拆分结算到 orderItem
+    String CASHFLOW_SCENE_SETTLE_TO_ORDER_ITEM = "SCENE_SETTLE_TO_ORDER_ITEM";  // 订单拆分结算到 orderItem
     String CASHFLOW_SCENE_SETTLE_TO_SHOP       = "SCENE_SETTLE_TO_SHOP";       // 结算到商店
 
 
