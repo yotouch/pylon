@@ -166,7 +166,16 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public boolean hasRole(Entity user, Entity role) {
-        List<Entity> roles = this.getRole(user);
+        YotouchRuntime rt = ytApp.getRuntime();
+        DbSession dbSession = rt.createDbSession();
+        List<Entity> userRoles = this.getRole(user);
+        List<Entity> roles = new ArrayList<>();
+        for (Entity userRole : userRoles) {
+            Entity tmpRole = dbSession.getEntity("role", userRole.v("role"));
+            if (tmpRole != null && !roles.contains(tmpRole)) {
+                roles.add(tmpRole);
+            }
+        }
         return roles.contains(role);
     }
 
