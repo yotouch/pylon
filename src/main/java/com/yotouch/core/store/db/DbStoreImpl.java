@@ -99,13 +99,18 @@ public class DbStoreImpl implements DbStore {
     }
 
     @Override
-    public List<String> fetchAllTables() {
+    public List<String> fetchAllTables(final boolean toLower) {
         String sql = "SHOW TABLES";
 
         List<String> rows = this.jdbcTpl.query(sql, new RowMapper<String>() {
             @Override
             public String mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return rs.getString(1);
+                String name = rs.getString(1);
+                if (toLower) {
+                    return name.toLowerCase();
+                } else {
+                    return name;
+                }
             }
         });
 

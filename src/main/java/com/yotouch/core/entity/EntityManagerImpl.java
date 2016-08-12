@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.yaml.snakeyaml.Yaml;
 
@@ -30,6 +31,9 @@ public class EntityManagerImpl implements EntityManager {
     @Autowired
     private Configure config;
 
+    @Value("${mysql.lowerCaseTableNames:}")
+    private String lowerCaseTableNames;
+
     private Map<String, MetaEntityImpl> userEntities;
     private Map<String, MetaEntityImpl> mfEntities;
 
@@ -38,6 +42,12 @@ public class EntityManagerImpl implements EntityManager {
     public EntityManagerImpl() {
         this.userEntities = new HashMap<>();
         this.mfEntities = new HashMap<>();
+    }
+
+    private boolean isLowerCase() {
+        return "true".equalsIgnoreCase(this.lowerCaseTableNames)
+                || "1".equalsIgnoreCase(this.lowerCaseTableNames);
+
     }
 
     @PostConstruct
@@ -85,7 +95,7 @@ public class EntityManagerImpl implements EntityManager {
         
         String uuid = me.getName() + "_" + mf.getName() + "_" + targetEntityName;
         
-        MetaEntityImpl mei = new MetaEntityImpl(uuid, uuid, "mr_");
+        MetaEntityImpl mei = new MetaEntityImpl(uuid, uuid, "mr_", this.isLowerCase());
         mmf.setMappingMetaEntity(mei);
         
         Map<String, Object> fMap = new HashMap<>();
@@ -129,7 +139,8 @@ public class EntityManagerImpl implements EntityManager {
     // CREATE OR ALTER TABLE
     public void rebuildDb() {
 
-        List<String> tables = dbStore.fetchAllTables();
+
+        List<String> tables = dbStore.fetchAllTables(this.isLowerCase());
 
         logger.info("Tables " + tables);
 
@@ -223,7 +234,7 @@ public class EntityManagerImpl implements EntityManager {
 
             MetaEntityImpl mei = (MetaEntityImpl) this.userEntities.get(en);
             if (mei == null) {
-                mei = new MetaEntityImpl(uuid, en, prefix);
+                mei = new MetaEntityImpl(uuid, en, prefix, this.isLowerCase());
             }
 
 
@@ -266,7 +277,7 @@ public class EntityManagerImpl implements EntityManager {
 
                     MetaEntityImpl mei = (MetaEntityImpl) this.userEntities.get(en);
                     if (mei == null) {
-                        mei = new MetaEntityImpl(uuid, en, prefix);
+                        mei = new MetaEntityImpl(uuid, en, prefix, this.isLowerCase());
                     }
 
                     // parse files
@@ -439,7 +450,7 @@ public class EntityManagerImpl implements EntityManager {
 
         logger.info("Get field data for " + meName + " fieldData " + fieldRows);
 
-        MetaEntityImpl mei = new MetaEntityImpl(meUuid, meName, "usr_");
+        MetaEntityImpl mei = new MetaEntityImpl(meUuid, meName, "usr_", this.isLowerCase());
 
         for (Map<String, Object> fr : fieldRows) {
             MetaFieldImpl<?> mf = MetaFieldImpl.build(this, fr);

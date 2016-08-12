@@ -15,7 +15,7 @@ public interface DbStore {
 
     List<Map<String, Object>> fetchList(MetaEntity me, String sql, Object[] args);
 
-    List<String> fetchAllTables();
+    List<String> fetchAllTables(boolean toLower);
 
     void createTable(MetaEntity me);
 

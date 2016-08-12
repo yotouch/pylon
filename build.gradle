@@ -3,7 +3,9 @@ buildscript {
 		springBootVersion = '1.3.5.RELEASE'
 	}
 	repositories {
-		jcenter()
+		maven {
+			url 'http://maven.aliyun.com/mvn/repository/'
+		}
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") 
@@ -23,7 +25,9 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
-	jcenter()
+	maven {
+		url 'http://maven.aliyun.com/mvn/repository/'
+	}
 }
 
 
