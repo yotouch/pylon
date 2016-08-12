@@ -35,7 +35,7 @@ public class AuthrizeInterceptor implements HandlerInterceptor {
         Entity loginUser = (Entity) request.getAttribute("loginUser");
 
         if (loginUser != null) {
-            List<Entity> userRoles = roleService.getRole(loginUser);
+            List<Entity> userRoles = roleService.getUserRoles(loginUser);
             List<Entity> menus = roleService.getMenu(userRoles);
             request.setAttribute("userMenus", menus);
         }
