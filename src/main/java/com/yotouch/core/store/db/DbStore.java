@@ -31,6 +31,8 @@ public interface DbStore {
 
     List<Entity> querySql(MetaEntity me, List<QueryField> fields, String where, Object[] args, EntityRowMapper entityRowMapper);
 
+    void increase(MetaEntity me, String uuid, String field, int amount);
+
     void deleteRawSql(MetaEntity me, String where, Object[] args);
 
 

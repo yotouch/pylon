@@ -48,7 +48,11 @@ public class PropUtil {
         if (prop == null) {
             prop = dbSession.newEntity("prop");
             prop.setValue("name", name);
+            prop.setValue("value", "1");
+            dbSession.save(prop);
         }
+
+        prop = dbSession.increase(prop, "value", 1);
 
         String seqStr = prop.v("value");
         if (!StringUtils.isEmpty(seqStr)) {
@@ -58,11 +62,6 @@ public class PropUtil {
             }
         }
 
-        seq += 1;
-        
-        prop.setValue("value", seq);
-        dbSession.save(prop);
-        
         return seq;
     }
 

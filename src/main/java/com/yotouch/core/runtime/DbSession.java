@@ -36,5 +36,5 @@ public interface DbSession {
 
     void setLoginUser(Entity loginUser);
 
-
+    Entity increase(Entity entity, String field, int amount);
 }
