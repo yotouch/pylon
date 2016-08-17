@@ -1,13 +1,13 @@
 package com.yotouch.base.service;
 
-import java.util.List;
-
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.runtime.DbSession;
 
+import java.util.List;
+
 public interface RoleService {
     
-    List<Entity> getRole(Entity user);
+    List<Entity> getUserRoles(Entity user);
 
     List<Entity> getMenu(List<Entity> userRoles);
     

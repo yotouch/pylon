@@ -1,19 +1,18 @@
 package com.yotouch.base.service;
 
-import java.util.*;
-
+import com.yotouch.base.util.WebUtil;
+import com.yotouch.core.Consts;
+import com.yotouch.core.entity.Entity;
+import com.yotouch.core.runtime.DbSession;
+import com.yotouch.core.runtime.YotouchApplication;
+import com.yotouch.core.runtime.YotouchRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.yotouch.core.Consts;
-import com.yotouch.core.entity.Entity;
-import com.yotouch.core.runtime.DbSession;
-import com.yotouch.core.runtime.YotouchApplication;
-import com.yotouch.core.runtime.YotouchRuntime;
-import com.yotouch.base.util.WebUtil;
+import java.util.*;
 
 @Service
 public class RoleServiceImpl implements RoleService {
@@ -26,7 +25,7 @@ public class RoleServiceImpl implements RoleService {
     @Autowired
     protected WebUtil webUtil;
 
-    public List<Entity> getRole(Entity user){
+    public List<Entity> getUserRoles(Entity user){
         YotouchRuntime rt = ytApp.getRuntime();
         
         DbSession dbSession = rt.createDbSession();
@@ -166,7 +165,16 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public boolean hasRole(Entity user, Entity role) {
-        List<Entity> roles = this.getRole(user);
+        YotouchRuntime rt = ytApp.getRuntime();
+        DbSession dbSession = rt.createDbSession();
+        List<Entity> userRoles = this.getUserRoles(user);
+        List<Entity> roles = new ArrayList<>();
+        for (Entity userRole : userRoles) {
+            Entity tmpRole = dbSession.getEntity("role", userRole.v("role"));
+            if (tmpRole != null && !roles.contains(tmpRole)) {
+                roles.add(tmpRole);
+            }
+        }
         return roles.contains(role);
     }
 

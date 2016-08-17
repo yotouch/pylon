@@ -1,14 +1,14 @@
 package com.yotouch.base.web.controller;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
+import com.yotouch.base.service.UserService;
+import com.yotouch.core.Consts;
+import com.yotouch.core.ErrorCode;
+import com.yotouch.core.entity.Entity;
+import com.yotouch.core.runtime.DbSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -19,12 +19,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.yotouch.base.service.UserService;
-import com.yotouch.core.Consts;
-import com.yotouch.core.ErrorCode;
-import com.yotouch.core.entity.Entity;
-import com.yotouch.core.runtime.DbSession;
-
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @Controller
@@ -83,10 +80,10 @@ public class LoginController extends BaseController {
         String checkKey = phone;
         Entity user = null;
         if (type.equalsIgnoreCase("name")) {
-            user = dbSession.queryOneRawSql("user", "name=?", new Object[]{name});
+            user = dbSession.queryOneRawSql("user", "name=? AND status = ?", new Object[]{name, Consts.STATUS_NORMAL});
             checkKey = name;
         } else {
-            user = dbSession.queryOneRawSql("user", "phone=?", new Object[]{phone});
+            user = dbSession.queryOneRawSql("user", "phone=? AND status = ?", new Object[]{phone, Consts.STATUS_NORMAL});
         }
 
         boolean isLogined = false;
