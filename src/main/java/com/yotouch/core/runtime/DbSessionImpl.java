@@ -236,5 +236,39 @@ public class DbSessionImpl implements DbSession {
         this.loginUser = loginUser;
     }
 
+    @Override
+    public Entity increase(Entity entity, String field, int amount) {
+        Object o = entity.v(field);
+
+        int v = 0;
+        if (o instanceof String) {
+            v = Integer.parseInt((String)o);
+        } else {
+            v = (int) o;
+        }
+
+        MetaEntity me = entity.getMetaEntity();
+        String uuid = entity.getUuid();
+
+        this.dbStore.increase(me, uuid, field, amount);
+
+        Entity newEntity = this.getEntity(me, uuid);
+
+        Object newO = newEntity.v(field);
+        int newV = 0;
+        if (newO instanceof String) {
+            newV = Integer.parseInt((String) newO);
+        } else {
+            newV = (int) newO;
+        }
+
+        if (newV == v + amount) {
+            return newEntity;
+        } else {
+            return this.increase(newEntity, field, amount);
+        }
+
+    }
+
 
 }

@@ -1,10 +1,10 @@
 package me.chanjar.weixin.mp.api;
 
-import java.io.File;
+import me.chanjar.weixin.common.bean.WxAccessToken;
+import me.chanjar.weixin.common.util.http.ApacheHttpClientBuilder;
 
 import javax.net.ssl.SSLContext;
-
-import me.chanjar.weixin.common.bean.WxAccessToken;
+import java.io.File;
 
 /**
  * 微信客户端配置存储
@@ -13,68 +13,89 @@ import me.chanjar.weixin.common.bean.WxAccessToken;
  */
 public interface WxMpConfigStorage {
 
-  public String getAccessToken();
+  String getAccessToken();
 
-  public boolean isAccessTokenExpired();
+  boolean isAccessTokenExpired();
 
   /**
    * 强制将access token过期掉
    */
-  public void expireAccessToken();
+  void expireAccessToken();
 
   /**
    * 应该是线程安全的
    * @param accessToken
    */
-  public void updateAccessToken(WxAccessToken accessToken);
+  void updateAccessToken(WxAccessToken accessToken);
 
   /**
    * 应该是线程安全的
    * @param accessToken
    * @param expiresIn
    */
-  public void updateAccessToken(String accessToken, int expiresIn);
+  void updateAccessToken(String accessToken, int expiresIn);
 
-  public String getJsapiTicket();
+  String getJsapiTicket();
 
-  public boolean isJsapiTicketExpired();
+  boolean isJsapiTicketExpired();
 
   /**
    * 强制将jsapi ticket过期掉
    */
-  public void expireJsapiTicket();
+  void expireJsapiTicket();
 
   /**
    * 应该是线程安全的
    * @param jsapiTicket
    */
-  public void updateJsapiTicket(String jsapiTicket, int expiresInSeconds);
+  void updateJsapiTicket(String jsapiTicket, int expiresInSeconds);
 
-  public String getAppId();
+  String getCardApiTicket();
 
-  public String getSecret();
+  boolean isCardApiTicketExpired();
 
-    public String getPartnerId();
+  /**
+   * 强制将卡券api ticket过期掉
+   */
+  void expireCardApiTicket();
 
-    public String getPartnerKey();
+  /**
+   * 应该是线程安全的
+   * @param cardApiTicket
+   */
+  void updateCardApiTicket(String cardApiTicket, int expiresInSeconds);
 
-  public String getToken();
+  String getAppId();
 
-  public String getAesKey();
+  String getSecret();
 
-  public long getExpiresTime();
-
-  public String getOauth2redirectUri();
-
-  public String getHttp_proxy_host();
-
-  public int getHttp_proxy_port();
-
-  public String getHttp_proxy_username();
-
-  public String getHttp_proxy_password();
+  String getPartnerId();
   
-  public File getTmpDirFile();
+  String getPartnerKey();
 
-  public SSLContext getSSLContext();
+  String getToken();
+
+  String getAesKey();
+
+  long getExpiresTime();
+
+  String getOauth2redirectUri();
+
+  String getHttp_proxy_host();
+
+  int getHttp_proxy_port();
+
+  String getHttp_proxy_username();
+
+  String getHttp_proxy_password();
+  
+  File getTmpDirFile();
+
+  SSLContext getSSLContext();
+
+  /**
+   * http client builder
+   * @return ApacheHttpClientBuilder
+   */
+  ApacheHttpClientBuilder getApacheHttpClientBuilder();
 }

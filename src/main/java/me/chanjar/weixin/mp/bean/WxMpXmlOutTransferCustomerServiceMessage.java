@@ -4,23 +4,24 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.common.util.xml.XStreamCDataConverter;
-import me.chanjar.weixin.common.util.xml.XStreamMediaIdConverter;
 
 @XStreamAlias("xml")
 public class WxMpXmlOutTransferCustomerServiceMessage extends WxMpXmlOutMessage {
+  private static final long serialVersionUID = 1850903037285841322L;
+  
   @XStreamAlias("TransInfo")
-  protected final TransInfo transInfo = new TransInfo();
+  protected TransInfo transInfo;
 
   public WxMpXmlOutTransferCustomerServiceMessage() {
     this.msgType = WxConsts.CUSTOM_MSG_TRANSFER_CUSTOMER_SERVICE;
   }
 
-  public String getKfAccount() {
-    return transInfo.getKfAccount();
+  public TransInfo getTransInfo() {
+    return this.transInfo;
   }
 
-  public void setKfAccount(String kfAccount) {
-    transInfo.setKfAccount(kfAccount);
+  public void setTransInfo(TransInfo transInfo) {
+    this.transInfo = transInfo;
   }
 
   @XStreamAlias("TransInfo")
@@ -31,7 +32,7 @@ public class WxMpXmlOutTransferCustomerServiceMessage extends WxMpXmlOutMessage 
     private String kfAccount;
 
     public String getKfAccount() {
-      return kfAccount;
+      return this.kfAccount;
     }
 
     public void setKfAccount(String kfAccount) {

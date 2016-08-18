@@ -87,8 +87,8 @@ public class WxMpMessageRouter {
 
   /**
    * <pre>
-   * 设置自定义的 {@link WxMessageDuplicateChecker}
-   * 如果不调用该方法，默认使用 {@link WxMessageInMemoryDuplicateChecker}
+   * 设置自定义的 {@link me.chanjar.weixin.common.api.WxMessageDuplicateChecker}
+   * 如果不调用该方法，默认使用 {@link me.chanjar.weixin.common.api.WxMessageInMemoryDuplicateChecker}
    * </pre>
    * @param messageDuplicateChecker
    */
@@ -98,8 +98,8 @@ public class WxMpMessageRouter {
 
   /**
    * <pre>
-   * 设置自定义的{@link WxSessionManager}
-   * 如果不调用该方法，默认使用 {@link StandardSessionManager}
+   * 设置自定义的{@link me.chanjar.weixin.common.session.WxSessionManager}
+   * 如果不调用该方法，默认使用 {@link me.chanjar.weixin.common.session.StandardSessionManager}
    * </pre>
    * @param sessionManager
    */
@@ -109,8 +109,8 @@ public class WxMpMessageRouter {
 
   /**
    * <pre>
-   * 设置自定义的{@link WxErrorExceptionHandler}
-   * 如果不调用该方法，默认使用 {@link LogExceptionHandler}
+   * 设置自定义的{@link me.chanjar.weixin.common.api.WxErrorExceptionHandler}
+   * 如果不调用该方法，默认使用 {@link me.chanjar.weixin.common.util.LogExceptionHandler}
    * </pre>
    * @param exceptionHandler
    */
@@ -124,7 +124,6 @@ public class WxMpMessageRouter {
 
   /**
    * 开始一个新的Route规则
-   * @return
    */
   public WxMpMessageRouterRule rule() {
     return new WxMpMessageRouterRule(this);
@@ -199,21 +198,18 @@ public class WxMpMessageRouter {
 
   protected boolean isDuplicateMessage(WxMpXmlMessage wxMessage) {
 
-    String messageId = "";
+    StringBuffer messageId = new StringBuffer();
     if (wxMessage.getMsgId() == null) {
-      messageId = String.valueOf(wxMessage.getCreateTime())
-          + "-" + wxMessage.getFromUserName()
-          + "-" + String.valueOf(wxMessage.getEventKey() == null ? "" : wxMessage.getEventKey())
-          + "-" + String.valueOf(wxMessage.getEvent() == null ? "" : wxMessage.getEvent())
+      messageId.append(wxMessage.getCreateTime())
+        .append("-").append(wxMessage.getFromUserName())
+        .append("-").append(wxMessage.getEventKey() == null ? "" : wxMessage.getEventKey())
+        .append("-").append(wxMessage.getEvent() == null ? "" : wxMessage.getEvent())
       ;
     } else {
-      messageId = String.valueOf(wxMessage.getMsgId());
+      messageId.append(wxMessage.getMsgId());
     }
 
-    if (messageDuplicateChecker.isDuplicate(messageId)) {
-      return true;
-    }
-    return false;
+    return messageDuplicateChecker.isDuplicate(messageId.toString());
 
   }
 

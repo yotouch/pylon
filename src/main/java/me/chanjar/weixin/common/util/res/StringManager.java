@@ -48,7 +48,7 @@ import java.util.ResourceBundle;
  * @author James Duncan Davidson [duncan@eng.sun.com]
  * @author James Todd [gonzo@eng.sun.com]
  * @author Mel Martinez [mmartinez@g1440.com]
- * @see ResourceBundle
+ * @see java.util.ResourceBundle
  */
 public class StringManager {
 
@@ -211,10 +211,7 @@ public class StringManager {
                 @Override
                 protected boolean removeEldestEntry(
                         Map.Entry<Locale,StringManager> eldest) {
-                    if (size() > (LOCALE_CACHE_SIZE - 1)) {
-                        return true;
-                    }
-                    return false;
+                  return size() > (LOCALE_CACHE_SIZE - 1);
                 }
             };
             managers.put(packageName, map);

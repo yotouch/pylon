@@ -438,6 +438,17 @@ public class DbStoreImpl implements DbStore {
     }
 
     @Override
+    public void increase(MetaEntity me, String uuid, String field, int amount) {
+        MetaEntityImpl mei = (MetaEntityImpl) me;
+
+        String sql = "UPDATE " + mei.getTableName() + " SET " + field + " = " + field + " + ? WHERE uuid = ?";
+
+        Object[] args = new Object[]{amount, uuid};
+
+        this.jdbcTpl.update(sql, args);
+    }
+
+    @Override
     public void deleteRawSql(MetaEntity me, String where, Object[] args) {
 
         MetaEntityImpl mei = (MetaEntityImpl) me;

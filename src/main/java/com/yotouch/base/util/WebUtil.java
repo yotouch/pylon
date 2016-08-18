@@ -38,7 +38,7 @@ public class WebUtil {
 
         for (String key : ret.keySet()) {
 
-            logger.info("Parse to ret json key " + key);
+            //logger.info("Parse to ret json key " + key);
 
             Object value = ret.get(key);
 
@@ -85,7 +85,7 @@ public class WebUtil {
         String name = e.getMetaEntity().getName() + "_" + mf.getName();
         String value = request.getParameter(name);
         
-        logger.info("Set http value for entity " + name + " value " + value + " mf type " + mf.getDataType());
+        //logger.info("Set http value for entity " + name + " value " + value + " mf type " + mf.getDataType());
         
         if (mf.isMultiReference()) {
             String uuids = "";
@@ -95,7 +95,7 @@ public class WebUtil {
             
             List<String> uuidList = Lists.newArrayList(Splitter.on(',').omitEmptyStrings().split(uuids));
             
-            logger.info("MR value " + uuidList);
+            //logger.info("MR value " + uuidList);
             
             if (uuidList == null || uuidList.size() == 0) {
                 e.setValue(mf.getName(), new ArrayList<String>());
@@ -152,6 +152,10 @@ public class WebUtil {
         }
     }
 
+    public String getBaseUrl() {
+        return "http://" + this.appHost;
+    }
+
     public String getBid(HttpServletRequest request){
         String bid = "";
         Cookie[] cookies = request.getCookies();
@@ -171,7 +175,7 @@ public class WebUtil {
 
         String userAgent = request.getHeader("User-Agent");
 
-        logger.info("UserAgent " + userAgent);
+        //logger.info("UserAgent " + userAgent);
 
         if (userAgent == null) {
             return false;

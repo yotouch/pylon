@@ -60,7 +60,7 @@ public abstract class LoginInterceptor implements HandlerInterceptor {
 
         String uri = request.getRequestURI();
 
-        logger.info("Check login " + uri + " USER " + request.getAttribute("loginUser"));
+        //logger.info("Check login " + uri + " USER " + request.getAttribute("loginUser"));
 
         boolean isLogin = false;
 
@@ -69,7 +69,7 @@ public abstract class LoginInterceptor implements HandlerInterceptor {
             for (Cookie c : cookies) {
                 if ("userToken".equalsIgnoreCase(c.getName())) {
                     String userToken = c.getValue();
-                    logger.info("Checking userToken " + userToken);
+                    //logger.info("Checking userToken " + userToken);
 
                     Entity user = userService.checkLoginUser(userToken);
                     if (user != null) {

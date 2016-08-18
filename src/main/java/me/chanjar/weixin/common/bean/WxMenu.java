@@ -3,10 +3,9 @@ package me.chanjar.weixin.common.bean;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.codec.Charsets;
 
 import me.chanjar.weixin.common.util.json.WxGsonBuilder;
 
@@ -16,6 +15,8 @@ import me.chanjar.weixin.common.util.json.WxGsonBuilder;
  *
  */
 public class WxMenu implements Serializable {
+
+  private static final long serialVersionUID = -7083914585539687746L;
 
   private List<WxMenuButton> buttons = new ArrayList<WxMenuButton>();
 
@@ -44,8 +45,6 @@ public class WxMenu implements Serializable {
   /**
    * 要用 http://mp.weixin.qq.com/wiki/16/ff9b7b85220e1396ffa16794a9d95adc.html 格式来反序列化
    * 相比 http://mp.weixin.qq.com/wiki/13/43de8269be54a0a6f64413e4dfa94f39.html 的格式，外层多套了一个menu
-   * @param json
-   * @return
    */
   public static WxMenu fromJson(String json) {
     return WxGsonBuilder.create().fromJson(json, WxMenu.class);
@@ -54,11 +53,9 @@ public class WxMenu implements Serializable {
   /**
    * 要用 http://mp.weixin.qq.com/wiki/16/ff9b7b85220e1396ffa16794a9d95adc.html 格式来反序列化
    * 相比 http://mp.weixin.qq.com/wiki/13/43de8269be54a0a6f64413e4dfa94f39.html 的格式，外层多套了一个menu
-   * @param is
-   * @return
    */
   public static WxMenu fromJson(InputStream is) {
-    return WxGsonBuilder.create().fromJson(new InputStreamReader(is, Charsets.UTF_8), WxMenu.class);
+    return WxGsonBuilder.create().fromJson(new InputStreamReader(is, StandardCharsets.UTF_8), WxMenu.class);
   }
 
   @Override
@@ -130,19 +127,20 @@ public class WxMenu implements Serializable {
   }
   
   public static class WxMenuRule {
-    private String groupId;
+    private String tagId;
     private String sex;
     private String country;
     private String province;
     private String city;
     private String clientPlatformType;
+    private String language;
     
-    public String getGroupId() {
-      return groupId;
+    public String getTagId() {
+      return tagId;
     }
 	
-    public void setGroupId(String groupId) {
-      this.groupId = groupId;
+    public void setTagId(String tagId) {
+      this.tagId = tagId;
     }
 	
     public String getSex() {
@@ -184,16 +182,25 @@ public class WxMenu implements Serializable {
     public void setClientPlatformType(String clientPlatformType) {
       this.clientPlatformType = clientPlatformType;
     }
-	
+
+    public String getLanguage() {
+      return language;
+    }
+
+    public void setLanguage(String language) {
+      this.language = language;
+    }
+
     @Override
     public String toString() {
       return "matchrule:{" +
-          "group_id='" + groupId + '\'' +
+          "tag_id='" + tagId + '\'' +
           ", sex='" + sex + '\'' +
           ", country" + country + '\'' +
           ", province" + province + '\'' +
           ", city" + city + '\'' +
           ", client_platform_type" + clientPlatformType + '\'' +
+          ", language" + language + '\'' +
           "}";
     }
   }

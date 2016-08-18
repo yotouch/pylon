@@ -1,14 +1,25 @@
 package com.yotouch.base.service;
 
-import com.yotouch.base.wechat.ContextInterceptor;
-import com.yotouch.core.Consts;
-import com.yotouch.core.entity.Entity;
-import com.yotouch.core.runtime.DbSession;
-import com.yotouch.core.runtime.YotouchApplication;
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Date;
+import java.util.List;
+
+import me.chanjar.weixin.mp.api.WxMpConfigStorage;
+import me.chanjar.weixin.mp.api.WxMpInMemoryConfigStorage;
+import me.chanjar.weixin.mp.api.WxMpMenuService;
+import me.chanjar.weixin.mp.api.WxMpMessageHandler;
+import me.chanjar.weixin.mp.api.WxMpMessageRouter;
+import me.chanjar.weixin.mp.api.WxMpQrcodeService;
+import me.chanjar.weixin.mp.api.WxMpService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import me.chanjar.weixin.common.bean.WxJsapiSignature;
 import me.chanjar.weixin.common.bean.WxMenu;
 import me.chanjar.weixin.common.exception.WxErrorException;
-import me.chanjar.weixin.mp.api.*;
+import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
 import me.chanjar.weixin.mp.bean.WxMpCustomMessage;
 import me.chanjar.weixin.mp.bean.WxMpTemplateMessage;
 import me.chanjar.weixin.mp.bean.WxMpXmlMessage;
@@ -16,16 +27,14 @@ import me.chanjar.weixin.mp.bean.WxMpXmlOutMessage;
 import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
 import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.StringUtils;
 
-import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.Date;
-import java.util.List;
+import com.yotouch.core.Consts;
+import com.yotouch.core.entity.Entity;
+import com.yotouch.core.runtime.DbSession;
+import com.yotouch.core.runtime.YotouchApplication;
+import com.yotouch.base.wechat.ContextInterceptor;
+
+import org.springframework.util.StringUtils;
 
 public class WechatService {
 
@@ -108,8 +117,6 @@ public class WechatService {
     }
 
     public WxMpConfigStorage getWechatConfig() {
-
-
         return mpConfig;
     }
 
@@ -131,21 +138,24 @@ public class WechatService {
     }
 
     public File generateTempQrcode(int id) throws WxErrorException {
-        WxMpQrCodeTicket ticket = this.mpService.qrCodeCreateTmpTicket(id, 2592000);
-        File qrcodeFile = this.mpService.qrCodePicture(ticket);
+        WxMpQrcodeService qrService = this.mpService.getQrcodeService();
+        WxMpQrCodeTicket ticket = qrService.qrCodeCreateTmpTicket(id, 2592000);
+        File qrcodeFile = qrService.qrCodePicture(ticket);
         return qrcodeFile;
     }
 
     public File generateQrcode(int id) throws WxErrorException {
-        WxMpQrCodeTicket ticket = this.mpService.qrCodeCreateLastTicket(id);
-        File codeFile = this.mpService.qrCodePicture(ticket);
+        WxMpQrcodeService qrService = this.mpService.getQrcodeService();
+        WxMpQrCodeTicket ticket = qrService.qrCodeCreateLastTicket(id);
+        File codeFile = qrService.qrCodePicture(ticket);
         return codeFile;
     }
 
     public void createMenu(List<WxMenu.WxMenuButton> buttons) throws WxErrorException {
         WxMenu menu = new WxMenu();
         menu.setButtons(buttons);
-        this.mpService.menuCreate(menu);
+        WxMpMenuService menuService = this.mpService.getMenuService();
+        menuService.menuCreate(menu);
     }
 
     public Entity fillWechatUser(WxMpUser wxUser, Entity user) {
