@@ -5,10 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 
 public class MetaEntityImpl implements MetaEntity {
 
@@ -21,12 +19,6 @@ public class MetaEntityImpl implements MetaEntity {
     private String tablePrefix;
 
     private boolean lowerTableNames;
-
-    /*
-    public MetaEntityImpl(String uuid, String name) {
-        this(uuid, name, "usr");
-    }
-    */
 
     MetaEntityImpl(String uuid, String name, String tablePrefix, boolean lowerTableName) {
         this.name = name;
@@ -108,7 +100,7 @@ public class MetaEntityImpl implements MetaEntity {
             return name.toLowerCase();
         }
 
-        logger.info("Get table name NO lower case " + name.toLowerCase());
+        logger.debug("Get table name NO lower case " + name.toLowerCase());
 
         return name;
 

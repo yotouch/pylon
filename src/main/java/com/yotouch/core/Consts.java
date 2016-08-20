@@ -86,5 +86,6 @@ public interface Consts {
     int itemPerPage                         = 20;
 
 
+    int WECHAT_TRANSFER_TYPE_REFUND         = 1510;
 
 }
