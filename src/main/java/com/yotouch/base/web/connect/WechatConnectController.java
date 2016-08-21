@@ -205,6 +205,7 @@ public class WechatConnectController extends BaseController {
 
         Cookie c = new Cookie(Consts.COOKIE_NAME_WX_USER_UUID, user.getUuid());
         c.setPath("/");
+        c.setMaxAge(Integer.MAX_VALUE);
         response.addCookie(c);
 
         logger.info("WechatUser saved " + user.getUuid());
