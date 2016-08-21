@@ -43,15 +43,28 @@ public class BizEntityManagerImpl implements BizEntityManager {
     
     public BizEntityManagerImpl() {
     }
-    
+
     @PostConstruct
     public void init() {
         
         this.entityNamedMap = new HashMap<>();
-        
-        File ytEctDir = config.getEtcDir();
 
-        File bizEntitiesFile = new File(ytEctDir, "bizEntities.yaml");
+        File ytHome = config.getRuntimeHome();
+
+        for (File ah: ytHome.listFiles()) {
+            if (ah.isDirectory()) {
+                if (ah.getName().startsWith("addon-")
+                        || ah.getName().startsWith("app-")) {
+
+                    parseBizEntityConfigFile(new File(ah, "etc/bizEntities.yaml"));
+                }
+            }
+        }
+
+    }
+
+    private void parseBizEntityConfigFile(File bizEntitiesFile) {
+        logger.info("Parse BizEntity " + bizEntitiesFile);
 
         if (bizEntitiesFile.exists()) {
             Yaml yaml = new Yaml();
@@ -66,30 +79,29 @@ public class BizEntityManagerImpl implements BizEntityManager {
                     return;
                 }
 
-                
+
                 for (Map<String, String> beMap: bizEntities) {
                     logger.info("BeMap " + beMap);
-                    
+
                     String workflowName = beMap.get("workflow");
                     String entityName = beMap.get("entity");
-                    
+
                     Workflow wf = wfMgr.getWorkflow(workflowName);
                     MetaEntity me = entityMgr.getMetaEntity(entityName);
-                    
+
                     fillWfFields(me);
-                    
+
                     BizMetaEntityImpl bme = new BizMetaEntityImpl(wf, me);
-                    this.entityNamedMap.put(me.getName(), bme);                    
+                    this.entityNamedMap.put(me.getName(), bme);
                 }
-                
+
                 ((EntityManagerImpl)this.entityMgr).rebuildDb();
-                
+
             } catch (FileNotFoundException e) {
                 logger.error("Load system field error", e);
                 return;
             }
         }
-        
     }
 
     private void fillWfFields(MetaEntity me) {

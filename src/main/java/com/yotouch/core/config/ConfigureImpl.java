@@ -60,20 +60,6 @@ public class ConfigureImpl implements Configure {
             //this.ytHome = new File("/Users/yinwm/eclipse/projs/pylon");
         }
         logger.warn("Init configure YT RUNTIME HOME " + this.ytHome);
-        
-        
-        File f = new File(this.getEtcDir(), "config.yaml");
-        if (f.exists() && f.isFile()) {
-            Yaml yaml = new Yaml();
-            try {
-                @SuppressWarnings("unchecked")
-                Map<String, Object> load = (Map<String, Object>) yaml.load(new FileInputStream(f));
-                this.config = load;
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            
-        }
     }
     
 
@@ -82,13 +68,4 @@ public class ConfigureImpl implements Configure {
         return this.ytHome;
     }
 
-    @Override
-    public File getEtcDir() {
-        return new File(this.ytHome, "etc");
-    }
-
-    @Override
-    public Object getProp(String key) {
-        return this.config.get(key);
-    }
 }
