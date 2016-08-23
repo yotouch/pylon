@@ -3,9 +3,12 @@ buildscript {
 		springBootVersion = '1.3.5.RELEASE'
 	}
 	repositories {
+		/*
 		maven {
 			url 'http://maven.aliyun.com/mvn/repository/'
 		}
+		*/
+		jcenter()
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") 
@@ -25,9 +28,14 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
+	/*
 	maven {
 		url 'http://maven.aliyun.com/mvn/repository/'
 	}
+	*/
+
+	jcenter()
+
 }
 
 
@@ -36,6 +44,8 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-freemarker')
 	compile('org.springframework.boot:spring-boot-starter-jdbc')
 	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('org.springframework.boot:spring-boot-starter-redis')
+	compile('org.springframework.boot:spring-boot-starter-cache')
 
 	compile fileTree(dir: 'lib', include: '*.jar')
 

@@ -18,20 +18,32 @@ import com.yotouch.core.entity.MetaEntity;
 import com.yotouch.core.entity.MetaField;
 import com.yotouch.core.entity.mf.MultiReferenceMetaFieldImpl;
 import com.yotouch.core.store.db.DbStore;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+@Component
+@CacheConfig(cacheNames = "Entity")
 public class DbSessionImpl implements DbSession {
     
     static final private Logger logger = LoggerFactory.getLogger(DbSession.class);
-    
+
+    @Autowired
     private EntityManager entityMgr;
 
+    @Autowired
     private DbStore dbStore;
+
     private Entity loginUser;
 
+    /*
     public DbSessionImpl(EntityManager entityMgr, DbStore dbStore) {
         this.entityMgr = entityMgr;
         this.dbStore = dbStore;
     }
+    */
 
     @Override
     public Entity newEntity(String entityName) {
@@ -168,12 +180,14 @@ public class DbSessionImpl implements DbSession {
     }
 
     @Override
+    //@Cacheable
     public Entity getEntity(String entityName, String uuid) {
         MetaEntity me = entityMgr.getMetaEntity(entityName);
         return this.getEntity(me, uuid);
     }
     
     @Override
+    //@Cacheable
     public Entity getEntity(MetaEntity me, String uuid) {
         List<Entity> el = this.dbStore.query(me, uuid, new EntityRowMapper(this, me));
         
