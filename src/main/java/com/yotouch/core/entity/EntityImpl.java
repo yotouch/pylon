@@ -185,6 +185,19 @@ public class EntityImpl implements Entity {
         MultiReferenceMetaFieldImpl mrf = (MultiReferenceMetaFieldImpl) mf;
         
         List<String> uuids = this.getValue(fieldName);
+
+        if (uuids == null) {
+            List<Entity> entities = dbSession.queryRawSql(mrf.getMappingMetaEntity().getName(), "s_" + me.getName() + "Uuid = ? ORDER BY weight", new Object[]{this.getUuid()});
+
+            logger.debug(" multi uuids " + entities.stream().map(ee -> ee.getValue("t_" + mrf.getTargetMetaEntity().getName() + "Uuid")));
+
+            List<String> finalUuids = new ArrayList<>();
+            entities.stream().forEach(ee -> finalUuids.add(ee.getValue("t_" + mrf.getTargetMetaEntity().getName() + "Uuid")));
+            uuids = finalUuids;
+
+            this.setValue(mf.getName(), uuids);
+        }
+
         //logger.info("Get multi reference " + fieldName + " uuids " + uuids);
         List<Entity> entities = new ArrayList<>();
         

@@ -19,6 +19,7 @@ import com.yotouch.core.entity.MetaField;
 import com.yotouch.core.entity.mf.MultiReferenceMetaFieldImpl;
 import com.yotouch.core.store.db.DbStore;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
@@ -36,14 +37,14 @@ public class DbSessionImpl implements DbSession {
     @Autowired
     private DbStore dbStore;
 
+    @Value("${yotouch.entity.multiReference.lazy:}")
+    private String isMrLazyStr;
+
     private Entity loginUser;
 
-    /*
-    public DbSessionImpl(EntityManager entityMgr, DbStore dbStore) {
-        this.entityMgr = entityMgr;
-        this.dbStore = dbStore;
+    private boolean isMrLazy() {
+        return "1".equals(isMrLazyStr) || "true".equalsIgnoreCase(isMrLazyStr);
     }
-    */
 
     @Override
     public Entity newEntity(String entityName) {
@@ -189,7 +190,7 @@ public class DbSessionImpl implements DbSession {
     @Override
     //@Cacheable
     public Entity getEntity(MetaEntity me, String uuid) {
-        List<Entity> el = this.dbStore.query(me, uuid, new EntityRowMapper(this, me));
+        List<Entity> el = this.dbStore.query(me, uuid, new EntityRowMapper(this, me, isMrLazy()));
         
         if (el.isEmpty()) {
             return null;
@@ -201,13 +202,13 @@ public class DbSessionImpl implements DbSession {
     @Override
     public List<Entity> queryRawSql(String entityName, String where, Object[] args) {
         MetaEntity me = entityMgr.getMetaEntity(entityName);
-        return this.dbStore.querySql(me, where, args, new EntityRowMapper(this, me));
+        return this.dbStore.querySql(me, where, args, new EntityRowMapper(this, me, isMrLazy()));
     }
 
     @Override
     public List<Entity> getAll(String entityName) {
         MetaEntity me = entityMgr.getMetaEntity(entityName);
-        List<Entity> el = this.dbStore.querySql(me, "", null, new EntityRowMapper(this, me));
+        List<Entity> el = this.dbStore.querySql(me, "", null, new EntityRowMapper(this, me, isMrLazy()));
         return el;
     }
 
@@ -224,7 +225,7 @@ public class DbSessionImpl implements DbSession {
     @Override
     public Entity queryOne(String entityName, Query q) {
         MetaEntity me = entityMgr.getMetaEntity(entityName);
-        List<Entity> el = this.dbStore.querySql(me, q.getFields(), q.getWhere(), q.getArgs(), new EntityRowMapper(this, me));
+        List<Entity> el = this.dbStore.querySql(me, q.getFields(), q.getWhere(), q.getArgs(), new EntityRowMapper(this, me, isMrLazy()));
         if (el.isEmpty()) {
             return null;
         } else {

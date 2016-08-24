@@ -35,8 +35,11 @@ public abstract class BaseController {
     @Autowired
     protected AttachmentService attService;
 
+    @Autowired
+    protected DbSession dbSession;
+
     protected DbSession getDbSession() {
-        return this.ytApp.getRuntime().createDbSession();        
+        return dbSession;
     }
 
     protected DbSession getDbSession(HttpServletRequest request) {

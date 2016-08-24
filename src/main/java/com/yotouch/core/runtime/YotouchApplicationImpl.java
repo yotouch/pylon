@@ -30,7 +30,7 @@ public class YotouchApplicationImpl implements YotouchApplication {
     private DbStore dbStore;
 
     @Autowired
-    private YotouchRuntimeImpl yotouchRuntime;
+    private YotouchRuntime yotouchRuntime;
 
     private Map<String, Object> attrs ;
 
