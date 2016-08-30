@@ -60,9 +60,9 @@ public interface Consts {
     String CASHFLOW_SCENE_PAY_COMMISSION       = "SCENE_PAY_COMMISSION";       // 支付佣金
     String CASHFLOW_SCENE_CUSTOMER_WITHDRAW    = "SCENE_CUSTOMER_WITHDRAW";    // 客户取款
     String CASHFLOW_SCENE_CONFIRM_SUBORDER     = "SCENE_CONFIRM_SUBORDER";     // 结算到子订单
-    String CASHFLOW_SCENE_SETTLE_TO_ORDER_ITEM = "SCENE_SETTLE_TO_ORDER_ITEM";  // 订单拆分结算到 orderItem
+    String CASHFLOW_SCENE_SETTLE_TO_ORDER_ITEM = "SCENE_SETTLE_TO_ORDER_ITEM"; // 订单拆分结算到 orderItem
     String CASHFLOW_SCENE_SETTLE_TO_SHOP       = "SCENE_SETTLE_TO_SHOP";       // 结算到商店
-
+    String CASHFLOW_SCENE_REFUND_ORDER         = "SCENE_REFUND_ORDER";         // 订单退款
 
     String CASHFLOW_TYPE_WECHAT             = "CF_TYPE_WECHAT";
     String CASHFLOW_TYPE_ORDER              = "CF_TYPE_ORDER";
@@ -86,6 +86,8 @@ public interface Consts {
     int itemPerPage                         = 20;
 
 
-    int WECHAT_TRANSFER_TYPE_REFUND         = 1510;
+    int REFUND_TYPE_ORDER = 5510;
+    int REFUND_TYPE_ITEMS = 5520;
+
 
 }
