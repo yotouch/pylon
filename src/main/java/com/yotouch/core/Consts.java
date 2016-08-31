@@ -40,7 +40,9 @@ public interface Consts {
     int STATUS_NORMAL                       = 1000;
     int STATUS_DELETED                      = 1001;
     int STATUS_SHADOW                       = 404;
+
     int STATUS_PAYMENT_DEPOSIT_PENDING      = 6001;   // 钱等待存入
+    int STATUS_PAYMENT_DEPOSIT_FAILED       = 6010;   // 钱等待存入
     int STATUS_PAYMENT_DEPOSITED            = 6050;   // 钱已经存入
     int STATUS_PAYMENT_WITHDRAWN            = 6100;   // 钱已经支出
     
@@ -71,7 +73,11 @@ public interface Consts {
     String CASHFLOW_TYPE_CUSTOMER           = "CF_TYPE_CUSTOMER";
 
     String PAYMENT_VENDOR_WECHAT            = "PAYMENT_WECHAT";
+
+    String REFUND_VENDOR_WECHAT             = "REFUND_VENDOR_WECHAT";
+
     String WECHAT_TRADE_STATUS_SUCCESS      = "SUCCESS";
+    String WECHAT_TRADE_STATUS_NOTPAY       = "NOTPAY";
     
     int AJAX_STATUS_FAILED                  = 1;
     int AJAX_STATUS_OK                      = 0;
@@ -88,6 +94,7 @@ public interface Consts {
 
     int REFUND_TYPE_ORDER = 5510;
     int REFUND_TYPE_ITEMS = 5520;
+
 
 
 }
