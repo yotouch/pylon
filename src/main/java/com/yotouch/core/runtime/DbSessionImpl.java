@@ -1,6 +1,7 @@
 package com.yotouch.core.runtime;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
@@ -109,6 +110,10 @@ public class DbSessionImpl implements DbSession {
                 logger.info("Save MR " + mf.getName() + " targetMe " + mappingMe.getName() + " values " + s1);
 
                 List<String> oldValues = e.getOldValue(mf.getName());
+                if (oldValues == null) {
+                    List<Entity> oldEntities = this.queryRawSql(mappingMe.getName(), "s_" + me.getName() + "Uuid = ? ORDER BY weight DESC", new Object[]{uuid});
+                    oldValues = oldEntities.stream().map(o -> (String) o.v("t_" + targetEntityName + "Uuid")).collect(Collectors.toList());
+                }
 
 
                 Set<String> s2 = new HashSet<>();
