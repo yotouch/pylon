@@ -75,6 +75,7 @@ public interface Consts {
     String PAYMENT_VENDOR_WECHAT            = "PAYMENT_WECHAT";
 
     String REFUND_VENDOR_WECHAT             = "REFUND_VENDOR_WECHAT";
+    String REFUND_VENDOR_WECHAT_MCH = "REFUND_VENDOR_WECHAT_MCH";
 
     String WECHAT_TRADE_STATUS_SUCCESS      = "SUCCESS";
     String WECHAT_TRADE_STATUS_NOTPAY       = "NOTPAY";
@@ -92,8 +93,9 @@ public interface Consts {
     int itemPerPage                         = 20;
 
 
-    int REFUND_TYPE_ORDER = 5510;
-    int REFUND_TYPE_ITEMS = 5520;
+    int REFUND_TYPE_ORDER  = 5510;
+    int REFUND_TYPE_ITEMS  = 5520;
+    int REFUND_TYPE_AMOUNT = 5530;
 
 
 
