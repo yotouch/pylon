@@ -37,8 +37,21 @@ public class WorkflowManagerImpl implements WorkflowManager {
     }
     
     private void loadFileWorkflow() {
-        File ytEctDir = config.getEtcDir();
-        File workflowFile = new File(ytEctDir, "workflows.yaml");
+        File ytHome = config.getRuntimeHome();
+
+        for (File ah: ytHome.listFiles()) {
+            if (ah.isDirectory()) {
+                if (ah.getName().startsWith("addon-")
+                        || ah.getName().startsWith("app-")) {
+                    parserWorkflowConfigFile(new File(ah, "etc/workflows.yaml"));
+                }
+            }
+        }
+
+    }
+
+    private void parserWorkflowConfigFile(File workflowFile) {
+        logger.info("Parse workflow " + workflowFile);
         if (workflowFile.exists()) {
             Yaml yaml = new Yaml();
             try {
@@ -52,21 +65,20 @@ public class WorkflowManagerImpl implements WorkflowManager {
                 if (workflows == null) {
                     return ;
                 }
-                
+
                 for (Object o: workflows) {
                     @SuppressWarnings("unchecked")
                     Map<String, Object> wfMap = (Map<String, Object>) o;
                     this.buildWorkflow(wfMap);
                 }
-                
-                
+
+
             } catch (FileNotFoundException e) {
             }
 
         }
-        
     }
-    
+
 
     @SuppressWarnings("unchecked")
     private void buildWorkflow(Map<String, Object> wfMap) {

@@ -6,6 +6,10 @@ spring.datasource:
     
 spring.freemarker:
     cache: false
+    check-template-location: true # Check that the templates location exists.
+    template-loader-path: classpath:/templates/
+    charset: UTF-8 # Template encoding.
+
 
 multipart:
     maxFileSize: 16MB

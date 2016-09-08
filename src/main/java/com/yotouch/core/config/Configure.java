@@ -6,8 +6,5 @@ public interface Configure {
     
     File getRuntimeHome();
     
-    File getEtcDir();
-
-    Object getProp(String key);
 
 }

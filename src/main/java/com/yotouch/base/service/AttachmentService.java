@@ -11,8 +11,6 @@ import com.yotouch.core.entity.Entity;
 
 public interface AttachmentService {
 
-    Entity saveAttachment(InputStream inputStream) throws IOException;
-
     Entity saveAttachment(byte[] content, String contentType);
 
     Entity saveAttachment(byte[] bytes);

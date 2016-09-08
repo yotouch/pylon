@@ -93,3 +93,6 @@ eclipse {
 	}
 }
 
+springBoot {
+	mainClass = "com.yotouch.base.PylonApplication"
+}

@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,7 +40,25 @@ public class AttachmentController extends BaseController {
 
     @RequestMapping("/admin/attachment/test")
     public String testAttachment() {
+        logger.info("Show attachment page");
         return "admin/testAttachment";
+    }
+
+    @RequestMapping("/admin/attachment/watermark")
+    public @ResponseBody Map<String, Object> watermarkUpload(
+            @RequestParam("attUuid") String attUuid,
+            @RequestParam("watermarkUuid") String wmUuid
+    ) {
+
+        DbSession dbSession = this.getDbSession();
+        Entity att = dbSession.getEntity("attachment", attUuid);
+        byte[] attConetnt = att.v("content");
+
+        Entity wm = dbSession.getEntity("attachment", attUuid);
+        byte[] wmContent = wm.v("content");
+
+
+
     }
     
     @RequestMapping("/admin/attachment/upload")
