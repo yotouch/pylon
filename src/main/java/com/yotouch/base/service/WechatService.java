@@ -56,6 +56,7 @@ public class WechatService {
         this.appId = appId;
         this.ytApp = ytApp;
         this.oauth2Scope = oauth2Scope;
+        //this.dbSession = dbSession;
 
         DbSession dbSession = this.ytApp.getRuntime().createDbSession();
         Entity wechat = dbSession.queryOneRawSql("wechat", "appId = ?", new Object[]{appId});

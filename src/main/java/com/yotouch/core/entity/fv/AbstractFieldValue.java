@@ -60,9 +60,7 @@ public abstract class AbstractFieldValue<T> implements FieldValue<T> {
 
     public void setNewValue(Object v) {
         T value = this.parseValue(v);
-        if (this.isChanged()) {
-            this.value = value;
-        } else {
+        if (!this.isChanged()) {
             if (Objects.equal(value, this.value)) {
                 return;
             }

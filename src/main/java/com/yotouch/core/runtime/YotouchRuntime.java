@@ -4,5 +4,4 @@ public interface YotouchRuntime {
 
     DbSession createDbSession();
 
-
 }

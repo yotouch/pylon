@@ -29,11 +29,14 @@ public class EntityRowMapper implements RowMapper<Entity> {
     
     private DbSession dbSession;
 
+    private boolean isMrLazy;
+
     private List<QueryField> fields;
 
-    public EntityRowMapper(DbSession dbSession, MetaEntity me) {
+    public EntityRowMapper(DbSession dbSession, MetaEntity me, boolean isMrLazy) {
         this.dbSession = dbSession;
         this.me = me;
+        this.isMrLazy = isMrLazy;
     }
 
     @Override
@@ -69,36 +72,34 @@ public class EntityRowMapper implements RowMapper<Entity> {
 
         }
 
+        if (!isMrLazy) {
+            for (QueryField qf : this.fields) {
+                if (!(qf instanceof MetaField)) {
+                    continue;
+                }
 
-        for (QueryField qf : this.fields) {
-            if (!(qf instanceof MetaField)) {
-                continue;
+                MetaField<?> mf = (MetaField<?>) qf;
+
+                if (!mf.isMultiReference()) {
+                    continue;
+                }
+
+                MultiReferenceMetaFieldImpl mrf = (MultiReferenceMetaFieldImpl) mf;
+
+                List<Entity> entities = dbSession.queryRawSql(mrf.getMappingMetaEntity().getName(), "s_" + me.getName() + "Uuid = ? ORDER BY weight", new Object[]{e.getUuid()});
+
+                logger.debug(" multi uuids " + entities.stream().map(ee -> ee.getValue("t_" + mrf.getTargetMetaEntity().getName() + "Uuid")));
+
+                List<String> uuids = new ArrayList<>();
+                entities.stream().forEach(ee -> uuids.add(ee.getValue("t_" + mrf.getTargetMetaEntity().getName() + "Uuid")));
+
+                logger.debug(" multi uuids " + uuids);
+
+                e.setValue(mf.getName(), uuids);
             }
-
-            MetaField<?> mf = (MetaField<?>) qf;
-
-            if (!mf.isMultiReference()) {
-                continue;
-            }
-
-            MultiReferenceMetaFieldImpl mrf = (MultiReferenceMetaFieldImpl) mf;
-
-            List<Entity> entities = dbSession.queryRawSql(mrf.getMappingMetaEntity().getName(), "s_" + me.getName() + "Uuid = ? ORDER BY weight", new Object[]{e.getUuid()});
-
-            logger.debug(" multi uuids " + entities.stream().map(ee -> ee.getValue("t_" + mrf.getTargetMetaEntity().getName() + "Uuid")));
-
-            List<String> uuids = new ArrayList<>();
-            entities.stream().forEach(ee -> uuids.add(ee.getValue("t_" + mrf.getTargetMetaEntity().getName() + "Uuid")));
-
-            logger.debug(" multi uuids " + uuids);
-
-            e.setValue(mf.getName(), uuids);
-
         }
 
         return e;
-
-
     }
 
     private void checkMetaField(ResultSet rs, MetaField<?> mf, Entity e) throws SQLException {

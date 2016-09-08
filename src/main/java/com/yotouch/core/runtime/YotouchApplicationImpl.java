@@ -29,6 +29,9 @@ public class YotouchApplicationImpl implements YotouchApplication {
     @Autowired
     private DbStore dbStore;
 
+    @Autowired
+    private YotouchRuntime yotouchRuntime;
+
     private Map<String, Object> attrs ;
 
     @PostConstruct
@@ -39,7 +42,7 @@ public class YotouchApplicationImpl implements YotouchApplication {
 
     @Override
     public YotouchRuntime getRuntime() {
-        return new YotouchRuntimeImpl(this.entityMgr, this.dbStore);
+        return yotouchRuntime;
     }
 
     @Override

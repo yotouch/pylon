@@ -1,6 +1,7 @@
 package com.yotouch.core.runtime;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
@@ -18,19 +19,32 @@ import com.yotouch.core.entity.MetaEntity;
 import com.yotouch.core.entity.MetaField;
 import com.yotouch.core.entity.mf.MultiReferenceMetaFieldImpl;
 import com.yotouch.core.store.db.DbStore;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+@Component
+@CacheConfig(cacheNames = "Entity")
 public class DbSessionImpl implements DbSession {
     
     static final private Logger logger = LoggerFactory.getLogger(DbSession.class);
-    
+
+    @Autowired
     private EntityManager entityMgr;
 
+    @Autowired
     private DbStore dbStore;
+
+    @Value("${yotouch.entity.multiReference.lazy:}")
+    private String isMrLazyStr;
+
     private Entity loginUser;
 
-    public DbSessionImpl(EntityManager entityMgr, DbStore dbStore) {
-        this.entityMgr = entityMgr;
-        this.dbStore = dbStore;
+    private boolean isMrLazy() {
+        return "1".equals(isMrLazyStr) || "true".equalsIgnoreCase(isMrLazyStr);
     }
 
     @Override
@@ -96,6 +110,10 @@ public class DbSessionImpl implements DbSession {
                 logger.info("Save MR " + mf.getName() + " targetMe " + mappingMe.getName() + " values " + s1);
 
                 List<String> oldValues = e.getOldValue(mf.getName());
+                if (oldValues == null) {
+                    List<Entity> oldEntities = this.queryRawSql(mappingMe.getName(), "s_" + me.getName() + "Uuid = ? ORDER BY weight DESC", new Object[]{uuid});
+                    oldValues = oldEntities.stream().map(o -> (String) o.v("t_" + targetEntityName + "Uuid")).collect(Collectors.toList());
+                }
 
 
                 Set<String> s2 = new HashSet<>();
@@ -168,14 +186,16 @@ public class DbSessionImpl implements DbSession {
     }
 
     @Override
+    //@Cacheable
     public Entity getEntity(String entityName, String uuid) {
         MetaEntity me = entityMgr.getMetaEntity(entityName);
         return this.getEntity(me, uuid);
     }
     
     @Override
+    //@Cacheable
     public Entity getEntity(MetaEntity me, String uuid) {
-        List<Entity> el = this.dbStore.query(me, uuid, new EntityRowMapper(this, me));
+        List<Entity> el = this.dbStore.query(me, uuid, new EntityRowMapper(this, me, isMrLazy()));
         
         if (el.isEmpty()) {
             return null;
@@ -187,13 +207,13 @@ public class DbSessionImpl implements DbSession {
     @Override
     public List<Entity> queryRawSql(String entityName, String where, Object[] args) {
         MetaEntity me = entityMgr.getMetaEntity(entityName);
-        return this.dbStore.querySql(me, where, args, new EntityRowMapper(this, me));
+        return this.dbStore.querySql(me, where, args, new EntityRowMapper(this, me, isMrLazy()));
     }
 
     @Override
     public List<Entity> getAll(String entityName) {
         MetaEntity me = entityMgr.getMetaEntity(entityName);
-        List<Entity> el = this.dbStore.querySql(me, "", null, new EntityRowMapper(this, me));
+        List<Entity> el = this.dbStore.querySql(me, "", null, new EntityRowMapper(this, me, isMrLazy()));
         return el;
     }
 
@@ -210,7 +230,7 @@ public class DbSessionImpl implements DbSession {
     @Override
     public Entity queryOne(String entityName, Query q) {
         MetaEntity me = entityMgr.getMetaEntity(entityName);
-        List<Entity> el = this.dbStore.querySql(me, q.getFields(), q.getWhere(), q.getArgs(), new EntityRowMapper(this, me));
+        List<Entity> el = this.dbStore.querySql(me, q.getFields(), q.getWhere(), q.getArgs(), new EntityRowMapper(this, me, isMrLazy()));
         if (el.isEmpty()) {
             return null;
         } else {

@@ -18,17 +18,14 @@ import java.util.*;
 public class RoleServiceImpl implements RoleService {
     
     private static final Logger logger = LoggerFactory.getLogger(RoleServiceImpl.class);
-    
-    @Autowired
-    protected YotouchApplication ytApp;
 
     @Autowired
     protected WebUtil webUtil;
 
+    @Autowired
+    private DbSession dbSession;
+
     public List<Entity> getUserRoles(Entity user){
-        YotouchRuntime rt = ytApp.getRuntime();
-        
-        DbSession dbSession = rt.createDbSession();
 
         List<Entity> userRoles = dbSession.queryRawSql("userRole", "userUuid=? AND status=?", new Object[]{user.v("uuid"), Consts.STATUS_NORMAL});
 
@@ -36,9 +33,6 @@ public class RoleServiceImpl implements RoleService {
     }
 
     public List<Entity> getMenu(List<Entity> userRoles){
-        YotouchRuntime rt = ytApp.getRuntime();
-        
-        DbSession dbSession = rt.createDbSession();
 
         List<Entity> menus = new ArrayList<Entity>();
 
@@ -68,11 +62,7 @@ public class RoleServiceImpl implements RoleService {
     @Transactional
     public void addUserRole(Entity user, String[] roles){
 
-        YotouchRuntime rt = ytApp.getRuntime();
-        DbSession dbSession = rt.createDbSession();
-
         for (String roleUuid : roles) {
-
             Entity userRole = dbSession.newEntity("userRole", Consts.STATUS_NORMAL);
             userRole.setValue("role", roleUuid);
             userRole.setValue("user", user.getUuid());
@@ -84,9 +74,6 @@ public class RoleServiceImpl implements RoleService {
 
     @Transactional
     public void deleteUserRoles(Entity user){
-        YotouchRuntime rt = ytApp.getRuntime();
-        DbSession dbSession = rt.createDbSession();
-        
         List<Entity> userRoles = dbSession.queryRawSql("userRole", "userUuid = ? AND status = ?", new Object[]{user.getUuid(), Consts.STATUS_NORMAL});
         
         for (Entity userRole : userRoles) {
@@ -122,15 +109,11 @@ public class RoleServiceImpl implements RoleService {
     
     
     public List<Entity> getSubRoleList(String parentRoleUuid){
-        YotouchRuntime rt = ytApp.getRuntime();
-        DbSession dbSession = rt.createDbSession();
         List<Entity> roles = dbSession.queryRawSql("role", "parentUuid = ? AND status = ?", new Object[]{parentRoleUuid, Consts.STATUS_NORMAL});
         return roles;
     }
     
     public List<Entity> getUserList(List<Entity> roles){
-        YotouchRuntime rt = ytApp.getRuntime();
-        DbSession dbSession = rt.createDbSession();
         HashSet<Entity> users = new HashSet<>();
         
         for(Entity role : roles){
@@ -149,9 +132,6 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Entity getOrCreateByName(String name) {
 
-        YotouchRuntime rt = ytApp.getRuntime();
-        DbSession dbSession = rt.createDbSession();
-
         Entity role = dbSession.queryOneRawSql("role", "name = ?", new Object[]{name});
         if (role == null) {
             role = dbSession.newEntity("role");
@@ -165,8 +145,6 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public boolean hasRole(Entity user, Entity role) {
-        YotouchRuntime rt = ytApp.getRuntime();
-        DbSession dbSession = rt.createDbSession();
         List<Entity> userRoles = this.getUserRoles(user);
         List<Entity> roles = new ArrayList<>();
         for (Entity userRole : userRoles) {
