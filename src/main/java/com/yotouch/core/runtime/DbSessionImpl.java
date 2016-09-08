@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
 @CacheConfig(cacheNames = "Entity")
 public class DbSessionImpl implements DbSession {
     
-    static final private Logger logger = LoggerFactory.getLogger(DbSession.class);
+    static final private Logger logger = LoggerFactory.getLogger(DbSessionImpl.class);
 
     @Autowired
     private EntityManager entityMgr;
@@ -107,7 +107,7 @@ public class DbSessionImpl implements DbSession {
                     s1 = new HashSet<>(values);
                 }
 
-                logger.info("Save MR " + mf.getName() + " targetMe " + mappingMe.getName() + " values " + s1);
+                logger.debug("Save MR " + mf.getName() + " targetMe " + mappingMe.getName() + " values " + s1);
 
                 List<String> oldValues = e.getOldValue(mf.getName());
                 if (oldValues == null) {
@@ -120,13 +120,13 @@ public class DbSessionImpl implements DbSession {
                 if (oldValues != null && !oldValues.isEmpty()) {
                     s2 = new HashSet<>(oldValues);
 
-                    logger.info("Set 1 and 2 " + s1 + ":" + s2 + (s1.equals(s2)));
+                    logger.debug("Set 1 and 2 " + s1 + ":" + s2 + (s1.equals(s2)));
 
                     if (s1.equals(s2)) {
                         continue;
                     }
                 }
-                logger.info("Save MR " + mf.getName() + " old values " + s2);
+                logger.debug("Save MR " + mf.getName() + " old values " + s2);
 
                 Set<String> newUuids = Sets.difference(s1, s2);
                 Set<String> removeUuids = Sets.difference(s2, s1);
@@ -183,6 +183,11 @@ public class DbSessionImpl implements DbSession {
     public void deleteEntity(String entityName, String uuid) {
         MetaEntity me = entityMgr.getMetaEntity(entityName);
         this.deleteEntity(me, uuid);
+    }
+
+    @Override
+    public void deleteEntity(Entity entity) {
+        this.deleteEntity(entity.getMetaEntity(), entity.getUuid());
     }
 
     @Override

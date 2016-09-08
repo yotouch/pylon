@@ -28,6 +28,8 @@ public interface DbSession {
 
     void deleteEntity(String entityName, String uuid);
 
+    void deleteEntity(Entity entity);
+
     void deleteRawSql(MetaEntity me, String where, Object[] args);
 
     Entity queryOne(String entityName, Query q);
@@ -37,4 +39,6 @@ public interface DbSession {
     void setLoginUser(Entity loginUser);
 
     Entity increase(Entity entity, String field, int amount);
+
+
 }
