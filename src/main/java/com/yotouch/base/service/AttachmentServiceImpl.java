@@ -27,12 +27,6 @@ public class AttachmentServiceImpl implements AttachmentService {
     protected YotouchApplication ytApp;
 
     @Override
-    public Entity saveAttachment(InputStream inputStream) throws IOException {
-        byte[] bytes = ByteStreams.toByteArray(inputStream);
-        return saveAttachment(bytes);
-    }
-
-    @Override
     public Entity saveAttachment(byte[] bytes) {
         Tika tika = new Tika();
         String mime = tika.detect(bytes);
