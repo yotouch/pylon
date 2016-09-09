@@ -74,8 +74,8 @@ public class TagServiceImpl implements TagService {
         Set<String> oldTags = tags.stream().map(t->(String)t.v("name")).collect(Collectors.toSet());
         Set<String> newTags = Sets.newHashSet(tagList);
 
-        logger.info("oldTags " + oldTags);
-        logger.info("newTags " + newTags);
+        logger.debug("oldTags " + oldTags);
+        logger.debug("newTags " + newTags);
 
         if (oldTags.equals(newTags)) {
             return;
@@ -84,12 +84,12 @@ public class TagServiceImpl implements TagService {
         Set<String> addTags = Sets.difference(newTags, oldTags);
         Set<String> removeTags = Sets.difference(oldTags, newTags);
 
-        logger.info("addTags " + addTags);
+        logger.debug("addTags " + addTags);
         for (String t: addTags) {
             this.addTag(dbSession, t, targetType, targetUuid);
         }
 
-        logger.info("removeTags " + removeTags);
+        logger.debug("removeTags " + removeTags);
         for (String t: removeTags) {
             this.removeTag(dbSession, t, targetType, targetUuid);
         }
