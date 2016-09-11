@@ -181,12 +181,13 @@ public class WechatConnectController extends BaseController {
     ) throws WxErrorException, UnsupportedEncodingException {
         WechatService wcService = getWechatService(uuid);
 
+        Entity wechat = wcService.getWechatEntity();
+
         WxMpOAuth2AccessToken accessToken = wcService.oauth2getAccessToken(code);
-        WxMpUser wxUser = wcService.oauth2getUserInfo(accessToken);
+        String openId = accessToken.getOpenId();
 
         DbSession dbSession = this.getDbSession();
 
-        String openId = wxUser.getOpenId();
         Entity user = dbSession.queryOneRawSql("wechatUser", "openId = ?", new Object[]{openId});
 
         if (user == null) {
@@ -196,12 +197,16 @@ public class WechatConnectController extends BaseController {
             user.setValue("appId", wcService.getWechatEntity().v("appId"));
         }
 
-        user = wcService.fillWechatUser(wxUser, user);
         user.setValue("accessToken", accessToken.getAccessToken());
         user.setValue("tokenExpires", new Date(accessToken.getExpiresIn() + System.currentTimeMillis()));
         user.setValue("refreshToken", accessToken.getRefreshToken());
-        user = dbSession.save(user);
 
+        if (!"snsapi_base".equals(wechat.v("oauthScope"))) {
+            WxMpUser wxUser = wcService.oauth2getUserInfo(accessToken);
+            user = wcService.fillWechatUser(wxUser, user);
+        }
+
+        user = dbSession.save(user);
 
         Cookie c = new Cookie(Consts.COOKIE_NAME_WX_USER_UUID, user.getUuid());
         c.setPath("/");
