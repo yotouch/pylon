@@ -30,6 +30,13 @@ public class WebUtil {
     @Value("${app.host:}")
     private String appHost;
 
+    public String getThemeTpl(String prefix, String theme, String file) {
+        return prefix + "/theme/" + theme + "/" + file;
+    }
+
+    public String getThemeTpl(String prefix, HttpServletRequest request, String file) {
+        return this.getThemeTpl(prefix, (String) request.getAttribute("theme"), file);
+    }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public Map<String, Object> asRetJson(Map<String, Object> ret) {
