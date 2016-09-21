@@ -64,8 +64,10 @@ public class UserServiceImpl implements UserService {
 
             String dataInfo = Base64Utils.encodeToString(dataStr.getBytes());
             token = token + dataInfo + "." + now;
-            
-            String vcode = DigestUtils.md5DigestAsHex(token.getBytes()).substring(8, 16);
+
+            String vcodeToken = user.v("password") + token;
+            logger.info("Gen vcodeToken " + vcodeToken);
+            String vcode = DigestUtils.md5DigestAsHex(vcodeToken.getBytes()).substring(8, 16);
             token += "." + vcode;
 
             logger.info(" token " + token);
@@ -93,18 +95,12 @@ public class UserServiceImpl implements UserService {
         if (parts.length == 5) {
             String formatVersion = parts[0];
             String type          = parts[1];
-            String infoStr       = parts[2];
+            String unInfoStr       = parts[2];
             String genTime       = parts[3];
             String vcode         = parts[4];
 
             if ("1".equals(formatVersion)) {
-                
-                String otherVcode = DigestUtils.md5DigestAsHex((formatVersion + "." + type + "." + infoStr + "." + genTime).getBytes()).substring(8, 16);
-                if (!otherVcode.equals(vcode)) {
-                    return null;
-                }
-                
-                infoStr = new String(Base64Utils.decodeFromString(infoStr));
+                String infoStr = new String(Base64Utils.decodeFromString(unInfoStr));
 
                 ObjectMapper mapper = new ObjectMapper();
                 try {
@@ -113,6 +109,16 @@ public class UserServiceImpl implements UserService {
                     YotouchRuntime runtime = ytApp.getRuntime();
                     DbSession dbSession = runtime.createDbSession();
                     Entity user = dbSession.getEntity("user", uuid);
+
+                    if (user != null) {
+                        String vcodeToken = user.v("password") + formatVersion + "." + type + "." + unInfoStr + "." + genTime;
+                        logger.info("Check vcodeToken " + vcodeToken);
+                        String otherVcode = DigestUtils.md5DigestAsHex(vcodeToken.getBytes()).substring(8, 16);
+                        if (!otherVcode.equals(vcode)) {
+                            return null;
+                        }
+                    }
+
                     return user;
                 } catch (IOException e) {
                     e.printStackTrace();

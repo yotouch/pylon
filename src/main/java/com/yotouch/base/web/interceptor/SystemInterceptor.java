@@ -37,6 +37,7 @@ public class SystemInterceptor implements HandlerInterceptor{
         request.setAttribute("request", request);
         request.setAttribute("webUtil", webUtil);
 
+        request.setAttribute("_cid", webUtil.getClientId(request));
         return true;
     }
 

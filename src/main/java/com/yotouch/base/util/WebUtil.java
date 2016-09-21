@@ -163,18 +163,22 @@ public class WebUtil {
         return "http://" + this.appHost;
     }
 
-    public String getBid(HttpServletRequest request){
+    public String getClientId(HttpServletRequest request){
         String bid = "";
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie c : cookies) {
-                if ("bid".equalsIgnoreCase(c.getName())) {
+                if ("_cid".equalsIgnoreCase(c.getName())) {
                     bid = c.getValue();
                 }
             }
         }
 
-        return bid;
+        if (StringUtils.isEmpty(bid)) {
+            return "";
+        } else {
+            return bid.trim();
+        }
     }
 
     public boolean isWechat(HttpServletRequest request) {
@@ -190,4 +194,5 @@ public class WebUtil {
 
         return userAgent.toLowerCase().contains("micromessenger");
     }
+
 }
