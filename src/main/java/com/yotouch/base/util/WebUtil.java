@@ -31,7 +31,11 @@ public class WebUtil {
     private String appHost;
 
     public String getThemeTpl(String prefix, String theme, String file) {
-        return prefix + "/theme/" + theme + "/" + file;
+        String s = prefix + "/theme/" + theme + "/" + file;
+
+        logger.debug("themetpl " + s);
+
+        return s;
     }
 
     public String getThemeTpl(String prefix, HttpServletRequest request, String file) {
@@ -112,7 +116,13 @@ public class WebUtil {
         } else if (mf.isSingleReference()) {
             e.setValue(mf.getName(), request.getParameter(name));
         } else if (Consts.META_FIELD_TYPE_DATA_FIELD.equalsIgnoreCase(mf.getFieldType())) {
-            e.setValue(mf.getName(), request.getParameter(name));
+            if (Consts.META_FIELD_DATA_TYPE_INT.equals(mf.getDataType())
+                    || Consts.META_FIELD_DATA_TYPE_DOUBLE.equals(mf.getDataType())) {
+                if (StringUtils.isEmpty(value)) {
+                    return;
+                }
+            }
+            e.setValue(mf.getName(), value);
         }
     }
 
