@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService {
                     String uuid = map.get("uuid");
                     YotouchRuntime runtime = ytApp.getRuntime();
                     DbSession dbSession = runtime.createDbSession();
-                    Entity user = dbSession.getEntity("user", uuid);
+                    Entity user = dbSession.getEntity(type, uuid);
 
                     if (user != null) {
                         String vcodeToken = user.v("password") + formatVersion + "." + type + "." + unInfoStr + "." + genTime;
