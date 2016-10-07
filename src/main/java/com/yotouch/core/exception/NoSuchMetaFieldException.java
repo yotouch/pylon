@@ -15,6 +15,9 @@ public class NoSuchMetaFieldException extends RuntimeException {
         this.fieldName = fieldName;
     }
 
+    public String getMessage() {
+        return this.toString();
+    }
 
     @Override
     public String toString() {
