@@ -126,11 +126,15 @@ public class EntityRowMapper implements RowMapper<Entity> {
             } else if (Consts.META_FIELD_DATA_TYPE_BINARY.equals(mf.getDataType())) {
 
                 Blob blob = rs.getBlob(fname);
-                InputStream is = blob.getBinaryStream();
-                try {
-                    e.setValue(fname, ByteStreams.toByteArray(is));
-                } catch (IOException e1) {
-                    e1.printStackTrace();
+                if (blob == null) {
+                    e.setValue(fname, null);
+                } else {
+                    InputStream is = blob.getBinaryStream();
+                    try {
+                        e.setValue(fname, ByteStreams.toByteArray(is));
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
                 }
             } else if (Consts.META_FIELD_DATA_TYPE_BOOLEAN.equalsIgnoreCase(mf.getDataType())) {
                 Object o = rs.getObject(fname);
