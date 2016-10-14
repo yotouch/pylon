@@ -1,26 +1,23 @@
 package com.yotouch.base.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
+import com.yotouch.core.Consts;
+import com.yotouch.core.entity.Entity;
+import com.yotouch.core.entity.MetaEntity;
+import com.yotouch.core.entity.MetaField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
-
-import com.yotouch.core.Consts;
-import com.yotouch.core.entity.Entity;
-import com.yotouch.core.entity.MetaEntity;
-import com.yotouch.core.entity.MetaField;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class WebUtil {
@@ -205,4 +202,17 @@ public class WebUtil {
         return userAgent.toLowerCase().contains("micromessenger");
     }
 
+    public String getClientType(HttpServletRequest request){
+        String userAgent = request.getHeader("User-Agent");
+
+        if (userAgent != null && userAgent.toLowerCase().indexOf("android") != -1){
+            return "android";
+        }
+
+        if (userAgent != null && userAgent.toLowerCase().indexOf("iphone") != -1){
+            return "iphone";
+        }
+
+        return "unknown";
+    }
 }
