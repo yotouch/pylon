@@ -112,7 +112,7 @@ public class UserServiceImpl implements UserService {
 
                     if (user != null) {
                         String vcodeToken = user.v("password") + formatVersion + "." + type + "." + unInfoStr + "." + genTime;
-                        logger.info("Check vcodeToken " + vcodeToken);
+                        logger.debug("Check vcodeToken " + vcodeToken);
                         String otherVcode = DigestUtils.md5DigestAsHex(vcodeToken.getBytes()).substring(8, 16);
                         if (!otherVcode.equals(vcode)) {
                             return null;
