@@ -1,18 +1,16 @@
 package com.yotouch.base.service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.yotouch.core.Consts;
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.runtime.DbSession;
 import com.yotouch.core.runtime.YotouchApplication;
 import com.yotouch.core.runtime.YotouchRuntime;
-import com.yotouch.base.service.PaginationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class PaginationServiceImpl implements PaginationService {
@@ -20,7 +18,7 @@ public class PaginationServiceImpl implements PaginationService {
     @Autowired
     protected YotouchApplication ytApp;
 
-    protected Map<String, Object> getPageInfo(int currentPage, int totalPage, String paginationUrl, int paginationWidth){
+    public Map<String, Object> getPageInfo(int currentPage, int totalPage, String paginationUrl, int paginationWidth){
         int firstPage = currentPage - paginationWidth/2;
         int lastPage = currentPage + paginationWidth/2;
         
@@ -43,7 +41,27 @@ public class PaginationServiceImpl implements PaginationService {
         
         return pageInfo;
     }
-    
+
+    public Map<String, Integer> getInitPageInfo(int currentPage, int total, int itemPerPage) {
+        int totalPage = (int) Math.ceil(total/(itemPerPage + 0.0));
+        if (currentPage < 1){
+            currentPage = 1;
+        }
+
+        if (currentPage > totalPage) {
+            currentPage = totalPage;
+        }
+
+        int offset =  (currentPage - 1) * itemPerPage;
+
+        Map<String, Integer> results = new HashMap<>();
+        results.put("totalPage", totalPage);
+        results.put("offset", offset);
+        results.put("currentPage", currentPage);
+
+        return results;
+    }
+
     public Map<String, Object> getPaginationInfo(int currentPage, int total, int itemPerPage, String entityName, String queryString, Object[] queryCondition, String paginationUrl){
         YotouchRuntime runtime = ytApp.getRuntime();
         DbSession dbSession = runtime.createDbSession();
