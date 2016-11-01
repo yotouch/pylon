@@ -34,7 +34,7 @@ public class WechatManagerImpl implements WechatManager {
 
     @Override
     public WechatService getService(String appid) {
-        logger.info("Wechat AppId " + appid);
+        //logger.info("Wechat AppId " + appid);
         WechatService wechatService = this.wechatMap.get(appid);
         return wechatService;
     }

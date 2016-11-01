@@ -38,7 +38,7 @@ public class UserAPI extends BaseAPI{
 	 * @return User
 	 */
 	public static User userInfo(String access_token,String openid,int emoji){
-		HttpUriRequest httpUriRequest = RequestBuilder.post()
+		HttpUriRequest httpUriRequest = RequestBuilder.get()
 				.setUri(BASE_URI+"/cgi-bin/user/info")
 				.addParameter(getATPN(),access_token)
 				.addParameter("openid",openid)
