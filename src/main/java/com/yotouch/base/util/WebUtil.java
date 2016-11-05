@@ -188,6 +188,21 @@ public class WebUtil {
         }
     }
 
+
+    public boolean isIOS(HttpServletRequest request) {
+        String ua = this.getUserAgent(request);
+
+        return ua.toLowerCase().contains("iphone") || ua.toLowerCase().contains("ipad");
+    }
+
+    public boolean isAndroid(HttpServletRequest request) {
+
+        String ua = this.getUserAgent(request);
+
+        return ua.toLowerCase().contains("android");
+
+    }
+
     public String getUserAgent(HttpServletRequest request) {
 
         String userAgent = request.getHeader("User-Agent");
