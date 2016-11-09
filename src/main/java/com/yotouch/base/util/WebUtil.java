@@ -27,6 +27,9 @@ public class WebUtil {
     @Value("${app.host:}")
     private String appHost;
 
+    @Value("${ssl:}")
+    private String ssl;
+
     public String getThemeTpl(String prefix, String theme, String file) {
         String s = prefix + "/theme/" + theme + "/" + file;
 
@@ -134,9 +137,16 @@ public class WebUtil {
             url = appHost + requestURL + "?" + queryString;
         }
 
-        if (!url.startsWith("http://")) {
+        if (url.startsWith("http://") || url.startsWith("https://")) {
+            url = url.split("://")[1];
+        }
+
+        if ("1".startsWith(this.ssl)) {
+            url = "https://" + url;
+        } else {
             url = "http://" + url;
         }
+
 
         return url;
     }
