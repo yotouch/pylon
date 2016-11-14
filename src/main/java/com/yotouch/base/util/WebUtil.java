@@ -141,11 +141,14 @@ public class WebUtil {
             url = url.split("://")[1];
         }
 
-        if ("1".startsWith(this.ssl)) {
+
+        if ("1".equals(this.ssl) || "true".equalsIgnoreCase(this.ssl)) {
             url = "https://" + url;
         } else {
             url = "http://" + url;
         }
+
+
 
 
         return url;
