@@ -206,7 +206,7 @@ public class WechatService {
             Token token = TokenAPI.token(wechat.v("appId"), wechat.v("secret"));
             logger.info("Get new token " + token);
             wechat.setValue("accessToken", token.getAccess_token());
-            wechat.setValue("tokenExpires", new Date(System.currentTimeMillis() + token.getExpires_in() * 1000 - 1000 * 60 * 90)); // 每半小时刷新一次
+            wechat.setValue("tokenExpires", new Date(System.currentTimeMillis() + 1000 * 60 * 15)); // 每15分钟刷新一次
             changed = true;
         }
 
@@ -217,7 +217,7 @@ public class WechatService {
             Ticket ticket = TicketAPI.ticketGetticket(accessToken);
             logger.info("ticket " + ticket);
             wechat.setValue("jsapiTicket", ticket.getTicket());
-            wechat.setValue("ticketExpires", new Date(System.currentTimeMillis() + ticket.getExpires_in() * 1000 - 1000 * 60 * 90));
+            wechat.setValue("ticketExpires", new Date(System.currentTimeMillis() + 1000 * 60 * 15));
             changed = true;
         }
 
