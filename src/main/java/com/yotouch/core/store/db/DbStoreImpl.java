@@ -137,6 +137,8 @@ public class DbStoreImpl implements DbStore {
             sql += name + " TIMESTAMP NULL DEFAULT NULL , ";
         } else if (Consts.META_FIELD_DATA_TYPE_INT.equalsIgnoreCase(mf.getDataType())) {
             sql += name + " INT, ";
+        } else if (Consts.META_FIELD_DATA_TYPE_LONG.equalsIgnoreCase(mf.getDataType())) {
+            sql += name + " BIGINT, ";
         } else if (Consts.META_FIELD_DATA_TYPE_DOUBLE.equalsIgnoreCase(mf.getDataType())) {
             sql += name + " DOUBLE, ";
         } else if (Consts.META_FIELD_DATA_TYPE_TEXT.equalsIgnoreCase(mf.getDataType())) {
@@ -258,6 +260,12 @@ public class DbStoreImpl implements DbStore {
                 ps.setObject(idx, null);
             } else {
                 ps.setInt(idx, (Integer) fv.getValue());
+            }
+        } else if (Consts.META_FIELD_DATA_TYPE_LONG.equals(mf.getDataType())) {
+            if (fv.getValue() == null) {
+                ps.setObject(idx, null);
+            } else {
+                ps.setLong(idx, (Long) fv.getValue());
             }
         } else if (Consts.META_FIELD_DATA_TYPE_DOUBLE.equals(mf.getDataType())) {
             Double v = (Double) fv.getValue();

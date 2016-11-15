@@ -116,7 +116,9 @@ public class WebUtil {
         } else if (mf.isSingleReference()) {
             e.setValue(mf.getName(), request.getParameter(name));
         } else if (Consts.META_FIELD_TYPE_DATA_FIELD.equalsIgnoreCase(mf.getFieldType())) {
+
             if (Consts.META_FIELD_DATA_TYPE_INT.equals(mf.getDataType())
+                    || Consts.META_FIELD_DATA_TYPE_LONG.equals(mf.getDataType())
                     || Consts.META_FIELD_DATA_TYPE_DOUBLE.equals(mf.getDataType())) {
                 if (StringUtils.isEmpty(value)) {
                     return;

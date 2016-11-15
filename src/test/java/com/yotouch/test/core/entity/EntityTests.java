@@ -236,9 +236,28 @@ public class EntityTests {
         List<Entity> newRelated = item2.mr(dbSession, "relatedItems");
         assertEquals(1, newRelated.size());
         assertEquals(item, newRelated.get(0));
-
-
-        
     }
-    
+
+    @Test
+    public void testLong() {
+
+        YotouchRuntime rt = ytApp.getRuntime();
+
+        DbSession ds = rt.createDbSession();
+        logger.info("DbSession : " + ds);
+
+        Entity e = ds.newEntity("user");
+        e.setValue("nickname", "Long");
+        assertNull(e.getUuid());
+        e.setValue("lastTouched", System.currentTimeMillis());
+        e = ds.save(e);
+
+        Entity e1 = ds.getEntity("user", e.getUuid());
+
+        long lt = e1.v("lastTouched");
+
+        assertEquals((long)e.v("lastTouched"), lt);
+
+    }
+
 }

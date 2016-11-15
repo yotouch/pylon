@@ -2,6 +2,7 @@ package com.yotouch.core.entity;
 
 import java.util.Map;
 
+import com.yotouch.core.entity.mf.LongMetaFieldImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,6 +116,8 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
                 mfi = new DateTimeMetaFieldImpl();
             } else if (Consts.META_FIELD_DATA_TYPE_INT.equalsIgnoreCase(dataType)) {
                 mfi = new IntMetaFieldImpl();
+            } else if (Consts.META_FIELD_DATA_TYPE_LONG.equalsIgnoreCase(dataType)) {
+                mfi = new LongMetaFieldImpl();
             } else if (Consts.META_FIELD_DATA_TYPE_DOUBLE.equalsIgnoreCase(dataType)) {
                 mfi = new DoubleMetaFieldImpl();
             } else if (Consts.META_FIELD_DATA_TYPE_BOOLEAN.equalsIgnoreCase(dataType)) {
