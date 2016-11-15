@@ -3,6 +3,7 @@ package com.yotouch.base.service;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -34,7 +35,10 @@ import com.yotouch.core.runtime.DbSession;
 import com.yotouch.core.runtime.YotouchApplication;
 import com.yotouch.base.wechat.ContextInterceptor;
 
-import org.springframework.util.StringUtils;
+import weixin.popular.api.TicketAPI;
+import weixin.popular.api.TokenAPI;
+import weixin.popular.bean.ticket.Ticket;
+import weixin.popular.bean.token.Token;
 
 public class WechatService {
 
@@ -70,7 +74,8 @@ public class WechatService {
         mpService.setWxMpConfigStorage(mpConfig);
         wxMpMessageRouter = new WxMpMessageRouter(mpService);
     }
-    
+
+    @Deprecated
     public Entity getWechatEntity() {
         DbSession dbSession = this.ytApp.getRuntime().createDbSession();
         Entity wechat = dbSession.queryOneRawSql("wechat", "appId = ?", new Object[]{this.appId});
@@ -166,9 +171,7 @@ public class WechatService {
         user.setValue("country", wxUser.getCountry());
         user.setValue("headImgUrl", wxUser.getHeadImgUrl());
         user.setValue("language", wxUser.getLanguage());
-        if (StringUtils.isEmpty(user.getValue("nickname"))) {
-            user.setValue("nickname", wxUser.getNickname());
-        }
+        user.setValue("nickname", wxUser.getNickname());
         user.setValue("province", wxUser.getProvince());
         user.setValue("gender", wxUser.getSexId());
         logger.info("Subscribed " + wxUser.getSubscribe());
@@ -190,5 +193,36 @@ public class WechatService {
 
     public void sendTemplateMessage(WxMpTemplateMessage tplMsg) throws WxErrorException {
         this.mpService.templateSend(tplMsg);
+    }
+
+    public void checkAndRefreshAccessToken() {
+
+        DbSession dbSession = this.ytApp.getRuntime().createDbSession();
+        Entity wechat = dbSession.queryOneRawSql("wechat", "appId = ?", new Object[]{appId});
+
+        boolean changed = false;
+        Calendar tokenExpires = wechat.v("tokenExpires");
+        if (tokenExpires == null || tokenExpires.getTime().getTime() <= System.currentTimeMillis()) {
+            Token token = TokenAPI.token(wechat.v("appId"), wechat.v("secret"));
+            logger.info("Get new token " + token);
+            wechat.setValue("accessToken", token.getAccess_token());
+            wechat.setValue("tokenExpires", new Date(System.currentTimeMillis() + token.getExpires_in() * 1000 - 1000 * 60 * 90)); // 每半小时刷新一次
+            changed = true;
+        }
+
+        Calendar ticketExpires = wechat.v("ticketExpires");
+        if (ticketExpires == null || ticketExpires.getTime().getTime() <= System.currentTimeMillis()) {
+            String accessToken = wechat.v("accessToken");
+            logger.info("accessToken " + accessToken);
+            Ticket ticket = TicketAPI.ticketGetticket(accessToken);
+            logger.info("ticket " + ticket);
+            wechat.setValue("jsapiTicket", ticket.getTicket());
+            wechat.setValue("ticketExpires", new Date(System.currentTimeMillis() + ticket.getExpires_in() * 1000 - 1000 * 60 * 90));
+            changed = true;
+        }
+
+        if (changed) {
+            dbSession.save(wechat);
+        }
     }
 }
