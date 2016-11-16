@@ -3,6 +3,7 @@ package com.yotouch.base.service;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -35,8 +36,11 @@ import com.yotouch.core.runtime.DbSession;
 import com.yotouch.core.runtime.YotouchApplication;
 import com.yotouch.base.wechat.ContextInterceptor;
 
+import weixin.popular.api.MessageAPI;
 import weixin.popular.api.TicketAPI;
 import weixin.popular.api.TokenAPI;
+import weixin.popular.bean.BaseResult;
+import weixin.popular.bean.message.message.NewsMessage;
 import weixin.popular.bean.ticket.Ticket;
 import weixin.popular.bean.token.Token;
 
@@ -189,6 +193,17 @@ public class WechatService {
     public void sendTextMessage(String openId, String content) throws WxErrorException {
         WxMpCustomMessage msg = WxMpCustomMessage.TEXT().toUser(openId).content(content).build();
         this.mpService.customMessageSend(msg);
+    }
+
+    public boolean sendNews(String openId, String title, String desc, String url, String picUrl) {
+
+        Entity wechat = this.getWechatEntity();
+
+        NewsMessage.Article article = new NewsMessage.Article(title, desc, url, picUrl);
+        NewsMessage nm = new NewsMessage(openId, Arrays.asList(article));
+        BaseResult ret = MessageAPI.messageCustomSend(wechat.v("accessToken"), nm);
+
+        return ret.isSuccess();
     }
 
     public void sendTemplateMessage(WxMpTemplateMessage tplMsg) throws WxErrorException {

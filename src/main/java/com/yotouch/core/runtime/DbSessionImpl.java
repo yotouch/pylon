@@ -224,6 +224,11 @@ public class DbSessionImpl implements DbSession {
 
     @Override
     public Entity queryOneRawSql(String entityName, String where, Object[] args) {
+
+        if (!where.toLowerCase().contains("limit")) {
+            where += " LIMIT 1 ";
+        }
+
         List<Entity> el = this.queryRawSql(entityName, where, args);
         if (el.isEmpty()) {
             return null;
