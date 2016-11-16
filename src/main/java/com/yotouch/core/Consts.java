@@ -7,6 +7,7 @@ public interface Consts {
     String META_FIELD_DATA_TYPE_DATETIME    = "DATETIME";
     String META_FIELD_DATA_TYPE_OBJECT      = "OBJECT";
     String META_FIELD_DATA_TYPE_INT         = "INT";
+    String META_FIELD_DATA_TYPE_LONG        = "LONG";
     String META_FIELD_DATA_TYPE_DOUBLE      = "DOUBLE";
     String META_FIELD_DATA_TYPE_TEXT        = "TEXT";
     String META_FIELD_DATA_TYPE_BINARY      = "BINARY";

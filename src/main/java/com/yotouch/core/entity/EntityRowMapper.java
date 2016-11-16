@@ -64,6 +64,8 @@ public class EntityRowMapper implements RowMapper<Entity> {
 
                 if (Consts.META_FIELD_DATA_TYPE_INT.equalsIgnoreCase(qf.getDataType())) {
                     e.setValue(qf.getName(), rs.getInt(idx));
+                } else if (Consts.META_FIELD_DATA_TYPE_LONG.equalsIgnoreCase(qf.getDataType())) {
+                        e.setValue(qf.getName(), rs.getLong(idx));
                 } else if (Consts.META_FIELD_DATA_TYPE_DOUBLE.equalsIgnoreCase(qf.getDataType())) {
                     e.setValue(qf.getName(), rs.getDouble(idx));
                 }
@@ -121,6 +123,8 @@ public class EntityRowMapper implements RowMapper<Entity> {
                 e.setValue(fname, d);
             } else if (Consts.META_FIELD_DATA_TYPE_INT.equals(mf.getDataType())) {
                 e.setValue(fname, rs.getInt(fname));
+            } else if (Consts.META_FIELD_DATA_TYPE_LONG.equals(mf.getDataType())) {
+                e.setValue(fname, rs.getLong(fname));
             } else if (Consts.META_FIELD_DATA_TYPE_DOUBLE.equals(mf.getDataType())) {
                 e.setValue(fname, rs.getDouble(fname));
             } else if (Consts.META_FIELD_DATA_TYPE_BINARY.equals(mf.getDataType())) {

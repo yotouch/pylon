@@ -29,6 +29,8 @@ entities:
             dataType: STRING
         age:
             dataType: INT
+        lastTouched:
+            dataType: LONG
 
     party:
         name:
