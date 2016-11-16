@@ -195,7 +195,7 @@ public class WechatService {
         this.mpService.customMessageSend(msg);
     }
 
-    public boolean sendNews(String openId, String title, String desc, String url, String picUrl) {
+    public String sendNews(String openId, String title, String desc, String url, String picUrl) {
 
         Entity wechat = this.getWechatEntity();
 
@@ -203,11 +203,26 @@ public class WechatService {
         NewsMessage nm = new NewsMessage(openId, Arrays.asList(article));
         BaseResult ret = MessageAPI.messageCustomSend(wechat.v("accessToken"), nm);
 
-        return ret.isSuccess();
+        if (ret.getErrcode().equals("40001")) {
+            wechat = this.refreshAccessToken();
+            ret = MessageAPI.messageCustomSend(wechat.v("accessToken"), nm);
+        }
+
+        return ret.getErrcode();
     }
 
     public void sendTemplateMessage(WxMpTemplateMessage tplMsg) throws WxErrorException {
         this.mpService.templateSend(tplMsg);
+    }
+
+    public Entity refreshAccessToken() {
+        DbSession dbSession = this.ytApp.getRuntime().createDbSession();
+        Entity wechat = dbSession.queryOneRawSql("wechat", "appId = ?", new Object[]{appId});
+
+        this.refreshToken(wechat);
+        this.refreshJsTicket(wechat);
+
+        return dbSession.save(wechat);
     }
 
     public void checkAndRefreshAccessToken() {
@@ -218,26 +233,34 @@ public class WechatService {
         boolean changed = false;
         Calendar tokenExpires = wechat.v("tokenExpires");
         if (tokenExpires == null || tokenExpires.getTime().getTime() <= System.currentTimeMillis()) {
-            Token token = TokenAPI.token(wechat.v("appId"), wechat.v("secret"));
-            logger.info("Get new token " + token);
-            wechat.setValue("accessToken", token.getAccess_token());
-            wechat.setValue("tokenExpires", new Date(System.currentTimeMillis() + 1000 * 60 * 15)); // 每15分钟刷新一次
+            refreshToken(wechat);
             changed = true;
         }
 
         Calendar ticketExpires = wechat.v("ticketExpires");
         if (ticketExpires == null || ticketExpires.getTime().getTime() <= System.currentTimeMillis()) {
-            String accessToken = wechat.v("accessToken");
-            logger.info("accessToken " + accessToken);
-            Ticket ticket = TicketAPI.ticketGetticket(accessToken);
-            logger.info("ticket " + ticket);
-            wechat.setValue("jsapiTicket", ticket.getTicket());
-            wechat.setValue("ticketExpires", new Date(System.currentTimeMillis() + 1000 * 60 * 15));
+            refreshJsTicket(wechat);
             changed = true;
         }
 
         if (changed) {
             dbSession.save(wechat);
         }
+    }
+
+    private void refreshJsTicket(Entity wechat) {
+        String accessToken = wechat.v("accessToken");
+        logger.info("accessToken " + accessToken);
+        Ticket ticket = TicketAPI.ticketGetticket(accessToken);
+        logger.info("ticket " + ticket);
+        wechat.setValue("jsapiTicket", ticket.getTicket());
+        wechat.setValue("ticketExpires", new Date(System.currentTimeMillis() + 1000 * 60 * 15));
+    }
+
+    private void refreshToken(Entity wechat) {
+        Token token = TokenAPI.token(wechat.v("appId"), wechat.v("secret"));
+        logger.info("Get new token " + token);
+        wechat.setValue("accessToken", token.getAccess_token());
+        wechat.setValue("tokenExpires", new Date(System.currentTimeMillis() + 1000 * 60 * 15)); // 每15分钟刷新一次
     }
 }
