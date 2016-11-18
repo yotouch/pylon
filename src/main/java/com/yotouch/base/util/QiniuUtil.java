@@ -89,6 +89,10 @@ public class QiniuUtil {
         return this.upload("attachment/" + att.getUuid(), att.v("content"), params);
     }
 
+    public String upload(Entity att) throws IOException {
+        return this.upload("attachment/" + att.getUuid(), att.v("content"), null);
+    }
+
     public String getQiniuUrl(Entity att) {
         if (att == null) {
             return "";
