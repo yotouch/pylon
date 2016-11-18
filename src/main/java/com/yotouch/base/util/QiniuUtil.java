@@ -85,6 +85,10 @@ public class QiniuUtil {
         }
     }
 
+    public String upload(String name, byte[] content) throws IOException {
+        return this.upload(name, content, null);
+    }
+
     public String upload(Entity att, StringMap params) throws IOException {
         return this.upload("attachment/" + att.getUuid(), att.v("content"), params);
     }
