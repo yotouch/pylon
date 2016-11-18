@@ -6,11 +6,11 @@ import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
+import com.qiniu.util.StringMap;
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.runtime.DbSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -64,9 +64,9 @@ public class QiniuUtil {
         return auth.uploadToken(bucket, key);
     }
 
-    public String upload(String name, byte[] content) throws IOException {
+    public String upload(String name, byte[] content, StringMap params) throws IOException {
         try {
-            Response res = uploadManager.put(content, name, this.getOverwriteToken(name));
+            Response res = uploadManager.put(content, name, this.getOverwriteToken(name), params, null, false);
 
             // {"hash":"Fpi5b04B_7eMUiy_dyiRaz6elwYZ","key":"067046ba-4639-4a36-ad47-edd4882b7c1e"}
 
@@ -85,8 +85,8 @@ public class QiniuUtil {
         }
     }
 
-    public String upload(Entity att) throws IOException {
-        return this.upload("attachment/" + att.getUuid(), att.v("content"));
+    public String upload(Entity att, StringMap params) throws IOException {
+        return this.upload("attachment/" + att.getUuid(), att.v("content"), params);
     }
 
     public String getQiniuUrl(Entity att) {
@@ -102,13 +102,18 @@ public class QiniuUtil {
     }
 
     public String getAndUploadQiniuUrl(DbSession dbSession, Entity att) throws IOException {
+        return this.getAndUploadQiniuUrl(dbSession, att, null);
+    }
+
+
+    public String getAndUploadQiniuUrl(DbSession dbSession, Entity att, StringMap params) throws IOException {
         if (att == null) {
             return "";
         }
 
         String qiniuUrl = att.v("qiniuUrl");
         if (StringUtils.isEmpty(qiniuUrl)) {
-            qiniuUrl = this.upload(att);
+            qiniuUrl = this.upload(att, params);
 
             att.setValue("qiniuUrl", qiniuUrl);
             att = dbSession.save(att);
@@ -116,6 +121,5 @@ public class QiniuUtil {
 
         return "http://" + this.domain + "/" + qiniuUrl;
     }
-
 
 }
