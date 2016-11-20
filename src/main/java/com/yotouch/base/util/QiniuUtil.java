@@ -17,6 +17,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.sql.Timestamp;
 
 
 @Component
@@ -130,4 +131,32 @@ public class QiniuUtil {
         return "http://" + this.domain + "/" + qiniuUrl;
     }
 
+    public String convertToMp3(byte[] content) throws IOException {
+
+        String name =  "/attachment/" + getTimestamp() + "_" + Math.random() * 100;
+        StringMap params = new StringMap();
+        try {
+            Response res = uploadManager.put(content, name, this.getOverwriteToken(name), params, null, false);
+
+            // {"persistentId": <persistentId>}
+            JSONObject obj = JSON.parseObject(res.bodyString());
+
+            return obj.getString("persistentId");
+        } catch (QiniuException e) {
+            Response r = e.response;
+            logger.error(r.toString(), e);;
+            try {
+                //响应的文本信息
+                return r.bodyString();
+            } catch (QiniuException e1) {
+                return "";
+            }
+        }
+    }
+
+    protected long getTimestamp() {
+        java.util.Date date= new java.util.Date();
+        long timestamp = new Timestamp(date.getTime()).getTime();
+        return timestamp;
+    }
 }
