@@ -70,6 +70,10 @@ public class QiniuUtil {
         return auth.uploadToken(bucket, key);
     }
 
+    private String getOverwriteToken(String bucket, String key, StringMap policy) {
+        return auth.uploadToken(bucket, key, 3600, policy);
+    }
+
     public String upload(String name, byte[] content, StringMap params) throws IOException {
         try {
             Response res = uploadManager.put(content, name, this.getOverwriteToken(name), params, null, false);
@@ -138,13 +142,13 @@ public class QiniuUtil {
 
     public String convertToMp3(byte[] content) throws IOException {
 
-        String name =  "/attachment/" + System.currentTimeMillis() + "_" + Math.random() * 100;
-        StringMap params = new StringMap();
-        params.put("persistentOps","avthumb/mp3");
-        params.put("persistentNotifyUrl", host + persistentNotifyUrl);
+        String name =  "attachment/" + System.currentTimeMillis() + "_" + Math.random() * 100;
+        StringMap policy = new StringMap();
+        policy.put("persistentOps","avthumb/mp3");
+        policy.put("persistentNotifyUrl", host + persistentNotifyUrl);
 
         try {
-            Response res = uploadManager.put(content, name, this.getOverwriteToken(name), params, null, false);
+            Response res = uploadManager.put(content, name, getOverwriteToken(this.bucket, name, policy));
 
             // {"persistentId": <persistentId>}
             JSONObject obj = JSON.parseObject(res.bodyString());
