@@ -43,3 +43,5 @@ entities:
             dataType: STRING
         qiniuUrl:
             dataType: STRING
+        persistentId:
+            dataType: STRING
