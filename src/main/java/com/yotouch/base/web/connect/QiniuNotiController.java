@@ -48,7 +48,7 @@ public class QiniuNotiController extends BaseController{
         }
     }
 
-    protected Entity getAttachment(DbSession dbSession, String persistentId) {
+    private Entity getAttachment(DbSession dbSession, String persistentId) {
         Entity attachemnt = dbSession.queryOneRawSql(
                 "attachment",
                 "persistentId = ? AND status = ?",

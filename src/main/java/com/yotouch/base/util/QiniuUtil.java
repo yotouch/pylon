@@ -17,7 +17,6 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.sql.Timestamp;
 
 
 @Component
@@ -139,7 +138,7 @@ public class QiniuUtil {
 
     public String convertToMp3(byte[] content) throws IOException {
 
-        String name =  "/attachment/" + getTimestamp() + "_" + Math.random() * 100;
+        String name =  "/attachment/" + System.currentTimeMillis() + "_" + Math.random() * 100;
         StringMap params = new StringMap();
         params.put("persistentOps","avthumb/mp3");
         params.put("persistentNotifyUrl", host + persistentNotifyUrl);
@@ -163,9 +162,4 @@ public class QiniuUtil {
         }
     }
 
-    protected long getTimestamp() {
-        java.util.Date date= new java.util.Date();
-        long timestamp = new Timestamp(date.getTime()).getTime();
-        return timestamp;
-    }
 }
