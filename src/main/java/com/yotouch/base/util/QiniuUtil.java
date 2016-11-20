@@ -37,6 +37,12 @@ public class QiniuUtil {
     @Value("${qiniu.domain:}")
     private String domain;
 
+    @Value("${qiniu.persistentNotifyUrl:}")
+    private String persistentNotifyUrl;
+
+    @Value("${app.host:}")
+    private String host;
+
     private Auth auth;
 
     private UploadManager uploadManager;
@@ -135,6 +141,9 @@ public class QiniuUtil {
 
         String name =  "/attachment/" + getTimestamp() + "_" + Math.random() * 100;
         StringMap params = new StringMap();
+        params.put("persistentOps","avthumb/mp3");
+        params.put("persistentNotifyUrl", host + persistentNotifyUrl);
+
         try {
             Response res = uploadManager.put(content, name, this.getOverwriteToken(name), params, null, false);
 
