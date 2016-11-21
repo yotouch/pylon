@@ -38,7 +38,7 @@ public class QiniuNotiController extends BaseController{
             String persistentId = rootNode.get("id").toString().trim();
             Entity attachment = getAttachment(dbSession, persistentId);
             if (attachment != null) {
-                String key = rootNode.get("items").get(0).get("key").toString();
+                String key = rootNode.get("items").get(0).get("key").toString().trim();
                 String qiniuUrl = "http://" + this.domain + "/" + key;
                 attachment.setValue("qiniuUrl", qiniuUrl);
                 dbSession.save(attachment);
