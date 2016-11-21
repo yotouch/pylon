@@ -45,6 +45,7 @@ public class ConfigureImpl implements Configure {
             logger.info("Get YT_HOME from environment: " + ytRuntimeHome);
 
             if (ytRuntimeHome == null) {
+                this.ytHome = new File(System.getProperty("user.dir"));
                 /*
                 URL location = ConfigureImpl.class.getProtectionDomain().getCodeSource().getLocation();
                 this.ytHome = new File(location.getFile());
