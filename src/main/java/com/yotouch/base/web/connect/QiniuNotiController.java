@@ -35,10 +35,11 @@ public class QiniuNotiController extends BaseController{
         ObjectMapper mapper = new ObjectMapper();
         try {
             JsonNode rootNode = mapper.readTree(jsonString);
-            String persistentId = rootNode.get("id").toString().trim();
+            String persistentId = rootNode.get("id").textValue().trim();
             Entity attachment = getAttachment(dbSession, persistentId);
             if (attachment != null) {
-                String key = rootNode.get("items").get(0).get("key").toString().trim();
+                String key = rootNode.get("items").get(0).get("key").textValue().trim();
+
                 String qiniuUrl = "http://" + this.domain + "/" + key;
                 attachment.setValue("qiniuUrl", qiniuUrl);
                 dbSession.save(attachment);
