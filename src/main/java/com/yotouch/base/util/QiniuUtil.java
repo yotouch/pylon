@@ -39,9 +39,6 @@ public class QiniuUtil {
     @Value("${qiniu.persistentNotifyUrl:}")
     private String persistentNotifyUrl;
 
-    @Value("${app.host:}")
-    private String host;
-
     private Auth auth;
 
     private UploadManager uploadManager;
@@ -140,7 +137,7 @@ public class QiniuUtil {
         return "http://" + this.domain + "/" + qiniuUrl;
     }
 
-    public String convertToMp3(byte[] content) throws IOException {
+    public String convertToMp3(byte[] content, String host) throws IOException {
 
         String name =  "attachment/" + System.currentTimeMillis() + "_" + Math.random() * 100;
         StringMap policy = new StringMap();
