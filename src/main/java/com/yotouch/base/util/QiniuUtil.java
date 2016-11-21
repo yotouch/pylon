@@ -142,7 +142,7 @@ public class QiniuUtil {
         String name =  "attachment/" + System.currentTimeMillis() + "_" + Math.random() * 100;
         StringMap policy = new StringMap();
         policy.put("persistentOps","avthumb/mp3");
-        policy.put("persistentNotifyUrl",  host + persistentNotifyUrl);
+        policy.put("persistentNotifyUrl", host + persistentNotifyUrl);
 
         try {
             Response res = uploadManager.put(content, name, getOverwriteToken(this.bucket, name, policy));
