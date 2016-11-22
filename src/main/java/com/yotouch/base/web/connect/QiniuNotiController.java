@@ -32,6 +32,7 @@ public class QiniuNotiController extends BaseController{
     ) {
         DbSession dbSession = this.getDbSession(request);
         jsonString = URLDecoder.decode(jsonString);
+        logger.info(jsonString + "转码传回来的json");
         ObjectMapper mapper = new ObjectMapper();
         try {
             JsonNode rootNode = mapper.readTree(jsonString);

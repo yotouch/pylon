@@ -39,6 +39,9 @@ public class QiniuUtil {
     @Value("${qiniu.persistentNotifyUrl:}")
     private String persistentNotifyUrl;
 
+    @Value("${qiniu.pipeline:}")
+    private String pipeline;
+
     private Auth auth;
 
     private UploadManager uploadManager;
@@ -142,6 +145,7 @@ public class QiniuUtil {
         String name =  "attachment/" + System.currentTimeMillis() + "_" + Math.random() * 100;
         StringMap policy = new StringMap();
         policy.put("persistentOps","avthumb/mp3");
+        policy.put("persistentPipeline", this.pipeline);
         policy.put("persistentNotifyUrl", host + persistentNotifyUrl);
 
         try {
