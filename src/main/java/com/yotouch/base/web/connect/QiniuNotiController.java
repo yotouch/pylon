@@ -32,6 +32,7 @@ public class QiniuNotiController extends BaseController{
     ) {
         DbSession dbSession = this.getDbSession(request);
         jsonString = URLDecoder.decode(jsonString);
+        logger.info(jsonString + "转码传回来的json");
         ObjectMapper mapper = new ObjectMapper();
         try {
             JsonNode rootNode = mapper.readTree(jsonString);
@@ -39,8 +40,8 @@ public class QiniuNotiController extends BaseController{
             Entity attachment = getAttachment(dbSession, persistentId);
             if (attachment != null) {
                 String key = rootNode.get("items").get(0).get("key").textValue().trim();
-
                 String qiniuUrl = "http://" + this.domain + "/" + key;
+                logger.info(qiniuUrl + "回传的七牛链接");
                 attachment.setValue("qiniuUrl", qiniuUrl);
                 dbSession.save(attachment);
             }
