@@ -88,11 +88,14 @@ springBoot {
 	mainClass = "com.yotouch.base.PylonApplication"
 }
 
+//如果pylon作为一个单独的项目来用
+//需要在build.gradle中加上这些设置
 //bootRun {
 //    // support passing -Dsystem.property=value to bootRun task
 //	systemProperties System.properties
 //}
 
+//或下面这种配置  才可以用-D来传递参数
 // see http://mrhaki.blogspot.com/2015/09/grails-goodness-passing-system.html
 // we configure the run and bootRun tasks and use System.properties with the Java system properties from the command-line as argument for the systemProperties method:
 [bootRun].each { runTask ->
@@ -101,12 +104,10 @@ springBoot {
     }
 }
 
-// see http://mrhaki.blogspot.com/2015/09/gradle-goodness-pass-java-system.html
-// The run task added by the application plugin
-// is also of type JavaExec.
-//tasks.withType(JavaExec) {
-//    // Assign all Java system properties from
-//    // the command line to the JavaExec task.
-//    systemProperties System.properties
+//如果pylon作为一个项目的子项目来用，需要在根项目的build.gradle中加上下面的这些设置 才可以用-D来传递参数
+//subprojects {
+//    tasks.withType(JavaExec) {
+//        systemProperties System.properties
+//    }
 //}
 
