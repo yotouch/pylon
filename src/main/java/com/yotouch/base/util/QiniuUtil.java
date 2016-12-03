@@ -167,4 +167,19 @@ public class QiniuUtil {
         }
     }
 
+    public String getVideoQiniuUrl(byte[] videoContent) {
+        String name =  "attachment/" + System.currentTimeMillis() + "_" + Math.random() * 100;
+
+        String qiniuUrl = "";
+        try {
+            qiniuUrl = this.upload(name, videoContent);
+            return "http://" + this.domain + "/" + qiniuUrl;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return qiniuUrl;
+
+    }
+
 }
