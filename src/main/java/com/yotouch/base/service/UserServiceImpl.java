@@ -156,6 +156,7 @@ public class UserServiceImpl implements UserService {
 
         List<Entity> users = new ArrayList<Entity>();
         List<Entity> roles = roleService.getAllChildRoles(dbSession, role);
+        roles.add(role);
         List<Entity> userRoles = getUserRoles(dbSession, roles);
 
         for (Entity userRole : userRoles) {

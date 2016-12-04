@@ -16,6 +16,7 @@ public class DateTimeUtil {
             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"),
             new SimpleDateFormat("yyyy-MM-dd HH:mm"),
             new SimpleDateFormat("yyyyMMddHHmmss"),
+            new SimpleDateFormat("yyyy-MM-dd"),
     };
 
     static final SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
