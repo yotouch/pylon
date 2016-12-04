@@ -54,7 +54,7 @@ public class EntityImpl implements Entity {
     }
 
     @Override
-    public <T> void setValue(String fieldName, Object value) {
+    public <T> Entity setValue(String fieldName, Object value) {
         MetaField<?> mf = this.me.getMetaField(fieldName);
         
         if (mf == null) {
@@ -71,6 +71,8 @@ public class EntityImpl implements Entity {
         }
         
         this.valueMap.put(mf.getName(), fv);
+
+        return this;
     }
 
     @Override
