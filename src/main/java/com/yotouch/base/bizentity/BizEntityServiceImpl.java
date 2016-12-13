@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.yotouch.core.workflow.AfterActionHandler;
 import com.yotouch.core.workflow.BeforeActionHandler;
+import com.yotouch.core.workflow.CanDoActionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -107,6 +108,11 @@ public class BizEntityServiceImpl implements BizEntityService {
         afterActionHandler.doAfterAction(dbSession, actionName, entity);
 
         return this.convert(entity);
+    }
+
+    @Override
+    public boolean canDoAction(DbSession dbSession, WorkflowAction wa, Entity entity, CanDoActionHandler canDoActionHandler) {
+        return canDoActionHandler.canDoAction(dbSession, wa, entity);
     }
 
     @Transactional
