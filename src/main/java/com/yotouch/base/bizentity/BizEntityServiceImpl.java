@@ -2,8 +2,11 @@ package com.yotouch.base.bizentity;
 
 import java.util.List;
 
+import com.yotouch.core.workflow.AfterActionHandler;
+import com.yotouch.core.workflow.BeforeActionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.yotouch.core.Consts;
@@ -45,16 +48,29 @@ public class BizEntityServiceImpl implements BizEntityService {
     }
 
     @Override
+    public BizEntity doAction(DbSession dbSession, String actionName, BizEntity bizEntity) {
+        return this.doAction(dbSession, actionName, bizEntity.getEntity());
+    }
+
+    @Override
     public BizEntity doAction(DbSession dbSession, String actionName, Entity entity) {
+
+        WorkflowAction wfa = checkWorkflowAndGetAction(actionName, entity);
         
+        entity.setValue(Consts.BIZ_ENTITY_FIELD_STATE, wfa.getTo().getName());
+        entity = dbSession.save(entity);
+        return this.convert(entity);
+    }
+
+    private WorkflowAction checkWorkflowAndGetAction(String actionName, Entity entity) {
         BizMetaEntity bme = this.beMgr.getBizMetaEntityByEntity(entity.getMetaEntity().getName());
-        
+
         if (bme == null) {
             throw new WorkflowException("No such workflow for MetaEntity [ "+entity.getMetaEntity().getName()+"]");
         }
-        
+
         Workflow wf = bme.getWorkflow();
-        
+
         String stateName = entity.v(Consts.BIZ_ENTITY_FIELD_STATE);
         WorkflowState wfState = null;
         if (StringUtils.isEmpty(stateName)) {
@@ -62,36 +78,54 @@ public class BizEntityServiceImpl implements BizEntityService {
         } else {
             wfState = wf.getState(stateName);
         }
-        
+
         if (wfState == null) {
             throw new WorkflowException("No such state [" + entity.v(Consts.BIZ_ENTITY_FIELD_STATE) + "] for workfow [ " + wf.getName() + "]");
         }
-        
+
         List<WorkflowAction> actList = wfState.getOutActions();
         WorkflowAction wfa = null;
-        
+
         for (WorkflowAction act: actList) {
             if (act.getName().equalsIgnoreCase(actionName)) {
                 wfa = act;
                 break;
             }
-        }                
-        
+        }
+
         if (wfa == null) {
             throw new WorkflowException("No such action [" + actionName + "] for workflow [" + wf.getName() + "]");
         }
-        
-        // before action
-        
-        // transit
-        entity.setValue(Consts.BIZ_ENTITY_FIELD_STATE, wfa.getTo().getName());
-        entity = dbSession.save(entity);
-        
-        // after action
-        
+        return wfa;
+    }
+
+    @Override
+    public BizEntity doAction(DbSession dbSession, String actionName, Entity entity, BeforeActionHandler beforeActionHandler, AfterActionHandler afterActionHandler) throws WorkflowException {
+
+        entity = doTransit(dbSession, actionName, entity, beforeActionHandler);
+
+        afterActionHandler.doAfterAction(dbSession, actionName, entity);
+
         return this.convert(entity);
     }
-    
-    
+
+    @Transactional
+    private Entity doTransit(DbSession dbSession, String actionName, Entity entity, BeforeActionHandler beforeActionHandler) {
+        WorkflowAction wfa = checkWorkflowAndGetAction(actionName, entity);
+        beforeActionHandler.doBeforeAction(dbSession, actionName, entity);
+
+        entity.setValue(Consts.BIZ_ENTITY_FIELD_STATE, wfa.getTo().getName());
+        entity = dbSession.save(entity);
+
+        Entity wfaLog = dbSession.newEntity("workflowActionLog");
+        wfaLog.setValue("action", actionName);
+        wfaLog.setValue("workflow", wfa.getWorkflow().getName());
+        wfaLog.setValue("entityUuid", entity.getUuid());
+        dbSession.save(wfaLog);
+
+        return entity;
+
+    }
+
 
 }

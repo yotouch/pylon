@@ -17,6 +17,11 @@ public class WorkflowActionImpl implements WorkflowAction {
     }
 
     @Override
+    public Workflow getWorkflow() {
+        return wf;
+    }
+
+    @Override
     public String getName() {
         return this.name;
     }
