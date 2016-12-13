@@ -5,6 +5,6 @@ import com.yotouch.core.runtime.DbSession;
 
 public interface AfterActionHandler extends ActionHook {
 
-    void doAfterAction(DbSession dbSession, String actionName, Entity entity);
+    void doAfterAction(DbSession dbSession, WorkflowAction workflowAction, Entity entity);
 
 }

@@ -103,9 +103,11 @@ public class BizEntityServiceImpl implements BizEntityService {
     @Override
     public BizEntity doAction(DbSession dbSession, String actionName, Entity entity, BeforeActionHandler beforeActionHandler, AfterActionHandler afterActionHandler) throws WorkflowException {
 
-        entity = doTransit(dbSession, actionName, entity, beforeActionHandler);
+        TransitResult tr = doTransit(dbSession, actionName, entity, beforeActionHandler);
+        entity = tr.entity;
+        WorkflowAction wfa = tr.wfa;
 
-        afterActionHandler.doAfterAction(dbSession, actionName, entity);
+        afterActionHandler.doAfterAction(dbSession, wfa, entity);
 
         return this.convert(entity);
     }
@@ -116,9 +118,9 @@ public class BizEntityServiceImpl implements BizEntityService {
     }
 
     @Transactional
-    private Entity doTransit(DbSession dbSession, String actionName, Entity entity, BeforeActionHandler beforeActionHandler) {
+    private TransitResult doTransit(DbSession dbSession, String actionName, Entity entity, BeforeActionHandler beforeActionHandler) {
         WorkflowAction wfa = checkWorkflowAndGetAction(actionName, entity);
-        beforeActionHandler.doBeforeAction(dbSession, actionName, entity);
+        beforeActionHandler.doBeforeAction(dbSession, wfa, entity);
 
         entity.setValue(Consts.BIZ_ENTITY_FIELD_STATE, wfa.getTo().getName());
         entity = dbSession.save(entity);
@@ -129,8 +131,17 @@ public class BizEntityServiceImpl implements BizEntityService {
         wfaLog.setValue("entityUuid", entity.getUuid());
         dbSession.save(wfaLog);
 
-        return entity;
+        return new TransitResult(wfa, entity);
+    }
 
+    class TransitResult {
+        WorkflowAction wfa;
+        Entity entity;
+
+        public TransitResult(WorkflowAction wfa, Entity entity) {
+            this.wfa = wfa;
+            this.entity = entity;
+        }
     }
 
 

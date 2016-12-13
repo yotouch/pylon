@@ -5,6 +5,6 @@ import com.yotouch.core.runtime.DbSession;
 
 public interface BeforeActionHandler extends ActionHook {
 
-    void doBeforeAction(DbSession dbSession, String actionName, Entity entity) throws WorkflowException;
+    void doBeforeAction(DbSession dbSession, WorkflowAction workflowAction, Entity entity) throws WorkflowException;
 
 }

@@ -22,11 +22,6 @@ public class ConfigureImpl implements Configure {
     
     Map<String, Object> config;
     
-    ConfigureImpl() {
-        
-    }
-    
-    
     @PostConstruct
     void init() {
         /*
