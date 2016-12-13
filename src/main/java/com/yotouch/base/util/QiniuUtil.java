@@ -167,4 +167,19 @@ public class QiniuUtil {
         }
     }
 
+    public String getQiniuUrl(byte[] fileContent) {
+        String name =  "attachment/" + System.currentTimeMillis() + "_" + Math.random() * 100;
+
+        String qiniuUrl = "";
+        try {
+            qiniuUrl = this.upload(name, fileContent);
+            return "http://" + this.domain + "/" + qiniuUrl;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return qiniuUrl;
+
+    }
+
 }
