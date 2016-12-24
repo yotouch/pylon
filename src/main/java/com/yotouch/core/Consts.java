@@ -75,6 +75,7 @@ public interface Consts {
 
     String PAYMENT_VENDOR_WECHAT            = "PAYMENT_WECHAT";
     String PAYMENT_VENDOR_WECHAT_MCH        = "PAYMENT_WECHAT_MCH";
+    String PAYMENT_VENDOR_ALIPAY            = "PAYMENT_ALIPAY";
 
     String REFUND_VENDOR_WECHAT             = "REFUND_VENDOR_WECHAT";
     String REFUND_VENDOR_WECHAT_MCH = "REFUND_VENDOR_WECHAT_MCH";
@@ -100,5 +101,5 @@ public interface Consts {
     int REFUND_TYPE_AMOUNT = 5530;
 
 
-
+    
 }
