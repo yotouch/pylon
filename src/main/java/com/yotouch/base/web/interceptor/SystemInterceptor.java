@@ -3,6 +3,7 @@ package com.yotouch.base.web.interceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.yotouch.base.util.QiniuUtil;
 import com.yotouch.base.util.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +25,9 @@ public class SystemInterceptor implements HandlerInterceptor{
 
     @Autowired
     private WebUtil webUtil;
+    
+    @Autowired
+    private QiniuUtil qiniuUtil;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -36,8 +40,9 @@ public class SystemInterceptor implements HandlerInterceptor{
         request.setAttribute("entityManager", ytApp.getEntityManager());
         request.setAttribute("request", request);
         request.setAttribute("webUtil", webUtil);
+        request.setAttribute("qiniuUtil", qiniuUtil);
 
-        request.setAttribute("_cid", webUtil.getClientId(request));
+        request.setAttribute("_bid", webUtil.getBrowserId(request));
         return true;
     }
 

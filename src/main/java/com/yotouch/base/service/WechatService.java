@@ -154,6 +154,13 @@ public class WechatService {
         return qrcodeFile;
     }
 
+    public File generateQrcode(String scene) throws WxErrorException {
+        WxMpQrcodeService qrService = this.mpService.getQrcodeService();
+        WxMpQrCodeTicket ticket = qrService.qrCodeCreateLastTicket(scene);
+        File codeFile = qrService.qrCodePicture(ticket);
+        return codeFile;
+    }
+    
     public File generateQrcode(int id) throws WxErrorException {
         WxMpQrcodeService qrService = this.mpService.getQrcodeService();
         WxMpQrCodeTicket ticket = qrService.qrCodeCreateLastTicket(id);

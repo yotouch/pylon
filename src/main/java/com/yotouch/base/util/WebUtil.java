@@ -185,12 +185,12 @@ public class WebUtil {
         return "http://" + this.appHost;
     }
 
-    public String getClientId(HttpServletRequest request){
+    public String getBrowserId(HttpServletRequest request){
         String bid = "";
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie c : cookies) {
-                if ("_cid".equalsIgnoreCase(c.getName())) {
+                if ("_bid_".equalsIgnoreCase(c.getName())) {
                     bid = c.getValue();
                 }
             }
