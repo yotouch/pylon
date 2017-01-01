@@ -4,6 +4,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.yotouch.core.Consts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,9 +75,9 @@ public abstract class LoginInterceptor implements HandlerInterceptor {
                     Entity user = userService.checkLoginUser(userToken);
                     if (user != null) {
                         request.setAttribute("loginUser", user);
+                        request.setAttribute(Consts.RUNTIME_VARIABLE_USER, user);
 
                         // TODO add role menu
-
                         isLogin = true;
                     } else {
                         Cookie cookie = new Cookie("userToken", "");
