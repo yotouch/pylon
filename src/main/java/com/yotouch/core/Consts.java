@@ -57,7 +57,7 @@ public interface Consts {
     String RUNTIME_VARIABLE_WX_SERVICE      = "WECHAT_SERVICE";
     String RUNTIME_VARIABLE_YT_APP          = "YT_APP";
     String RUNTIME_VARIABLE_APP_HOST        = "APP_HOST";
-    String RUNTIME_VARIABLE_CUSTOMER1        = "CUSTOMER";
+    String RUNTIME_VARIABLE_CUSTOMER        = "CUSTOMER";
     String RUNTIME_VARIABLE_USER            = "USER";
 
     String CASHFLOW_SCENE_PAY_ORDER            = "SCENE_PAY_ORDER";            // 支付到订单
@@ -101,6 +101,4 @@ public interface Consts {
     int REFUND_TYPE_ITEMS  = 5520;
     int REFUND_TYPE_AMOUNT = 5530;
 
-
-    
 }
