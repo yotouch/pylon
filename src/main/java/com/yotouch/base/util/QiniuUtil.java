@@ -141,10 +141,18 @@ public class QiniuUtil {
     }
 
     public String convertToMp3(byte[] content, String host) throws IOException {
+        return convertToType(content, host, "avthumb/mp3");
+    }
+
+    public String convertToMp4(byte[] content, String host) throws IOException {
+        return convertToType(content, host, "avthumb/mp4");
+    }
+
+    public String convertToType(byte[] content, String host, String type) throws IOException {
 
         String name =  "attachment/" + System.currentTimeMillis() + "_" + Math.random() * 100;
         StringMap policy = new StringMap();
-        policy.put("persistentOps","avthumb/mp3");
+        policy.put("persistentOps",type);
         policy.put("persistentPipeline", this.pipeline);
         policy.put("persistentNotifyUrl", host + persistentNotifyUrl);
 
@@ -166,6 +174,7 @@ public class QiniuUtil {
             }
         }
     }
+
 
     public String getQiniuUrl(byte[] fileContent) {
         String name =  "attachment/" + System.currentTimeMillis() + "_" + Math.random() * 100;
