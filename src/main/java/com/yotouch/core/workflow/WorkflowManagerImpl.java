@@ -9,6 +9,8 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import com.yotouch.core.entity.Entity;
+import com.yotouch.core.runtime.DbSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +31,19 @@ public class WorkflowManagerImpl implements WorkflowManager {
     
     Map<String, Workflow> wfMap;
     
+    @Autowired
+    private DbSession dbSession;
+    
+    public void reload() {
+        this.initWorkflow();
+    }
+    
     @PostConstruct
     void initWorkflow() {
         this.wfMap = new HashMap<>();
         
         this.loadFileWorkflow();
+        this.loadDbWorkflow();
     }
     
     private void loadFileWorkflow() {
@@ -47,7 +57,74 @@ public class WorkflowManagerImpl implements WorkflowManager {
                 }
             }
         }
+    }
+    
+    private void loadDbWorkflow() {
+        List<Entity> wfList = dbSession.queryRawSql(
+                "workflow",
+                "status = ?",
+                new Object[]{ Consts.STATUS_NORMAL }
+        );
+        
+        for (Entity wf: wfList) {
 
+            WorkflowImpl wfi = new WorkflowImpl(wf.getUuid(), wf.v("name"));
+            
+            List<Entity> stateList = dbSession.queryRawSql(
+                    "workflowState",
+                    "workflowUuid = ?",
+                    new Object[]{wf.getUuid()}
+            );
+            
+            Map<String, String> stateNameMap = new HashMap<>();
+            for (Entity state: stateList) {
+                WorkflowStateImpl wfState = new WorkflowStateImpl(state.v("name"));
+                wfState.setDisplayName(state.v("displayName"));
+                
+                String type = "normal";
+                wfState.setType(type);
+
+                wfi.addState(wfState);
+                wfState.setWorkflow(wfi);
+                
+                stateNameMap.put(state.getUuid(), wfState.getName());
+                
+            }
+            
+            List<Entity> actionList = dbSession.queryRawSql(
+                    "workflowAction",
+                    "workflowUuid = ?",
+                    new Object[]{ wf.getUuid() }
+            );
+            
+            for (Entity action: actionList) {
+                WorkflowActionImpl wfAction = new WorkflowActionImpl(action.v("name"));
+                wfAction.setDisplayName(action.v("displayName"));
+                
+                String from = action.v("fromState");
+                if (Consts.WORKFLOW_STATE_ANY_STATE.equals(from)) {
+                    wfAction.setFrom(WorkflowStateImpl.AnyState);
+                } else {
+                    WorkflowStateImpl fromState = (WorkflowStateImpl) wfi.getState(stateNameMap.get(from));
+                    wfAction.setFrom(fromState);
+                    fromState.addOutAction(wfAction);   
+                }
+                
+                String toName = action.v("toState");
+                if (Consts.WORKFLOW_STATE_SELF_STATE.equals(toName)) {
+                    wfAction.setTo(WorkflowStateImpl.SelfState);
+                } else {
+                    WorkflowStateImpl toState = (WorkflowStateImpl) wfi.getState(stateNameMap.get(toName));
+                    wfAction.setTo(toState);
+                    toState.addInAction(wfAction);
+                }
+
+                wfi.addAction(wfAction);
+                wfAction.setWorkflow(wfi);
+            }
+
+            this.wfMap.put(wf.v("name"), wfi);
+        }
     }
 
     private void parserWorkflowConfigFile(File workflowFile) {

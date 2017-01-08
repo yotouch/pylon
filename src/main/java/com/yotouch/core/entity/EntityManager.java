@@ -9,8 +9,5 @@ public interface EntityManager {
     List<MetaEntity> getMetaEntities();
 
     MetaEntity getMetaEntity(String name);
-    
-    
-    
 
 }

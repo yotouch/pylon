@@ -9,6 +9,9 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import com.yotouch.core.entity.Entity;
+import com.yotouch.core.runtime.DbSession;
+import com.yotouch.core.workflow.WorkflowManagerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,9 +42,17 @@ public class BizEntityManagerImpl implements BizEntityManager {
     @Autowired
     private Configure config;
     
+    @Autowired
+    private DbSession dbSession;
+    
     private Map<String, BizMetaEntityImpl> entityNamedMap;
     
     public BizEntityManagerImpl() {
+    }
+    
+    public void reload() {
+        ((WorkflowManagerImpl)wfMgr).reload();
+        this.init();
     }
 
     @PostConstruct
@@ -55,12 +66,36 @@ public class BizEntityManagerImpl implements BizEntityManager {
             if (ah.isDirectory()) {
                 if (ah.getName().startsWith("addon-")
                         || ah.getName().startsWith("app-")) {
-
                     parseBizEntityConfigFile(new File(ah, "etc/bizEntities.yaml"));
                 }
             }
         }
+        
+        loadDbBizEntity();
 
+        ((EntityManagerImpl)this.entityMgr).rebuildDb();
+
+    }
+
+    private void loadDbBizEntity() {
+        List<Entity> beList = dbSession.queryRawSql(
+                "bizEntity",
+                "status = ?",
+                new Object[]{ Consts.STATUS_NORMAL }
+        ); 
+        
+        for (Entity be: beList) {
+            Entity wfEntity = be.sr(dbSession, "workflow");
+            String meUuid = be.v("metaEntity");
+
+            Workflow wf = wfMgr.getWorkflow(wfEntity.v("name"));
+            MetaEntity me = entityMgr.getMetaEntity(meUuid);
+            
+            fillWfFields(me);
+
+            BizMetaEntityImpl bme = new BizMetaEntityImpl(wf, me);
+            this.entityNamedMap.put(me.getName(), bme);   
+        }
     }
 
     private void parseBizEntityConfigFile(File bizEntitiesFile) {
@@ -95,7 +130,7 @@ public class BizEntityManagerImpl implements BizEntityManager {
                     this.entityNamedMap.put(me.getName(), bme);
                 }
 
-                ((EntityManagerImpl)this.entityMgr).rebuildDb();
+                //((EntityManagerImpl)this.entityMgr).rebuildDb();
 
             } catch (FileNotFoundException e) {
                 logger.error("Load system field error", e);

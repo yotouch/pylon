@@ -45,3 +45,43 @@ entities:
             dataType: STRING
         persistentId:
             dataType: STRING
+
+    workflow:
+      name:
+        dataType: STRING
+      displayName:
+        dataType: STRING
+
+    workflowState:
+      name:
+        dataType: STRING
+      displayName:
+        dataType: STRING
+      type:
+        dataType: UUID
+      workflow:
+        fieldType: SINGLE_REFERENCE
+        targetMetaEntity: workflow
+  
+    workflowAction:
+      workflow:
+        fieldType: SINGLE_REFERENCE
+        targetMetaEntity: workflow
+      name:
+        dataType: STRING
+      displayName:
+        dataType: STRING
+      fromState:
+        fieldType: SINGLE_REFERENCE
+        targetMetaEntity: workflowState
+      toState:
+        fieldType: SINGLE_REFERENCE
+        targetMetaEntity: workflowState
+        
+    bizEntity:
+      workflow:
+        fieldType: SINGLE_REFERENCE
+        targetMetaEntity: workflow
+      metaEntity:
+        fieldType: SINGLE_REFERENCE
+        targetMetaEntity: metaEntity
