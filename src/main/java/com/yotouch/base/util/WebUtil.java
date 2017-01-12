@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -252,5 +253,12 @@ public class WebUtil {
         }
 
         return "unknown";
+    }
+
+    public void seedCookie(HttpServletResponse response, String name, String value) {
+        Cookie c = new Cookie(name, value);
+        c.setPath("/");
+        c.setMaxAge(Integer.MAX_VALUE);
+        response.addCookie(c);
     }
 }
