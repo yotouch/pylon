@@ -46,7 +46,7 @@ public abstract class LoginInterceptor implements HandlerInterceptor {
 
     }
 
-    private void tryAdd(String s) {
+    protected void tryAdd(String s) {
         if (this.ignoredList.contains(s)) {
             return;
         }
