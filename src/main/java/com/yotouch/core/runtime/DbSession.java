@@ -40,5 +40,5 @@ public interface DbSession {
 
     Entity increase(Entity entity, String field, int amount);
 
-
+    Entity queryOneByField(String metaEntity, String fieldName, Object value);
 }

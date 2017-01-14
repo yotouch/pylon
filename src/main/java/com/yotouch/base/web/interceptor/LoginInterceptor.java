@@ -60,9 +60,6 @@ public abstract class LoginInterceptor implements HandlerInterceptor {
             throws Exception {
 
         String uri = request.getRequestURI();
-
-        //logger.info("Check login " + uri + " USER " + request.getAttribute("loginUser"));
-
         boolean isLogin = false;
 
         Cookie[] cookies = request.getCookies();

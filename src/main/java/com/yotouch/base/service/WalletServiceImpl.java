@@ -9,7 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
-@Service
+
+@Service("baseWalletService")
 public class WalletServiceImpl implements WalletService {
 
     @Autowired

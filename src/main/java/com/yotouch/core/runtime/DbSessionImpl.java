@@ -300,5 +300,10 @@ public class DbSessionImpl implements DbSession {
 
     }
 
+    @Override
+    public Entity queryOneByField(String metaEntity, String fieldName, Object value) {
+        return this.queryOneRawSql(metaEntity, fieldName + "= ?", new Object[]{ value });
+    }
+
 
 }

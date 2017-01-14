@@ -13,7 +13,4 @@ public interface WalletService {
 
     void addToCustomerWallet(DbSession dbSession, String customerUuid, int amount);
 
-
-    
-
 }
