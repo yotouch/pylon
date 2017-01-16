@@ -19,6 +19,8 @@ public interface RoleService {
 
     List<Entity> getUserList(List<Entity> roles);
 
+    //Entity getOrCreateByName(String parentRole, String name);
+
     Entity getOrCreateByName(String name);
 
     boolean hasRole(Entity user, Entity role);
@@ -26,5 +28,7 @@ public interface RoleService {
     Entity getTopRole(DbSession dbSession, String topRoleName);
 
     List<Entity> getAllChildRoles(DbSession dbSession, Entity topRole);
+    
+    void addRole(DbSession dbSession, Entity user, String roleName);
 
 }

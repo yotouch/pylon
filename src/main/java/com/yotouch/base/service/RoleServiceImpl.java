@@ -176,5 +176,23 @@ public class RoleServiceImpl implements RoleService {
         return roles;
     }
 
+    @Override
+    public void addRole(DbSession dbSession, Entity user, String roleName) {
+        Entity role = this.getOrCreateByName(roleName);
+
+        Entity userRole = dbSession.queryOneRawSql(
+                "userRole",
+                "userUuid = ? AND roleUuid = ?",
+                new Object[]{user.getUuid(), role.getUuid()}
+        );
+        
+        if (userRole == null) {
+            userRole = dbSession.newEntity("userRole");
+            userRole.setValue("user", user);
+            userRole.setValue("role", role);
+            userRole = dbSession.save(userRole);
+        }
+    }
+
 
 }
