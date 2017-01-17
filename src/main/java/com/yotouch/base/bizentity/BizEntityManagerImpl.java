@@ -47,6 +47,8 @@ public class BizEntityManagerImpl implements BizEntityManager {
     
     private Map<String, BizMetaEntityImpl> entityNamedMap;
     
+    private Map<String, BizMetaEntityImpl> wfNamedMap;
+    
     public BizEntityManagerImpl() {
     }
     
@@ -59,6 +61,7 @@ public class BizEntityManagerImpl implements BizEntityManager {
     public void init() {
         
         this.entityNamedMap = new HashMap<>();
+        this.wfNamedMap = new HashMap<>();
 
         File ytHome = config.getRuntimeHome();
 
@@ -94,7 +97,8 @@ public class BizEntityManagerImpl implements BizEntityManager {
             fillWfFields(me);
 
             BizMetaEntityImpl bme = new BizMetaEntityImpl(wf, me);
-            this.entityNamedMap.put(me.getName(), bme);   
+            this.entityNamedMap.put(me.getName(), bme);
+            this.wfNamedMap.put(wf.getName(), bme);
         }
     }
 
@@ -128,6 +132,7 @@ public class BizEntityManagerImpl implements BizEntityManager {
 
                     BizMetaEntityImpl bme = new BizMetaEntityImpl(wf, me);
                     this.entityNamedMap.put(me.getName(), bme);
+                    this.wfNamedMap.put(wf.getName(), bme);
                 }
 
                 //((EntityManagerImpl)this.entityMgr).rebuildDb();
@@ -170,6 +175,11 @@ public class BizEntityManagerImpl implements BizEntityManager {
     @Override
     public BizMetaEntity getBizMetaEntityByEntity(String entityName) {
         return this.entityNamedMap.get(entityName);
-    }    
+    }
+
+    @Override
+    public BizMetaEntity getBizMetaEntityByWorkflow(String wfName) {
+        return this.wfNamedMap.get(wfName);
+    }
 
 }
