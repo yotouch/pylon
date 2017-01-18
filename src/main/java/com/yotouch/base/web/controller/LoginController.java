@@ -149,12 +149,17 @@ public class LoginController extends BaseController {
         cookie.setPath("/");
         response.addCookie(cookie);
         
-        String bkUrl = backUrl;
+        String bkUrl = defaultHome;
         if (!StringUtils.isEmpty(bkUrl)) {
             List<String> urlList = Splitter.on("/").trimResults().omitEmptyStrings().splitToList(backUrl);
             backUrl = Joiner.on("/").skipNulls().join(urlList);
             backUrl = java.net.URLEncoder.encode(backUrl);
             bkUrl = backUrl;
+        }
+        
+        
+        if (StringUtils.isEmpty(bkUrl)) {
+            bkUrl = "/";
         }
         
         model.addAttribute("toUrl", bkUrl);
