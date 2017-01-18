@@ -144,6 +144,10 @@ public class LoginController extends BaseController {
         cookie.setPath("/");
         response.addCookie(cookie);
 
+        cookie = new Cookie(Consts.COOKIE_NAME_WX_USER_UUID, "");
+        cookie.setPath("/");
+        response.addCookie(cookie);
+        
         if (!StringUtils.isEmpty(backUrl)) {
             List<String> urlList = Splitter.on("/").trimResults().omitEmptyStrings().splitToList(backUrl);
             backUrl = Joiner.on("/").skipNulls().join(urlList);
