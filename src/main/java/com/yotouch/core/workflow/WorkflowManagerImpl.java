@@ -81,8 +81,8 @@ public class WorkflowManagerImpl implements WorkflowManager {
                 WorkflowStateImpl wfState = new WorkflowStateImpl(state.v("name"));
                 wfState.setDisplayName(state.v("displayName"));
                 
-                String type = "normal";
-                wfState.setType(type);
+                String type = state.v("type");
+                checkStateType(wfState, type);
 
                 wfi.addState(wfState);
                 wfState.setWorkflow(wfi);
@@ -124,6 +124,16 @@ public class WorkflowManagerImpl implements WorkflowManager {
             }
 
             this.wfMap.put(wf.v("name"), wfi);
+        }
+    }
+
+    private void checkStateType(WorkflowStateImpl wfState, String type) {
+        if (Consts.WORKFLOW_STATE_TYPE_START.equalsIgnoreCase(type)) {
+            wfState.setType(Consts.WORKFLOW_STATE_TYPE_START);
+        } else if (Consts.WORKFLOW_STATE_TYPE_FINISH.equalsIgnoreCase(type)) {
+            wfState.setType(Consts.WORKFLOW_STATE_TYPE_FINISH);
+        } else {
+            wfState.setType(Consts.WORKFLOW_STATE_TYPE_NORMAL);
         }
     }
 
@@ -176,14 +186,8 @@ public class WorkflowManagerImpl implements WorkflowManager {
             wfState.setDisplayName(stateDispName);
             
             String type = stMap.get("type");
-            if (Consts.WORKFLOW_STATE_TYPE_START.equalsIgnoreCase(type)) {
-                wfState.setType(Consts.WORKFLOW_STATE_TYPE_START);
-            } else if (Consts.WORKFLOW_STATE_TYPE_FINISH.equalsIgnoreCase(type)) {
-                wfState.setType(Consts.WORKFLOW_STATE_TYPE_FINISH);
-            } else {
-                wfState.setType(Consts.WORKFLOW_STATE_TYPE_NORMAL);
-            }
-            
+            checkStateType(wfState, type);
+
             wfi.addState(wfState);
             wfState.setWorkflow(wfi);
         }

@@ -2,6 +2,7 @@ package com.yotouch.base.web.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.yotouch.core.Consts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +47,10 @@ public abstract class BaseController {
     protected DbSession getDbSession(HttpServletRequest request) {
         DbSession dbSession = this.getDbSession();
 
-        Entity loginUser = (Entity) request.getAttribute("loginUser");
+        Entity loginUser = (Entity) request.getAttribute(Consts.RUNTIME_VARIABLE_USER);
+        if (loginUser == null) {
+            loginUser = (Entity) request.getAttribute("loginUser");
+        }
         //logger.info("Create dbSession with LoginUser " + loginUser);
         dbSession.setLoginUser(loginUser);
         return dbSession;
