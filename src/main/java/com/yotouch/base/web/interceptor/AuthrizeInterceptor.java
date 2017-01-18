@@ -40,7 +40,6 @@ public class AuthrizeInterceptor implements HandlerInterceptor {
             request.setAttribute("userMenus", menus);
         }
 
-
         return true;
     }
 

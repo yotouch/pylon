@@ -35,9 +35,7 @@ public class ScriptActionHandlerHelper {
 
 
     public Object doEvalScript(DbSession dbSession, WorkflowAction workflowAction, Entity entity, String scriptType, Map<String, Object> params) {
-
-        String fname = this.config.getRuntimeHome() + "/wf_scripts/" + workflowAction.getWorkflow().getName() + "/" + workflowAction.getName() + "_" + scriptType;
-
+        String fname = this.config.getRuntimeHome() + "/wf_scripts/" + workflowAction.getWorkflow().getName() + "/" + workflowAction.getName() + "/" + scriptType;
         String pf = "";
         String scripts = null;
         for (String p: postfixes) {
