@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.yotouch.base.service.RoleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,9 @@ public class RoleController extends BaseController {
 
     @Autowired
     private PaginationService paginationService;
+    
+    @Autowired
+    private RoleService roleService;
 
     @RequestMapping("/admin/role/list")
     public String listMenu(
@@ -180,7 +184,53 @@ public class RoleController extends BaseController {
             m.setValue("status", Consts.STATUS_DELETED);
             dbSession.save(m);
         }
+    }
+    
+    @RequestMapping("/admin/role/user")
+    public String userList(
+            @RequestParam("uuid") String uuid,
+            HttpServletRequest request,
+            Model model
+    ) {
+        DbSession dbSession = this.getDbSession(request);
+        Entity role = dbSession.getEntity("role", uuid);
+        
+        List<Entity> userList = roleService.getUserList(dbSession, role);
+        
+        model.addAttribute("role", role);
+        model.addAttribute("userList", userList);
+        
+        return "/admin/role/user";
+    }
+    
+    @RequestMapping("/admin/role/addUser")
+    public String addUser(
+            @RequestParam("role") String roleUuid,
+            @RequestParam("user") String userUuid,
+            HttpServletRequest request
+    ) {
+        DbSession dbSession = this.getDbSession(request);
+        
+        Entity role = dbSession.getEntity("role", roleUuid);
+        Entity user = dbSession.getEntity("user", userUuid);
+        
+        roleService.addRole(dbSession, user, role);
+        return "redirect:/admin/role/user?uuid=" + roleUuid;
+    }
 
+    @RequestMapping("/admin/role/removeUser")
+    public String removeUser(
+            @RequestParam("role") String roleUuid,
+            @RequestParam("user") String userUuid,
+            HttpServletRequest request
+    ) {
+        DbSession dbSession = this.getDbSession(request);
+
+        Entity role = dbSession.getEntity("role", roleUuid);
+        Entity user = dbSession.getEntity("user", userUuid);
+        
+        roleService.removeUserRole(dbSession, user, role);
+        return "redirect:/admin/role/user?uuid=" + roleUuid;
     }
 
 

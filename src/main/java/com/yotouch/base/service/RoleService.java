@@ -31,4 +31,11 @@ public interface RoleService {
     
     void addRole(DbSession dbSession, Entity user, String roleName);
 
+    void addRole(DbSession dbSession, Entity user, Entity role);
+
+    List<Entity> getUserList(DbSession dbSession, List<Entity> roles);
+    
+    List<Entity> getUserList(DbSession dbSession, Entity role);
+
+    void removeUserRole(DbSession dbSession, Entity user, Entity role);
 }
