@@ -1,6 +1,7 @@
 package com.yotouch.base.bizentity;
 
 import java.util.List;
+import java.util.Map;
 
 import com.yotouch.core.workflow.AfterActionHandler;
 import com.yotouch.core.workflow.BeforeActionHandler;
@@ -101,13 +102,13 @@ public class BizEntityServiceImpl implements BizEntityService {
     }
 
     @Override
-    public BizEntity doAction(DbSession dbSession, String actionName, Entity entity, BeforeActionHandler beforeActionHandler, AfterActionHandler afterActionHandler) throws WorkflowException {
+    public BizEntity doAction(DbSession dbSession, String actionName, Entity entity, BeforeActionHandler beforeActionHandler, AfterActionHandler afterActionHandler, Map<String, Object> args) throws WorkflowException {
 
-        TransitResult tr = doTransit(dbSession, actionName, entity, beforeActionHandler);
+        TransitResult tr = doTransit(dbSession, actionName, entity, beforeActionHandler, args);
         entity = tr.entity;
         WorkflowAction wfa = tr.wfa;
-
-        afterActionHandler.doAfterAction(dbSession, wfa, entity);
+        
+        afterActionHandler.doAfterAction(dbSession, wfa, entity, args);
 
         return this.convert(entity);
     }
@@ -118,9 +119,9 @@ public class BizEntityServiceImpl implements BizEntityService {
     }
 
     @Transactional
-    private TransitResult doTransit(DbSession dbSession, String actionName, Entity entity, BeforeActionHandler beforeActionHandler) {
+    private TransitResult doTransit(DbSession dbSession, String actionName, Entity entity, BeforeActionHandler beforeActionHandler, Map<String, Object> args) {
         WorkflowAction wfa = checkWorkflowAndGetAction(actionName, entity);
-        beforeActionHandler.doBeforeAction(dbSession, wfa, entity);
+        beforeActionHandler.doBeforeAction(dbSession, wfa, entity, args);
 
         entity.setValue(Consts.BIZ_ENTITY_FIELD_STATE, wfa.getTo().getName());
         entity = dbSession.save(entity);

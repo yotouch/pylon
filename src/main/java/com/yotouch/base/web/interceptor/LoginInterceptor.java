@@ -87,7 +87,7 @@ public abstract class LoginInterceptor implements HandlerInterceptor {
 
         for (String iu: this.ignoredList) {
             if (uri.startsWith(iu)) {
-                return true;
+                isLogin = true;
             }
         }
 

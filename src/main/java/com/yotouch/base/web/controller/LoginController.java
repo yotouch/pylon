@@ -138,20 +138,32 @@ public class LoginController extends BaseController {
     @RequestMapping(value="/logout")
     public String logout(
             @RequestParam(value = "backUrl", defaultValue = "") String backUrl,
-            HttpServletResponse response
+            HttpServletResponse response,
+            Model model
     ){
         Cookie cookie = new Cookie("userToken", "");
         cookie.setPath("/");
         response.addCookie(cookie);
 
-        if (!StringUtils.isEmpty(backUrl)) {
+        cookie = new Cookie(Consts.COOKIE_NAME_WX_USER_UUID, "");
+        cookie.setPath("/");
+        response.addCookie(cookie);
+        
+        String bkUrl = defaultHome;
+        if (!StringUtils.isEmpty(bkUrl)) {
             List<String> urlList = Splitter.on("/").trimResults().omitEmptyStrings().splitToList(backUrl);
             backUrl = Joiner.on("/").skipNulls().join(urlList);
             backUrl = java.net.URLEncoder.encode(backUrl);
-            return "redirect:/" + backUrl;
+            bkUrl = backUrl;
         }
-
-        return "redirect:" + defaultHome;
+        
+        
+        if (StringUtils.isEmpty(bkUrl)) {
+            bkUrl = "/";
+        }
+        
+        model.addAttribute("toUrl", bkUrl);
+        return "/common/jsRedirect";
     }
 
 

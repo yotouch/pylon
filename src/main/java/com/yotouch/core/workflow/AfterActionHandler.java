@@ -3,10 +3,10 @@ package com.yotouch.core.workflow;
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.runtime.DbSession;
 
+import java.util.Map;
+
 public interface AfterActionHandler extends ActionHook {
 
-    default void doAfterAction(DbSession dbSession, WorkflowAction workflowAction, Entity entity) {
-
-    }
+    void doAfterAction(DbSession dbSession, WorkflowAction workflowAction, Entity entity, Map<String, Object> args);
 
 }

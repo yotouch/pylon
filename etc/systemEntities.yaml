@@ -85,3 +85,13 @@ entities:
       metaEntity:
         fieldType: SINGLE_REFERENCE
         targetMetaEntity: metaEntity
+        
+    workflowActionLog:
+      action:
+        dataType: STRING
+      workflow:
+        dataType: STRING
+      entityUuid:
+        dataType: UUID
+      note:
+        dataType: TEXT        
