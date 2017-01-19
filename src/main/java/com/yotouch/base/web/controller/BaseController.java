@@ -14,6 +14,7 @@ import com.yotouch.base.service.AttachmentService;
 import com.yotouch.base.service.WechatManager;
 import com.yotouch.base.util.PropUtil;
 import com.yotouch.core.entity.Entity;
+import org.springframework.util.StringUtils;
 
 public abstract class BaseController {
 
@@ -51,5 +52,19 @@ public abstract class BaseController {
         dbSession.setLoginUser(loginUser);
         return dbSession;
     }
+
+    protected Entity doEditEntity(DbSession dbSession, String entityName, String uuid, HttpServletRequest request) {
+        Entity entity = null;
+        if (StringUtils.isEmpty(uuid)) {
+            entity = dbSession.newEntity(entityName);
+        } else {
+            entity = dbSession.getEntity(entityName, uuid);
+        }
+
+        entity = webUtil.updateEntityVariables(entity, request);
+        entity = dbSession.save(entity);
+        return entity;
+    }
+
 
 }
