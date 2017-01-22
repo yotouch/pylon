@@ -91,6 +91,7 @@ public class LoginController extends BaseController {
             if ("admin".equals(checkKey)) {
                 user = dbSession.newEntity("user");
                 user.setValue("name", "admin");
+                user.setValue("phone", "admin");
                 user = dbSession.save(user);
                 user.setValue("password", userService.genPassword(user, password));
                 user = dbSession.save(user);
