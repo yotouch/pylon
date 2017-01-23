@@ -114,19 +114,7 @@ public class RoleServiceImpl implements RoleService {
     }
     
     public List<Entity> getUserList(List<Entity> roles){
-        HashSet<Entity> users = new HashSet<>();
-        
-        for(Entity role : roles){
-            List<Entity> currentUserRoles = dbSession.queryRawSql("userRole", "roleUuid = ? AND status = ?", new Object[]{role.getUuid(), Consts.STATUS_NORMAL});
-            
-            for (Entity userRole : currentUserRoles) {
-                Entity user = dbSession.getEntity("user", userRole.v("user"));
-                users.add(user);
-            }
-        }
-        
-        List<Entity> resultUsers = new ArrayList<Entity>(users);
-        return resultUsers;
+        return this.getUserList(dbSession, roles);
     }
 
     @Override
@@ -179,19 +167,62 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void addRole(DbSession dbSession, Entity user, String roleName) {
         Entity role = this.getOrCreateByName(roleName);
+        this.addRole(dbSession, user, role);
+    }
 
+    @Override
+    public void addRole(DbSession dbSession, Entity user, Entity role) {
         Entity userRole = dbSession.queryOneRawSql(
                 "userRole",
                 "userUuid = ? AND roleUuid = ?",
                 new Object[]{user.getUuid(), role.getUuid()}
         );
-        
+
         if (userRole == null) {
             userRole = dbSession.newEntity("userRole");
             userRole.setValue("user", user);
             userRole.setValue("role", role);
             userRole = dbSession.save(userRole);
         }
+    }
+
+    @Override
+    public List<Entity> getUserList(DbSession dbSession, List<Entity> roles) {
+        HashSet<Entity> users = new HashSet<>();
+
+        for(Entity role : roles){
+            List<Entity> currentUserRoles = dbSession.queryRawSql("userRole", "roleUuid = ? AND status = ?", new Object[]{role.getUuid(), Consts.STATUS_NORMAL});
+
+            for (Entity userRole : currentUserRoles) {
+                Entity user = dbSession.getEntity("user", userRole.v("user"));
+                users.add(user);
+            }
+        }
+
+        List<Entity> resultUsers = new ArrayList<Entity>(users);
+        return resultUsers;
+    }
+
+    @Override
+    public List<Entity> getUserList(DbSession dbSession, Entity role) {
+        List<Entity> roles = new ArrayList<>();
+        roles.add(role);
+        return this.getUserList(dbSession, roles);
+    }
+
+    @Override
+    public void removeUserRole(DbSession dbSession, Entity user, Entity role) {
+        
+        Entity userRole = dbSession.queryOneRawSql(
+                "userRole",
+                "userUuid = ? AND roleUuid = ?",
+                new Object[]{user.getUuid(), role.getUuid()}
+        );
+        
+        if (userRole != null) {
+            dbSession.deleteEntity(userRole);
+        }
+        
     }
 
 
