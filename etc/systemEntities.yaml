@@ -45,6 +45,12 @@ entities:
             dataType: STRING
         persistentId:
             dataType: STRING
+            
+    captcha:
+        bid:
+            dataType: UUID
+        challenge:
+            dataType: UUID
 
     workflow:
       name:
