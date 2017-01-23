@@ -23,7 +23,7 @@ import java.io.PrintWriter;
 @Controller
 public class CaptchaController extends BaseController {
     
-    @RequestMapping("/captcha/gen")
+    @RequestMapping({"/captcha/gen", "/api/captcha/gen"})
     public void genCaptcha(
             @RequestParam(value = "height", defaultValue = "100") int height,
             @RequestParam(value = "width", defaultValue = "200") int width,
