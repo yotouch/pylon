@@ -45,7 +45,7 @@ entities:
             dataType: STRING
         persistentId:
             dataType: STRING
-
+            
     workflow:
       name:
         dataType: STRING
