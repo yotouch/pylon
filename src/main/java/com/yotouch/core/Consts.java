@@ -92,7 +92,12 @@ public interface Consts {
 
     String ROLE_EMPLOYEE                    = "员工";
     String ROLE_USER                        = "用户";
+    String ROLE_EMPLOYEE_ADMIN              = "管理员";
 
+    int DUPLICATE_NAME                       = 5400; // 用户名重复
+    int PWD_UNCONSISTENCY                    = 5401; // 重复密码不一致
+    int DUPLICATE_PHONE                      = 5410; // 电话重复
+    
     int paginationWidth                     = 5;
     int itemPerPage                         = 20;
 
@@ -101,4 +106,5 @@ public interface Consts {
     int REFUND_TYPE_ITEMS  = 5520;
     int REFUND_TYPE_AMOUNT = 5530;
 
+    
 }
