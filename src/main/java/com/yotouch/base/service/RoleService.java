@@ -19,6 +19,8 @@ public interface RoleService {
 
     List<Entity> getUserList(List<Entity> roles);
 
+    List<Entity> getUserList(DbSession dbSession, String roleName);
+
     //Entity getOrCreateByName(String parentRole, String name);
 
     Entity getOrCreateByName(String name);

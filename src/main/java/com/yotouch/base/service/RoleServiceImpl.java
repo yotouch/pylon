@@ -118,6 +118,12 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public List<Entity> getUserList(DbSession dbSession, String roleName) {
+        Entity role = this.getOrCreateByName(roleName);
+        return this.getUserList(dbSession, role);
+    }
+
+    @Override
     public Entity getOrCreateByName(String name) {
 
         Entity role = dbSession.queryOneRawSql("role", "name = ?", new Object[]{name});
@@ -191,7 +197,7 @@ public class RoleServiceImpl implements RoleService {
         HashSet<Entity> users = new HashSet<>();
 
         for(Entity role : roles){
-            List<Entity> currentUserRoles = dbSession.queryRawSql("userRole", "roleUuid = ? AND status = ?", new Object[]{role.getUuid(), Consts.STATUS_NORMAL});
+            List<Entity> currentUserRoles = dbSession.queryRawSql("userRole", "roleUuid = ? AND status = ? ", new Object[]{role.getUuid(), Consts.STATUS_NORMAL});
 
             for (Entity userRole : currentUserRoles) {
                 Entity user = dbSession.getEntity("user", userRole.v("user"));
@@ -200,6 +206,9 @@ public class RoleServiceImpl implements RoleService {
         }
 
         List<Entity> resultUsers = new ArrayList<Entity>(users);
+        
+        resultUsers.sort((u1, u2) -> ((String)u1.v("name")).compareTo(u2.v("name")));
+        
         return resultUsers;
     }
 
