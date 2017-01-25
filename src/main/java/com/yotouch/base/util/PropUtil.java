@@ -49,7 +49,7 @@ public class PropUtil {
             prop = dbSession.newEntity("prop");
             prop.setValue("name", name);
             prop.setValue("value", "1");
-            dbSession.save(prop);
+            prop = dbSession.save(prop);
         }
 
         prop = dbSession.increase(prop, "value", 1);
