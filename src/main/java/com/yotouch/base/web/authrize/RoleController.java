@@ -42,7 +42,7 @@ public class RoleController extends BaseController {
     ) {
 
         int itemPerPage = Consts.itemPerPage;
-        DbSession dbSession = this.ytApp.getRuntime().createDbSession();
+        DbSession dbSession = this.getDbSession();
         List<Entity> roles = dbSession.queryRawSql("role", "status=?", new Object[]{Consts.STATUS_NORMAL});
 
         int total = roles.size();
