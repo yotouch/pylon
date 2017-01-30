@@ -114,8 +114,8 @@ public class BizEntityServiceImpl implements BizEntityService {
     }
 
     @Override
-    public boolean canDoAction(DbSession dbSession, WorkflowAction wa, Entity entity, CanDoActionHandler canDoActionHandler) {
-        return canDoActionHandler.canDoAction(dbSession, wa, entity);
+    public boolean canDoAction(DbSession dbSession, WorkflowAction wa, Entity entity, CanDoActionHandler canDoActionHandler, Map<String, Object> args) {
+        return canDoActionHandler.canDoAction(dbSession, wa, entity, args);
     }
 
     @Transactional

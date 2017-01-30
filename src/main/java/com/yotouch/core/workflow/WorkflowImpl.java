@@ -9,6 +9,7 @@ public class WorkflowImpl implements Workflow {
     
     private String uuid;
     private String name;
+    private String displayName;
 
     private Map<String, WorkflowState> stateMap;
     private WorkflowState startState;
@@ -16,6 +17,7 @@ public class WorkflowImpl implements Workflow {
     
     private Map<String, WorkflowAction> actionMap;    
     private Map<String, WorkflowAction> fromAnyActionMap;
+    
 
     public WorkflowImpl(String uuid, String name) {
         this.uuid = uuid;
@@ -30,7 +32,16 @@ public class WorkflowImpl implements Workflow {
     public String getName() {
         return this.name;
     }
+
+    @Override
+    public String getDisplayName() {
+        return displayName;
+    }
     
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
     @Override
     public String getUuid() {
         return this.uuid;

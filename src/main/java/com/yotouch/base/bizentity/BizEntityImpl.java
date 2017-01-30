@@ -24,13 +24,10 @@ public class BizEntityImpl implements BizEntity {
 
     @Override
     public WorkflowState getState() {
-        
         String stateName = this.entity.v(Consts.BIZ_ENTITY_FIELD_STATE);
-        
         if (StringUtils.isEmpty(stateName)) {
             return null;
         }
-        
         return this.getWorkflow().getState(stateName);
     }
 

@@ -5,8 +5,10 @@ import java.util.List;
 public interface Workflow {
     
     String getUuid();
-
+    
     String getName();
+    
+    String getDisplayName();
 
     WorkflowState getStartState();
 

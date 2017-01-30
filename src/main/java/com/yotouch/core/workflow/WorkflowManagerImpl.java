@@ -69,6 +69,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
         for (Entity wf: wfList) {
 
             WorkflowImpl wfi = new WorkflowImpl(wf.getUuid(), wf.v("name"));
+            wfi.setDisplayName(wf.v("displayName"));
             
             List<Entity> stateList = dbSession.queryRawSql(
                     "workflowState",

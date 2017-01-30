@@ -44,6 +44,8 @@ public class WorkflowStateImpl implements WorkflowState {
     public String getDisplayName() {
         return this.displayName;
     }
+    
+    
 
     public void setWorkflow(WorkflowImpl wfi) {
         this.wf = wfi;        
@@ -94,10 +96,12 @@ public class WorkflowStateImpl implements WorkflowState {
     }
 
     private void buildOutActionState(List<WorkflowAction> outActions, WorkflowAction act) {
+        WorkflowAction theWa = this.wf.getAction(act.getName());
+                
         WorkflowActionImpl wai = new WorkflowActionImpl(act.getName());
         wai.setWorkflow(this.wf);
         wai.setFrom(this);
-        wai.setDisplayName(wai.getDisplayName());
+        wai.setDisplayName(theWa.getDisplayName());
         
         WorkflowStateImpl toState = (WorkflowStateImpl) act.getTo();
         if (toState.getName().equalsIgnoreCase(Consts.WORKFLOW_STATE_SELF_STATE)) {

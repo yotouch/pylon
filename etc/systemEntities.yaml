@@ -91,6 +91,8 @@ entities:
         dataType: STRING
       workflow:
         dataType: STRING
+      entityName:
+        dataType: UUID
       entityUuid:
         dataType: UUID
       note:
