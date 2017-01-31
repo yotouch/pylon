@@ -130,6 +130,7 @@ public class BizEntityServiceImpl implements BizEntityService {
         wfaLog.setValue("action", actionName);
         wfaLog.setValue("workflow", wfa.getWorkflow().getName());
         wfaLog.setValue("entityUuid", entity.getUuid());
+        wfaLog.setValue("entityName", entity.getMetaEntity().getName());
         dbSession.save(wfaLog);
 
         return new TransitResult(wfa, entity);
