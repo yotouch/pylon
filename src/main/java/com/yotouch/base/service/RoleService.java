@@ -25,6 +25,8 @@ public interface RoleService {
 
     Entity getOrCreateByName(String name);
 
+    Entity getByName(String roleName);
+
     boolean hasRole(Entity user, Entity role);
 
     Entity getTopRole(DbSession dbSession, String topRoleName);
@@ -40,4 +42,5 @@ public interface RoleService {
     List<Entity> getUserList(DbSession dbSession, Entity role);
 
     void removeUserRole(DbSession dbSession, Entity user, Entity role);
+
 }
