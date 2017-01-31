@@ -18,6 +18,6 @@ public class ScriptingBeforeActionHandler implements BeforeActionHandler {
 
     @Override
     public void doBeforeAction(DbSession dbSession, WorkflowAction workflowAction, Entity entity, Map<String, Object> args) throws WorkflowException {
-        saHelper.doEvalScript(dbSession, workflowAction, entity, "before", args);
+        saHelper.doEvalActionScript(dbSession, workflowAction, entity, "before", args);
     }
 }

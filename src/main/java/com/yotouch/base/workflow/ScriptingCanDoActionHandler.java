@@ -17,7 +17,7 @@ public class ScriptingCanDoActionHandler implements CanDoActionHandler {
     
     @Override
     public boolean canDoAction(DbSession dbSession, WorkflowAction wfa, Entity entity, Map<String, Object> args) {
-        Boolean canDo = (Boolean) saHelper.doEvalScript(dbSession, wfa, entity, "canDo", args);
+        Boolean canDo = (Boolean) saHelper.doEvalActionScript(dbSession, wfa, entity, "canDo", args);
         if (canDo == null) {
             return false;
         }

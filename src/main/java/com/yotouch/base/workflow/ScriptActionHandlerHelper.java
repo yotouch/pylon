@@ -5,6 +5,7 @@ import com.yotouch.core.config.Configure;
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.runtime.DbSession;
 import com.yotouch.core.workflow.WorkflowAction;
+import com.yotouch.core.workflow.WorkflowState;
 import jodd.io.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scripting.bsh.BshScriptEvaluator;
@@ -33,24 +34,35 @@ public class ScriptActionHandlerHelper {
 
     }
 
+    
+    public Object doEvalStateScript(DbSession dbSession, WorkflowState workflowState, String scriptName) {
+        String fname = this.config.getRuntimeHome() + "/wf_scripts/" + workflowState.getWorkflow().getName().toLowerCase() + "/state/" + workflowState.getName().toLowerCase() + "/" + scriptName.toLowerCase();
 
-    public Object doEvalScript(DbSession dbSession, WorkflowAction workflowAction, Entity entity, String scriptType, Map<String, Object> params) {
-        String fname = this.config.getRuntimeHome() + "/wf_scripts/" + workflowAction.getWorkflow().getName().toLowerCase() + "/actions/" + workflowAction.getName().toLowerCase() + "/" + scriptType.toLowerCase();
-        String pf = "";
-        String scripts = null;
-        for (String p: postfixes) {
-            File f = new File(fname + "." + p);
-            if (f.exists() && f.isFile()) {
-                try {
-                    scripts = FileUtil.readString(f);
-                    pf = p;
-                    break;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+        FileScript fileScript = new FileScript(fname).invoke();
+        String pf = fileScript.getPf();
+        String scripts = fileScript.getScripts();
+
+        Object ret = null;
+        if (!StringUtils.isEmpty(pf) && !StringUtils.isEmpty(scripts)) {
+            Map<String, Object> args = new HashMap<>();
+            args.put("dbSession", dbSession);
+            args.put("workflowState", workflowState);
+            args.put("webUtil", webUtil);
+
+            ret = runScript(pf, scripts, args);
         }
+        
+        return ret;
+        
+    }
 
+    public Object doEvalActionScript(DbSession dbSession, WorkflowAction workflowAction, Entity entity, String scriptType, Map<String, Object> params) {
+        String fname = this.config.getRuntimeHome() + "/wf_scripts/" + workflowAction.getWorkflow().getName().toLowerCase() + "/action/" + workflowAction.getName().toLowerCase() + "/" + scriptType.toLowerCase();
+        FileScript fileScript = new FileScript(fname).invoke();
+        String pf = fileScript.getPf();
+        String scripts = fileScript.getScripts();
+
+        Object ret = null;
         if (!StringUtils.isEmpty(pf) && !StringUtils.isEmpty(scripts)) {
             Map<String, Object> args = new HashMap<>();
             args.put("dbSession", dbSession);
@@ -62,20 +74,60 @@ public class ScriptActionHandlerHelper {
             for (String key: params.keySet()) {
                 args.put(key, params.get(key));    
             }
-            
 
-            if ("bsh".equals(pf)) {
-                BshScriptEvaluator bse = new BshScriptEvaluator();
-                StaticScriptSource sss = new StaticScriptSource(scripts);
-
-                return bse.evaluate(sss, args);
-            } else if ("groovy".equals(pf)) {
-                GroovyScriptEvaluator gse = new GroovyScriptEvaluator();
-                StaticScriptSource sss = new StaticScriptSource(scripts);
-                return gse.evaluate(sss, args);
-            }
+            ret = runScript(pf, scripts, args);
         }
 
+        return ret;
+    }
+
+    private Object runScript(String pf, String scripts, Map<String, Object> args) {
+        if ("bsh".equals(pf)) {
+            BshScriptEvaluator bse = new BshScriptEvaluator();
+            StaticScriptSource sss = new StaticScriptSource(scripts);
+
+            return bse.evaluate(sss, args);
+        } else if ("groovy".equals(pf)) {
+            GroovyScriptEvaluator gse = new GroovyScriptEvaluator();
+            StaticScriptSource sss = new StaticScriptSource(scripts);
+            return gse.evaluate(sss, args);
+        }
         return null;
+    }
+
+    private class FileScript {
+        private String fname;
+        private String pf;
+        private String scripts;
+
+        public FileScript(String fname) {
+            this.fname = fname;
+        }
+
+        public String getPf() {
+            return pf;
+        }
+
+        public String getScripts() {
+            return scripts;
+        }
+
+        public FileScript invoke() {
+            pf = "";
+            scripts = null;
+            for (String p: postfixes) {
+                File f = new File(fname + "." + p);
+                if (f.exists() && f.isFile()) {
+                    try {
+                        scripts = FileUtil.readString(f);
+                        pf = p;
+                        break;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return this;
+        }
     }
 }

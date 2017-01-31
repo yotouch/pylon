@@ -17,7 +17,7 @@ public class ScriptingAfterActionHandler implements AfterActionHandler {
 
     @Override
     public void doAfterAction(DbSession dbSession, WorkflowAction workflowAction, Entity entity, Map<String, Object> args) {
-        saHelper.doEvalScript(dbSession, workflowAction, entity, "after", args);
+        saHelper.doEvalActionScript(dbSession, workflowAction, entity, "after", args);
     }
 
 }

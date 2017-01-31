@@ -133,6 +133,11 @@ public class WorkflowStateImpl implements WorkflowState {
         
     }
 
+    @Override
+    public Workflow getWorkflow() {
+        return this.wf;
+    }
+
     private void buildInActionState(List<WorkflowAction> list, WorkflowAction act) {
         WorkflowActionImpl wai = new WorkflowActionImpl(act.getName());
         wai.setWorkflow(this.wf);
