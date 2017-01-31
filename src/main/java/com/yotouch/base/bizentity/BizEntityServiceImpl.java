@@ -3,9 +3,9 @@ package com.yotouch.base.bizentity;
 import java.util.List;
 import java.util.Map;
 
-import com.yotouch.core.workflow.AfterActionHandler;
-import com.yotouch.core.workflow.BeforeActionHandler;
-import com.yotouch.core.workflow.CanDoActionHandler;
+import com.yotouch.base.bizentity.handler.AfterActionHandler;
+import com.yotouch.base.bizentity.handler.BeforeActionHandler;
+import com.yotouch.base.bizentity.handler.CanDoActionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

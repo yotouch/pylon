@@ -1,14 +1,15 @@
 package com.yotouch.base.bizentity;
 
+import java.util.Map;
+
+import com.yotouch.base.bizentity.handler.AfterActionHandler;
+import com.yotouch.base.bizentity.handler.BeforeActionHandler;
+import com.yotouch.base.bizentity.handler.CanDoActionHandler;
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.runtime.DbSession;
-import com.yotouch.core.workflow.AfterActionHandler;
-import com.yotouch.core.workflow.BeforeActionHandler;
-import com.yotouch.core.workflow.CanDoActionHandler;
 import com.yotouch.core.workflow.WorkflowAction;
 import com.yotouch.core.workflow.WorkflowException;
 
-import java.util.Map;
 
 public interface BizEntityService {
     
