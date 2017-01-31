@@ -31,6 +31,25 @@ entities:
             dataType: INT
         lastTouched:
             dataType: LONG
+        attr:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: userAttr
+        
+    passport:
+        number:
+            dataType: STRING
+        issuePlace:
+            dataType: STRING
+        
+    userAttr:
+        height:
+            dataType: INT
+            comment: 身高
+        
+        passport:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: passport
+        
 
     party:
         name:

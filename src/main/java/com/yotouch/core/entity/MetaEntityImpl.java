@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.yotouch.core.exception.MetaFieldIsNotSingleReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +41,22 @@ public class MetaEntityImpl implements MetaEntity {
     @SuppressWarnings("unchecked")
     @Override
     public <T extends Object> MetaField<T> getMetaField(String name) {
+        
+        String[] nameParts = name.split("\\.");
+        if (nameParts.length > 1) {
+            String firstName = nameParts[0];
+            
+            MetaField mf = this.fieldMap.get(firstName);
+            if (!mf.isReference()) {
+                throw new MetaFieldIsNotSingleReference(this, mf);
+            }
+            
+            MetaEntity me = mf.getTargetMetaEntity();
+            name = name.substring(name.indexOf('.') + 1);
+            return me.getMetaField(name);
+        }
+        
+        
         return (MetaField<T>) this.fieldMap.get(name);
     }
 

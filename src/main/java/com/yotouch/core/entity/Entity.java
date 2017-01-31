@@ -15,6 +15,10 @@ public interface Entity {
     boolean isNew();
 
     <T extends Object> Entity setValue(String fieldName, Object value);
+    
+    <T extends Object> T getValue(DbSession dbSession, String field);
+    
+    <T extends Object> T v(DbSession dbSession, String field);
 
     <T extends Object> T getValue(String fieldName) throws NoSuchMetaFieldException;
     

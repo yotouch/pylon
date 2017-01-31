@@ -57,6 +57,13 @@ public class WorkflowManagerImpl implements WorkflowManager {
                 }
             }
         }
+
+        // NOTE: 这是为了测试用的
+        String pylonTest = System.getProperty("PYLON_TEST");
+        if (pylonTest != null && pylonTest.toLowerCase().equals("true")) {
+            parserWorkflowConfigFile(new File(ytHome, "etc/workflows.yaml"));
+        }
+
     }
     
     private void loadDbWorkflow() {

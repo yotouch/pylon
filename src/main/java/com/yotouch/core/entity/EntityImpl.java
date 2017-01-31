@@ -27,20 +27,19 @@ import com.yotouch.core.runtime.DbSession;
 
 
 public class EntityImpl implements Entity {
-    
-    
 
     static final private Logger logger = LoggerFactory.getLogger(EntityImpl.class);
     
     private MetaEntity me;
     
     private Map<String, FieldValue<?>> valueMap;
-    //private Map<String, Object> extraFields;
-
+    
+    private Map<String, Entity> srMap;
+    
     public EntityImpl(MetaEntity me) {
         this.me = me;
         this.valueMap = new HashMap<>();
-        //this.extraFields = new HashMap<>();
+        this.srMap = new HashMap<>();
     }
 
     @Override
@@ -76,7 +75,37 @@ public class EntityImpl implements Entity {
     }
 
     @Override
+    public <T> T getValue(DbSession dbSession, String field) {
+        String[] fieldParts = field.split("\\.");
+        if (fieldParts.length == 1) {
+            return this.v(field);
+        }
+        
+        
+        String refName = fieldParts[0];
+        MetaField mf = this.getMetaEntity().getMetaField(refName);
+        if (!mf.isSingleReference()) {
+            throw new MetaFieldIsNotSingleReference(this.me, mf);
+        }
+        
+        Entity refEntity = this.sr(dbSession, refName);
+        if (refEntity == null) {
+            return null;
+        }
+        
+        field = field.substring(field.indexOf('.') + 1);
+        return refEntity.v(dbSession, field);
+        
+    }
+    
+    @Override
+    public <T> T v(DbSession dbSession, String field) {
+        return this.getValue(dbSession, field);
+    }
+
+    @Override
     public <T> T getValue(String fieldName) throws NoSuchMetaFieldException {
+        
         MetaField<?> mf = this.me.getMetaField(fieldName);
         if (mf == null && !this.valueMap.containsKey(fieldName)) {
             throw new NoSuchMetaFieldException(this.me, fieldName);
@@ -249,7 +278,15 @@ public class EntityImpl implements Entity {
             return null;
         }
         
-        return dbSession.getEntity(targetMe, uuid);
+        String key = targetMe.getName() + ":" + uuid;
+        Entity refEntity = this.srMap.get(key);
+        if (refEntity != null) {
+            return refEntity;
+        }
+        
+        refEntity = dbSession.getEntity(targetMe, uuid);
+        this.srMap.put(key, refEntity);
+        return refEntity;
     }
 
     @Override

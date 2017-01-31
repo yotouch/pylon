@@ -73,6 +73,11 @@ public class BizEntityManagerImpl implements BizEntityManager {
                 }
             }
         }
+
+        String pylonTest = System.getProperty("PYLON_TEST");
+        if (pylonTest != null && pylonTest.toLowerCase().equals("true")) {
+            parseBizEntityConfigFile(new File(ytHome, "etc/bizEntities.yaml"));
+        }
         
         loadDbBizEntity();
 
