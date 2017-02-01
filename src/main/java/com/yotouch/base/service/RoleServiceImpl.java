@@ -154,6 +154,12 @@ public class RoleServiceImpl implements RoleService {
         return roles.contains(role);
     }
 
+    @Override
+    public boolean hasRole(Entity user, String roleName) {
+        Entity role = this.getByName(roleName);
+        return hasRole(user, role);
+    }
+
     public Entity getTopRole(DbSession dbSession, String topRoleName) {
         Entity topRole = dbSession.queryOneRawSql(
                 "role",

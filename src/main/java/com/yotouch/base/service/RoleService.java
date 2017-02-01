@@ -29,6 +29,8 @@ public interface RoleService {
 
     boolean hasRole(Entity user, Entity role);
 
+    boolean hasRole(Entity user, String roleName);
+
     Entity getTopRole(DbSession dbSession, String topRoleName);
 
     List<Entity> getAllChildRoles(DbSession dbSession, Entity topRole);
