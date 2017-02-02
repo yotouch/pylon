@@ -267,6 +267,7 @@ public class EntityImpl implements Entity {
     }
 
     @Override
+    @Deprecated
     public Map<String, Object> asMap() {
         Map<String, Object> m = new HashMap<>();
         for (MetaField<?> mf: this.me.getMetaFields()) {
