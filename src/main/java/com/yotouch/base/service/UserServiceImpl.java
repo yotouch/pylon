@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -187,5 +188,10 @@ public class UserServiceImpl implements UserService {
         return results;
     }
 
+    @Override
+    public List<Entity> getUserRoleList(DbSession dbSession, Entity user) {
+        List<Entity> roles = roleService.getUserRoles(user);
+        return roles.stream().map(ur->ur.sr(dbSession, "role")).collect(Collectors.toList());
+    }
 
 }

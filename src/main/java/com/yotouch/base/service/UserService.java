@@ -20,7 +20,9 @@ public interface UserService {
 
     List<Entity> getUsersByRole(DbSession dbSession, Entity role, int status);
 
+    @Deprecated
     List<Entity> getUserRoles(DbSession dbSession, List<Entity> roles);
-
+    
+    List<Entity> getUserRoleList(DbSession dbSession, Entity user);
 
 }
