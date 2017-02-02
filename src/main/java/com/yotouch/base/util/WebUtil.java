@@ -6,6 +6,7 @@ import com.yotouch.core.Consts;
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.entity.MetaEntity;
 import com.yotouch.core.entity.MetaField;
+import com.yotouch.core.runtime.DbSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +17,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,22 +47,28 @@ public class WebUtil {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public Map<String, Object> asRetJson(Map<String, Object> ret) {
+        
+        return asRetExtraJson(null, ret);
+    }
+    
+    public Map<String, Object> asRetExtraJson(DbSession dbSession, Map<String, Object> ret) {
 
         Map<String, Object> newMap = new HashMap<>();
-
         for (String key : ret.keySet()) {
-
-            //logger.info("Parse to ret json key " + key);
-
             Object value = ret.get(key);
+            logger.info("Parse to ret json key " + key + " value " + value);
 
-            if (value instanceof List) {
-                newMap.put(key, parseList((List) value));
+            if (value instanceof Collection) {
+                newMap.put(key, parseList(dbSession, (Collection) value));
             } else if (value instanceof Map) {
-                newMap.put(key, asRetJson((Map<String, Object>) value));
+                newMap.put(key, asRetExtraJson(dbSession, (Map<String, Object>) value));
             } else if (value instanceof Entity) {
                 Entity e = (Entity) value;
-                newMap.put(key, e.valueMap());
+                if (dbSession != null) {
+                    newMap.put(key, e.extraValueMap(dbSession));
+                } else {
+                    newMap.put(key, e.valueMap());
+                }
             } else {
                 newMap.put(key, value);
             }
@@ -68,27 +76,30 @@ public class WebUtil {
         }
 
         return newMap;
+        
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private List parseList(List l) {
+    private List parseList(DbSession dbSession, Collection l) {
         List newList = new ArrayList<>();
 
         for (Object o : l) {
-            if (o instanceof List) {
-                newList.add(parseList((List) o));
+            if (o instanceof Collection) {
+                newList.add(parseList(dbSession, (Collection) o));
             } else if (o instanceof Map) {
                 newList.add(asRetJson((Map<String, Object>) o));
             } else if (o instanceof Entity) {
                 Entity e = (Entity) o;
-                newList.add(e.valueMap());
+                if (dbSession == null) {
+                    newList.add(e.valueMap());
+                } else {
+                    newList.add(e.extraValueMap(dbSession));
+                }
             } else {
                 newList.add(o);
             }
         }
-
         return newList;
-
     }
 
     

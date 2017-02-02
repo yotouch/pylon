@@ -194,13 +194,32 @@ public class EntityImpl implements Entity {
         Map<String, Object> m = new HashMap<>();
         for (MetaField<?> mf: this.me.getMetaFields()) {
             String name = mf.getName();
-            
             m.put(name, this.getValue(name));
         }
-        
         return m;
     }
-    
+
+    @Override
+    public Map<String, Object> extraValueMap(DbSession dbSession) {
+        Map<String, Object> m = new HashMap<>();
+        for (MetaField<?> mf: this.me.getMetaFields()) {
+            String name = mf.getName();
+            
+            if (mf.isSingleReference()) {
+                Entity e = this.sr(dbSession, name);
+                if (e == null) {
+                    m.put(name, null);
+                } else {
+                    m.put(name, e.extraValueMap(dbSession));
+                }
+            } else {
+                m.put(name, this.getValue(name));
+            }
+        }
+        return m;        
+    }
+
+
     @Override
     public List<Entity> mr(DbSession dbSession, String fieldName) {
         return this.getMultiReference(dbSession, fieldName);
