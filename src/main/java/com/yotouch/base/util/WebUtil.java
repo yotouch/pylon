@@ -56,7 +56,7 @@ public class WebUtil {
         Map<String, Object> newMap = new HashMap<>();
         for (String key : ret.keySet()) {
             Object value = ret.get(key);
-            logger.info("Parse to ret json key " + key + " value " + value);
+            //logger.info("Parse to ret json key " + key + " value " + value);
 
             if (value instanceof Collection) {
                 newMap.put(key, parseList(dbSession, (Collection) value));
