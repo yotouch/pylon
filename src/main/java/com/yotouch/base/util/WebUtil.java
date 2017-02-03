@@ -272,4 +272,17 @@ public class WebUtil {
         c.setMaxAge(Integer.MAX_VALUE);
         response.addCookie(c);
     }
+    
+    public String getCookie(HttpServletRequest request, String name) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie c : cookies) {
+                if (name.equalsIgnoreCase(c.getName())) {
+                    return c.getValue();
+                }
+            }
+        }
+        
+        return "";
+    }
 }
