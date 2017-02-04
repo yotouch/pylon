@@ -387,6 +387,7 @@ public class EntityManagerImpl implements EntityManager {
                     Map<String, Object> fMap = (Map<String, Object>) fields.get(fn);
                     fMap.put("name", fn);
                     fMap.put("uuid", "-");
+                    fMap.put("type", "system");
                     this.systemFields.put(fn, MetaFieldImpl.build(this, fMap));
                 }
 

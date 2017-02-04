@@ -5,6 +5,8 @@ import com.yotouch.core.entity.query.QueryField;
 
 public interface MetaField<T> extends QueryField {
     
+    String getType();
+    
     String getName();
     
     String getDisplayName();

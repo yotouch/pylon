@@ -23,11 +23,24 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
     static final private Logger logger = LoggerFactory.getLogger(MetaFieldImpl.class);
     
     protected MetaEntity me;
+    protected String type = "user";
     protected String uuid;
     protected String name;
     protected String displayName;
     protected boolean isRequired;
     protected FieldValue<T> defaultValue;
+    
+    
+    @Override
+    public String getType() {
+        return this.type;
+    }
+    
+    public MetaFieldImpl setType(String type) {
+        this.type = type;
+        return this;
+    }
+    
 
     @Override
     public String getName() {
@@ -137,8 +150,12 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
         mfi.setDefaultValue(fr.get("defaultValue"));
         mfi.setRequired("1".equals(fr.get("required")));
         
-        //logger.info("Try to build MetaField " + fr);
+        String type = (String)fr.get("type");
+        if (type != null && !type.equals("")) {
+            mfi.setType(type);
+        }        
         
+        //logger.info("Try to build MetaField " + fr);
         //mei.addField(mfi);
 
         logger.debug("MFI " + mfi);
