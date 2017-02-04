@@ -16,14 +16,16 @@ public class MetaEntityImpl implements MetaEntity {
     private Map<String, MetaField<?>> fieldMap;
     
     private String name;
+    private String displayName;
     private String uuid;
     private String tablePrefix;
 
     private boolean lowerTableNames;
 
-    MetaEntityImpl(String uuid, String name, String tablePrefix, boolean lowerTableName) {
+    MetaEntityImpl(String uuid, String name, String displayName, String tablePrefix, boolean lowerTableName) {
         this.name = name;
         this.uuid = uuid;
+        this.displayName = displayName;
         this.tablePrefix = tablePrefix; 
         this.fieldMap = new HashMap<>();
         this.lowerTableNames = lowerTableName;
@@ -36,6 +38,11 @@ public class MetaEntityImpl implements MetaEntity {
     @Override
     public String getName() {
         return this.name;
+    }
+    
+    @Override
+    public String getDisplayName() {
+        return this.displayName;
     }
 
     @SuppressWarnings("unchecked")

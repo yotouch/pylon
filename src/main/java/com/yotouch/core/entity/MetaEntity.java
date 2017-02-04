@@ -10,6 +10,8 @@ public interface MetaEntity {
 
     String getName();
     
+    String getDisplayName();
+    
     String getUuid();
     
     Entity newEntity();

@@ -95,7 +95,7 @@ public class EntityManagerImpl implements EntityManager {
         
         String uuid = me.getName() + "_" + mf.getName() + "_" + targetEntityName;
         
-        MetaEntityImpl mei = new MetaEntityImpl(uuid, uuid, "mr_", this.isLowerCase());
+        MetaEntityImpl mei = new MetaEntityImpl(uuid, uuid, uuid,"mr_", this.isLowerCase());
         mmf.setMappingMetaEntity(mei);
         
         Map<String, Object> fMap = new HashMap<>();
@@ -231,10 +231,18 @@ public class EntityManagerImpl implements EntityManager {
             if (emap.containsKey("prefix")) {
                 prefix = (String) emap.get("prefix");
             }
+            
+            String displayName = en;
+            if (emap.containsKey("displayName")) {
+                String dn = (String) emap.get("displayName");
+                if (dn != null && !"".equals(dn)) {
+                    displayName = dn;
+                }
+            }
 
             MetaEntityImpl mei = (MetaEntityImpl) this.userEntities.get(en);
             if (mei == null) {
-                mei = new MetaEntityImpl(uuid, en, prefix, this.isLowerCase());
+                mei = new MetaEntityImpl(uuid, en, displayName, prefix, this.isLowerCase());
             }
 
 
@@ -277,7 +285,7 @@ public class EntityManagerImpl implements EntityManager {
 
                     MetaEntityImpl mei = (MetaEntityImpl) this.userEntities.get(en);
                     if (mei == null) {
-                        mei = new MetaEntityImpl(uuid, en, prefix, this.isLowerCase());
+                        mei = new MetaEntityImpl(uuid, en, en, prefix, this.isLowerCase());
                     }
 
                     // parse files
@@ -439,9 +447,13 @@ public class EntityManagerImpl implements EntityManager {
     }
 
     private MetaEntityImpl buildMetaEntity(Map<String, Object> row) {
-
+        
         String meName = (String) row.get("name");
         String meUuid = (String) row.get("uuid");
+        String displayName = (String) row.get("displayName");
+        if (displayName == null && displayName.equals("")) {
+            displayName = meName;
+        }
 
         logger.info("Try to build MetaEntity " + meName + " with UUID " + meUuid);
 
@@ -451,7 +463,7 @@ public class EntityManagerImpl implements EntityManager {
 
         logger.info("Get field data for " + meName + " fieldData " + fieldRows);
 
-        MetaEntityImpl mei = new MetaEntityImpl(meUuid, meName, "usr_", this.isLowerCase());
+        MetaEntityImpl mei = new MetaEntityImpl(meUuid, meName, displayName,"usr_", this.isLowerCase());
 
         for (Map<String, Object> fr : fieldRows) {
             MetaFieldImpl<?> mf = MetaFieldImpl.build(this, fr);
