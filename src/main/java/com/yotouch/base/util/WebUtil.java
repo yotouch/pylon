@@ -87,7 +87,7 @@ public class WebUtil {
             if (o instanceof Collection) {
                 newList.add(parseList(dbSession, (Collection) o));
             } else if (o instanceof Map) {
-                newList.add(asRetJson((Map<String, Object>) o));
+                newList.add(asRetExtraJson(dbSession, (Map<String, Object>) o));
             } else if (o instanceof Entity) {
                 Entity e = (Entity) o;
                 if (dbSession == null) {
