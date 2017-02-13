@@ -1,0 +1,10 @@
+format: 2
+entities:
+  wechatAccount:
+    prefix:
+    fields:
+      uin: 
+        dataType: UUID
+      botName:
+        dataType: UUID
+      

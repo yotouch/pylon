@@ -113,6 +113,10 @@ public class MetaEntityImpl implements MetaEntity {
     
     public String getTableName() {
         String name = this.tablePrefix + this.getName();
+        if (this.tablePrefix == null || "".equals(this.tablePrefix) || "-".equals(this.tablePrefix)) {
+            name = this.getName();
+        }
+        
         if (lowerTableNames) {
             return name.toLowerCase();
         }
