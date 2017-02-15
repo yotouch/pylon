@@ -16,4 +16,5 @@ public interface WorkflowState {
 
     List<WorkflowAction> getInActions();
 
+    Workflow getWorkflow();
 }

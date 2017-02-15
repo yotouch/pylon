@@ -42,17 +42,21 @@ public class PropUtil {
     }
 
     public synchronized int nextSeq(DbSession dbSession, String name) {
+        return this.nextSeq(dbSession, name, 1);
+    }
+
+    public synchronized int nextSeq(DbSession dbSession, String name, int step) {
         Entity prop = this.getProp(dbSession, name);
         int seq = 0;
 
         if (prop == null) {
             prop = dbSession.newEntity("prop");
             prop.setValue("name", name);
-            prop.setValue("value", "1");
+            prop.setValue("value", step);
             prop = dbSession.save(prop);
         }
 
-        prop = dbSession.increase(prop, "value", 1);
+        prop = dbSession.increase(prop, "value", step);
 
         String seqStr = prop.v("value");
         if (!StringUtils.isEmpty(seqStr)) {

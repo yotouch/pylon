@@ -11,6 +11,8 @@ public class WorkflowActionImpl implements WorkflowAction {
     
     private String displayName;
     
+    private String type = "normal";
+    
 
     public WorkflowActionImpl(String name) {
         this.name = name;
@@ -34,6 +36,15 @@ public class WorkflowActionImpl implements WorkflowAction {
     @Override
     public WorkflowState getTo() {
         return this.toState;
+    }
+
+    @Override
+    public String getType() {
+        return this.type;
+    }
+    
+    public void setType(String type) {
+        this.type = type;
     }
 
     public void setWorkflow(WorkflowImpl wfi) {

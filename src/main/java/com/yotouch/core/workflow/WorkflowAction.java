@@ -9,6 +9,8 @@ public interface WorkflowAction {
     WorkflowState getFrom();
 
     WorkflowState getTo();
+    
+    String getType();
 
     String getDisplayName();
 

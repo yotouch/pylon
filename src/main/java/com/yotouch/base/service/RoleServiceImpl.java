@@ -125,8 +125,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Entity getOrCreateByName(String name) {
-
-        Entity role = dbSession.queryOneRawSql("role", "name = ?", new Object[]{name});
+        Entity role = this.getByName(name);
         if (role == null) {
             role = dbSession.newEntity("role");
             role.setValue("name", name);
@@ -134,7 +133,12 @@ public class RoleServiceImpl implements RoleService {
         }
 
         return role;
+    }
 
+    @Override
+    public Entity getByName(String roleName) {
+        Entity role = dbSession.queryOneByField("role", "name", roleName);
+        return role;
     }
 
     @Override
@@ -148,6 +152,12 @@ public class RoleServiceImpl implements RoleService {
             }
         }
         return roles.contains(role);
+    }
+
+    @Override
+    public boolean hasRole(Entity user, String roleName) {
+        Entity role = this.getByName(roleName);
+        return hasRole(user, role);
     }
 
     public Entity getTopRole(DbSession dbSession, String topRoleName) {

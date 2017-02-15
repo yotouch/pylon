@@ -19,7 +19,7 @@ public class BarcodeController {
     @Autowired
     private BarcodeService barcodeService;
 
-    @RequestMapping("/barcode/qrcode")
+    @RequestMapping({"/barcode/qrcode", "/api/barcode/qrcode"})
     public @ResponseBody byte[] qrcode(
             @RequestParam(value = "height", defaultValue = "200") int height,
             @RequestParam("text") String text,

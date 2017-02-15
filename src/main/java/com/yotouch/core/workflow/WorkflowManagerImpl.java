@@ -111,7 +111,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
                 
                 String from = action.v("fromState");
                 if (Consts.WORKFLOW_STATE_ANY_STATE.equals(from)) {
-                    wfAction.setFrom(WorkflowStateImpl.AnyState);
+                    wfAction.setFrom(WorkflowStateImpl.ANY_STATE);
                 } else {
                     WorkflowStateImpl fromState = (WorkflowStateImpl) wfi.getState(stateNameMap.get(from));
                     wfAction.setFrom(fromState);
@@ -120,7 +120,8 @@ public class WorkflowManagerImpl implements WorkflowManager {
                 
                 String toName = action.v("toState");
                 if (Consts.WORKFLOW_STATE_SELF_STATE.equals(toName)) {
-                    wfAction.setTo(WorkflowStateImpl.SelfState);
+                    wfAction.setTo(WorkflowStateImpl.SELF_STATE);
+                    wfAction.setType(Consts.WORKFLOW_ACTION_TYPE_TO_SELF);
                 } else {
                     WorkflowStateImpl toState = (WorkflowStateImpl) wfi.getState(stateNameMap.get(toName));
                     wfAction.setTo(toState);
@@ -214,7 +215,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
             
             String fromName = actMap.get("from");
             if (Consts.WORKFLOW_STATE_ANY_STATE.equalsIgnoreCase(fromName)) {
-                wfAction.setFrom(WorkflowStateImpl.AnyState);
+                wfAction.setFrom(WorkflowStateImpl.ANY_STATE);
             } else {
                 WorkflowStateImpl fromState = (WorkflowStateImpl) wfi.getState(fromName);
                 wfAction.setFrom(fromState);
@@ -224,7 +225,8 @@ public class WorkflowManagerImpl implements WorkflowManager {
             
             String toName = actMap.get("to");
             if (Consts.WORKFLOW_STATE_SELF_STATE.equalsIgnoreCase(toName)) {
-                wfAction.setTo(WorkflowStateImpl.SelfState);
+                wfAction.setTo(WorkflowStateImpl.SELF_STATE);
+                wfAction.setType(Consts.WORKFLOW_ACTION_TYPE_TO_SELF);
             } else {
                 WorkflowStateImpl toState = (WorkflowStateImpl) wfi.getState(toName);
                 wfAction.setTo(toState);

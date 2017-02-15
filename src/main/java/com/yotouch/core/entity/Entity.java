@@ -34,7 +34,8 @@ public interface Entity {
     <T extends Object> T getOldValue(String fieldName);
 
     Map<String, Object> valueMap();
-
+    
+    Map<String, Object> extraValueMap(DbSession dbSession);
     
     List<Entity> getMultiReference(DbSession dbSession, String fieldName);
     /*
