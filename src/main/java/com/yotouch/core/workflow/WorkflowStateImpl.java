@@ -14,9 +14,8 @@ public class WorkflowStateImpl implements WorkflowState {
     
     private static final Logger logger = LoggerFactory.getLogger(WorkflowStateImpl.class);
     
-    public static final WorkflowStateImpl AnyState  = new WorkflowStateImpl(Consts.WORKFLOW_STATE_ANY_STATE);
-    public static final WorkflowStateImpl SelfState = new WorkflowStateImpl(Consts.WORKFLOW_STATE_SELF_STATE);
-    
+    public static final WorkflowStateImpl ANY_STATE = new WorkflowStateImpl(Consts.WORKFLOW_STATE_ANY_STATE);
+    public static final WorkflowStateImpl SELF_STATE = new WorkflowStateImpl(Consts.WORKFLOW_STATE_SELF_STATE);
 
     private WorkflowImpl wf;
     
@@ -96,12 +95,11 @@ public class WorkflowStateImpl implements WorkflowState {
     }
 
     private void buildOutActionState(List<WorkflowAction> outActions, WorkflowAction act) {
-        WorkflowAction theWa = this.wf.getAction(act.getName());
-                
         WorkflowActionImpl wai = new WorkflowActionImpl(act.getName());
         wai.setWorkflow(this.wf);
         wai.setFrom(this);
-        wai.setDisplayName(theWa.getDisplayName());
+        wai.setDisplayName(act.getDisplayName());
+        wai.setType(act.getType());
         
         WorkflowStateImpl toState = (WorkflowStateImpl) act.getTo();
         if (toState.getName().equalsIgnoreCase(Consts.WORKFLOW_STATE_SELF_STATE)) {
@@ -125,9 +123,7 @@ public class WorkflowStateImpl implements WorkflowState {
         logger.info("FromAnyActions " + fromAnyActions);
         for (WorkflowAction act: fromAnyActions) {
             buildInActionState(list, act);
-        }
-        
-        
+        }        
         
         return list;
         
@@ -143,9 +139,10 @@ public class WorkflowStateImpl implements WorkflowState {
         wai.setWorkflow(this.wf);
         wai.setFrom(this);
         wai.setDisplayName(act.getDisplayName());
+        wai.setType(act.getType());
         
         WorkflowState toState = act.getTo();
-        if (toState.equals(WorkflowStateImpl.SelfState)) {
+        if (toState.equals(WorkflowStateImpl.SELF_STATE)) {
             wai.setTo(this);
             list.add(wai);
         } else {

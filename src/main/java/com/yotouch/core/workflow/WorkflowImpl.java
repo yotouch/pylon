@@ -81,7 +81,7 @@ public class WorkflowImpl implements Workflow {
     public void addAction(WorkflowActionImpl wfAction) {
         this.actionMap.put(wfAction.getName(), wfAction);
         
-        if (wfAction.getFrom().equals(WorkflowStateImpl.AnyState)) {
+        if (wfAction.getFrom().equals(WorkflowStateImpl.ANY_STATE)) {
             this.fromAnyActionMap.put(wfAction.getName(), wfAction);
         }
     }

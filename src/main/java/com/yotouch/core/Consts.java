@@ -27,6 +27,9 @@ public interface Consts {
     
     String WORKFLOW_STATE_ANY_STATE         = "__ANY__";
     String WORKFLOW_STATE_SELF_STATE        = "__SELF__";
+
+    String WORKFLOW_ACTION_TYPE_TO_SELF     = "to_self";
+    String WORKFLOW_ACTION_TYPE_NORMAL      = "normal";
     
     String BIZ_ENTITY_FIELD_WORKFLOW        = "wf_workflow";
     String BIZ_ENTITY_FIELD_STATE           = "wf_state";
@@ -105,6 +108,7 @@ public interface Consts {
     int REFUND_TYPE_ORDER  = 5510;
     int REFUND_TYPE_ITEMS  = 5520;
     int REFUND_TYPE_AMOUNT = 5530;
+
 
     
 }
