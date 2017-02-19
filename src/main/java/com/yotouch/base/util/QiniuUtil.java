@@ -90,6 +90,8 @@ public class QiniuUtil {
                 //响应的文本信息
                 return r.bodyString();
             } catch (QiniuException e1) {
+                e1.printStackTrace();
+                logger.error(e1.getMessage(), e1);
                 return "";
             }
         }
