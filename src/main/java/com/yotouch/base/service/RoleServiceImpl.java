@@ -6,6 +6,7 @@ import com.yotouch.core.entity.Entity;
 import com.yotouch.core.runtime.DbSession;
 import com.yotouch.core.runtime.YotouchApplication;
 import com.yotouch.core.runtime.YotouchRuntime;
+import opennlp.tools.parser.Cons;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -198,8 +199,12 @@ public class RoleServiceImpl implements RoleService {
             userRole = dbSession.newEntity("userRole");
             userRole.setValue("user", user);
             userRole.setValue("role", role);
-            userRole = dbSession.save(userRole);
+        } else {
+            userRole.setValue("status", Consts.STATUS_NORMAL);
         }
+
+        userRole = dbSession.save(userRole);
+
     }
 
     @Override

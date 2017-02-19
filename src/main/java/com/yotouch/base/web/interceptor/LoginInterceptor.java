@@ -98,7 +98,7 @@ public abstract class LoginInterceptor implements HandlerInterceptor {
         }
     }
 
-    protected abstract boolean loginSuccess(HttpServletRequest request, HttpServletResponse response, Object handler);
+    protected abstract boolean loginSuccess(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException;
 
     protected abstract boolean loginFailed(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException;
 

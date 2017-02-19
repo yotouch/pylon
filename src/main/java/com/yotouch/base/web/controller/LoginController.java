@@ -127,12 +127,14 @@ public class LoginController extends BaseController {
             model.addAttribute("toUrl", backUrl);
             return "/common/jsRedirect";
         } else {
+            
             if (StringUtils.isEmpty(backUrl)) {
                 backUrl = defaultHome;
-                model.addAttribute("toUrl", backUrl);
-                return "/common/jsRedirect";
             }
-            return "redirect:" + backUrl;
+
+            redirectAttr.addAttribute("backUrl", backUrl);
+            
+            return "redirect:/login";
         }
     }
 
