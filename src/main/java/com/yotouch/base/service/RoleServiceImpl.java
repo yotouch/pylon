@@ -249,5 +249,13 @@ public class RoleServiceImpl implements RoleService {
         
     }
 
+    @Override
+    public void removeUserRole(DbSession dbSession, Entity user, String roleName) {
+        Entity role = this.getByName(roleName);
+        if (role != null) {
+            this.removeUserRole(dbSession, user, role);
+        }        
+    }
+
 
 }

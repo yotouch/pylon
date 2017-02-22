@@ -45,4 +45,6 @@ public interface RoleService {
 
     void removeUserRole(DbSession dbSession, Entity user, Entity role);
 
+    void removeUserRole(DbSession dbSession, Entity user, String roleName);
+
 }
