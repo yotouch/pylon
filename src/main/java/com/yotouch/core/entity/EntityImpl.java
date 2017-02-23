@@ -194,6 +194,9 @@ public class EntityImpl implements Entity {
         Map<String, Object> m = new HashMap<>();
         for (MetaField<?> mf: this.me.getMetaFields()) {
             String name = mf.getName();
+            if ("password".equals(name) || mf.getDataType().equals(Consts.META_FIELD_DATA_TYPE_BINARY)) {
+                continue;
+            }
             m.put(name, this.getValue(name));
         }
         return m;
@@ -209,6 +212,10 @@ public class EntityImpl implements Entity {
             } else {
 
                 String name = mf.getName();
+                
+                if ("password".equals(name) || mf.getDataType().equals(Consts.META_FIELD_DATA_TYPE_BINARY)) {
+                    continue;
+                }
 
                 if (mf.isSingleReference()) {
                     Entity e = this.sr(dbSession, name);
