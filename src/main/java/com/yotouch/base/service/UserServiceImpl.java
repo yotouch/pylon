@@ -194,4 +194,25 @@ public class UserServiceImpl implements UserService {
         return roles.stream().map(ur->ur.sr(dbSession, "role")).collect(Collectors.toList());
     }
 
+    @Override
+    public boolean checkPassword(DbSession dbSession, Entity user, String password) {
+        String oldPwd = user.v("password");
+        if (oldPwd.startsWith("plain:")) {
+            oldPwd = oldPwd.substring(6, oldPwd.length());
+            if (oldPwd.equals(password)) {
+                
+                user.setValue("password", this.genPassword(user, password));
+                dbSession.save(user);
+                return true;
+            }
+        } else {
+            password = this.genPassword(user, password);
+            if (password.equals(oldPwd)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
 }

@@ -25,4 +25,5 @@ public interface UserService {
     
     List<Entity> getUserRoleList(DbSession dbSession, Entity user);
 
+    boolean checkPassword(DbSession dbSession, Entity user, String password);
 }
