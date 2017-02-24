@@ -74,7 +74,11 @@ public class DbSessionImpl implements DbSession {
             if (this.loginUser != null) {
                 e.setValue("creatorUuid", this.loginUser.getUuid());
             }
-            e.setValue("createdAt", new Date());
+            
+            Calendar c = e.v("createdAt");
+            if (c == null) {
+                e.setValue("createdAt", new Date());
+            }
             if (e.v("status") == null) {
                 e.setValue("status", Consts.STATUS_NORMAL);
             }
