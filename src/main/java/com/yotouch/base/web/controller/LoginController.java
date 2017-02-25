@@ -2,6 +2,7 @@ package com.yotouch.base.web.controller;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
+import com.yotouch.base.service.PasswordChecker;
 import com.yotouch.base.service.UserService;
 import com.yotouch.core.Consts;
 import com.yotouch.core.ErrorCode;
@@ -34,6 +35,9 @@ public class LoginController extends BaseController {
 
     @Value("${defaultHome:/}")
     private String defaultHome;
+    
+    @Autowired(required =  false)
+    private PasswordChecker passwordChecker;
 
     @RequestMapping(value="/login", method = RequestMethod.GET)
     public String login(
@@ -103,15 +107,22 @@ public class LoginController extends BaseController {
 
         } else {
 
-            String userPwd = user.v("password");
-            if (userPwd.startsWith("plain:")) {
-                userPwd = userPwd.replace("plain:", "");
-                userPwd = userService.genPassword(user, userPwd);
+            boolean rightPwd = false;
+            if (passwordChecker != null) {
+                rightPwd = passwordChecker.checkPassword(user, password);
+            } else {
+                String userPwd = user.v("password");
+                if (userPwd.startsWith("plain:")) {
+                    userPwd = userPwd.replace("plain:", "");
+                    userPwd = userService.genPassword(user, userPwd);
+                }
+
+                String md5Pwd = userService.genPassword(user, password);
+                rightPwd = md5Pwd.equals(userPwd);
             }
+            
 
-            String md5Pwd = userService.genPassword(user, password);
-
-            if (!md5Pwd.equals(userPwd)) {
+            if (!rightPwd) {
                 redirectAttr.addAttribute("errorCode", ErrorCode.LOGIN_FAILED_WRONG_PASSWORD);
             } else {
                 userService.seedLoginCookie(response, user);
