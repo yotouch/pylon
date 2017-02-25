@@ -10,16 +10,16 @@ import me.chanjar.weixin.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.yotouch.core.Consts;
 import com.yotouch.core.runtime.YotouchApplication;
 
+import java.io.IOException;
 import java.util.UUID;
 
 @Component
-public class SystemInterceptor implements HandlerInterceptor{
+public class SystemInterceptor extends LoginInterceptor{
     
     @Autowired
     private YotouchApplication ytApp;
@@ -33,9 +33,7 @@ public class SystemInterceptor implements HandlerInterceptor{
     @Autowired
     private QiniuUtil qiniuUtil;
 
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-            throws Exception {
+    public boolean addVariables(HttpServletRequest request, HttpServletResponse response, Object handler) {
         
         request.setAttribute(Consts.RUNTIME_VARIABLE_WX_APPID, wechatAppId);
         
@@ -56,6 +54,18 @@ public class SystemInterceptor implements HandlerInterceptor{
         }
         
         request.setAttribute("_bid_", bid);
+        return true;
+    }
+
+    @Override
+    protected boolean loginSuccess(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
+        this.addVariables(request, response, handler);
+        return true;
+    }
+
+    @Override
+    protected boolean loginFailed(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
+        this.addVariables(request, response, handler);
         return true;
     }
 
