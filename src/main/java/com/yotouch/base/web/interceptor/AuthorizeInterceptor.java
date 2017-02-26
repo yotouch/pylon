@@ -1,8 +1,10 @@
 package com.yotouch.base.web.interceptor;
 
+import com.yotouch.base.service.MenuPermissionChecker;
 import com.yotouch.base.service.RoleService;
+import com.yotouch.core.Consts;
 import com.yotouch.core.entity.Entity;
-import com.yotouch.core.runtime.YotouchApplication;
+import com.yotouch.core.runtime.DbSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +17,18 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @Component
-public class AuthrizeInterceptor implements HandlerInterceptor {
+public class AuthorizeInterceptor implements HandlerInterceptor {
 
-    static final private Logger logger = LoggerFactory.getLogger(AuthrizeInterceptor.class);
-
+    static final private Logger logger = LoggerFactory.getLogger(AuthorizeInterceptor.class);
+    
     @Autowired
-    private YotouchApplication ytApp;
-
+    private DbSession dbSession;
+    
     @Autowired
     private RoleService roleService;
-
+    
+    @Autowired(required = false)
+    private MenuPermissionChecker menuPermissionChecker;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -32,11 +36,16 @@ public class AuthrizeInterceptor implements HandlerInterceptor {
 
         String uri = request.getRequestURI();
 
-        Entity loginUser = (Entity) request.getAttribute("loginUser");
+        Entity loginUser = (Entity) request.getAttribute(Consts.RUNTIME_VARIABLE_USER);
 
         if (loginUser != null) {
             List<Entity> userRoles = roleService.getUserRoles(loginUser);
             List<Entity> menus = roleService.getMenu(userRoles);
+            
+            if (menuPermissionChecker != null) {
+                menus = menuPermissionChecker.check(request, dbSession, loginUser, menus);
+            }
+            
             request.setAttribute("userMenus", menus);
         }
 
