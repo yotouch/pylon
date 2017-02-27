@@ -34,18 +34,28 @@ public class BizEntityServiceImpl implements BizEntityService {
         entity.setValue(Consts.BIZ_ENTITY_FIELD_WORKFLOW, bme.getWorkflow().getName());
         entity.setValue(Consts.BIZ_ENTITY_FIELD_STATE, "");
         
-        BizEntity be = this.convert(entity);
+        BizEntity be = this.convert(bme.getWorkflow(), entity);
         
         return be;
     }
 
-    @Override
+    @Deprecated
     public BizEntity convert(Entity entity) {
         
         BizMetaEntity bme = this.beMgr.getBizMetaEntityByEntity(entity.getMetaEntity().getName());
         
         BizEntityImpl bei = new BizEntityImpl(bme, entity);
         
+        return bei;
+    }
+
+    @Override
+    public BizEntity convert(Workflow workflow, Entity entity) {
+
+        BizMetaEntity bme = this.beMgr.getBizMetaEntityByWorkflow(workflow.getName());
+
+        BizEntityImpl bei = new BizEntityImpl(bme, entity);
+
         return bei;
     }
 
@@ -61,7 +71,7 @@ public class BizEntityServiceImpl implements BizEntityService {
         
         entity.setValue(Consts.BIZ_ENTITY_FIELD_STATE, wfa.getTo().getName());
         entity = dbSession.save(entity);
-        return this.convert(entity);
+        return this.convert(wfa.getWorkflow(), entity);
     }
 
     private WorkflowAction checkWorkflowAndGetAction(String actionName, Entity entity) {
@@ -110,7 +120,7 @@ public class BizEntityServiceImpl implements BizEntityService {
         
         afterActionHandler.doAfterAction(dbSession, wfa, entity, args);
 
-        return this.convert(entity);
+        return this.convert(wfa.getWorkflow(), entity);
     }
 
     @Override
