@@ -52,7 +52,7 @@ public class LoginController extends BaseController {
 
         Entity user = (Entity) request.getAttribute("loginUser");
         logger.info("Try to get user " + user);
-        if (user != null) {
+        if (user != null && errorCode == 0) {
             if (!StringUtils.isEmpty(backUrl)) {
                 return "redirect:" + backUrl;
             } else {
