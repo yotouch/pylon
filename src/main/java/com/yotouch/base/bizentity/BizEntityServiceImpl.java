@@ -39,7 +39,7 @@ public class BizEntityServiceImpl implements BizEntityService {
         return be;
     }
 
-    @Deprecated
+    @Override
     public BizEntity convert(Entity entity) {
         
         BizMetaEntity bme = this.beMgr.getBizMetaEntityByEntity(entity.getMetaEntity().getName());
@@ -67,15 +67,20 @@ public class BizEntityServiceImpl implements BizEntityService {
     @Override
     public BizEntity doAction(DbSession dbSession, String actionName, Entity entity) {
 
-        WorkflowAction wfa = checkWorkflowAndGetAction(actionName, entity);
+        WorkflowAction wfa = checkWorkflowAndGetAction(null, actionName, entity);
         
         entity.setValue(Consts.BIZ_ENTITY_FIELD_STATE, wfa.getTo().getName());
         entity = dbSession.save(entity);
         return this.convert(wfa.getWorkflow(), entity);
     }
 
-    private WorkflowAction checkWorkflowAndGetAction(String actionName, Entity entity) {
-        BizMetaEntity bme = this.beMgr.getBizMetaEntityByEntity(entity.getMetaEntity().getName());
+    private WorkflowAction checkWorkflowAndGetAction(String workflowName, String actionName, Entity entity) {
+        BizMetaEntity bme = null;
+        if (StringUtils.isEmpty(workflowName)){
+            bme = this.beMgr.getBizMetaEntityByEntity(entity.getMetaEntity().getName());
+        } else {
+            bme = this.beMgr.getBizMetaEntityByWorkflow(workflowName);
+        }
 
         if (bme == null) {
             throw new WorkflowException("No such workflow for MetaEntity [ "+entity.getMetaEntity().getName()+"]");
@@ -114,10 +119,21 @@ public class BizEntityServiceImpl implements BizEntityService {
     @Override
     public BizEntity doAction(DbSession dbSession, String actionName, Entity entity, BeforeActionHandler beforeActionHandler, AfterActionHandler afterActionHandler, Map<String, Object> args) throws WorkflowException {
 
-        TransitResult tr = doTransit(dbSession, actionName, entity, beforeActionHandler, args);
+        TransitResult tr = doTransit(dbSession, null, actionName, entity, beforeActionHandler, args);
         entity = tr.entity;
         WorkflowAction wfa = tr.wfa;
         
+        afterActionHandler.doAfterAction(dbSession, wfa, entity, args);
+
+        return this.convert(wfa.getWorkflow(), entity);
+    }
+
+    @Override
+    public BizEntity doAction(DbSession dbSession, String workflowName, String actionName, Entity entity, BeforeActionHandler beforeActionHandler, AfterActionHandler afterActionHandler, Map<String, Object> args) throws WorkflowException {
+        TransitResult tr = doTransit(dbSession, workflowName, actionName, entity, beforeActionHandler, args);
+        entity = tr.entity;
+        WorkflowAction wfa = tr.wfa;
+
         afterActionHandler.doAfterAction(dbSession, wfa, entity, args);
 
         return this.convert(wfa.getWorkflow(), entity);
@@ -129,8 +145,8 @@ public class BizEntityServiceImpl implements BizEntityService {
     }
 
     @Transactional
-    private TransitResult doTransit(DbSession dbSession, String actionName, Entity entity, BeforeActionHandler beforeActionHandler, Map<String, Object> args) {
-        WorkflowAction wfa = checkWorkflowAndGetAction(actionName, entity);
+    private TransitResult doTransit(DbSession dbSession, String workflowName, String actionName, Entity entity, BeforeActionHandler beforeActionHandler, Map<String, Object> args) {
+        WorkflowAction wfa = checkWorkflowAndGetAction(workflowName, actionName, entity);
         beforeActionHandler.doBeforeAction(dbSession, wfa, entity, args);
 
         entity.setValue(Consts.BIZ_ENTITY_FIELD_STATE, wfa.getTo().getName());
