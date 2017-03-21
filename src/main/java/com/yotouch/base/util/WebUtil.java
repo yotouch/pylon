@@ -194,7 +194,13 @@ public class WebUtil {
     }
 
     public String getBaseUrl() {
-        return "http://" + this.appHost;
+        String url = "";
+        if ("1".equals(this.ssl) || "true".equalsIgnoreCase(this.ssl)) {
+            url = "https://" + this.appHost;
+        } else {
+            url = "http://" + this.appHost;
+        }
+        return url;
     }
 
     public String getBrowserId(HttpServletRequest request){
