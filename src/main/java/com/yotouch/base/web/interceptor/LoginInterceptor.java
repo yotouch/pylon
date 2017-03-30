@@ -58,8 +58,6 @@ public abstract class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
-
-        String uri = request.getRequestURI();
         boolean isLogin = false;
 
         Cookie[] cookies = request.getCookies();
@@ -85,10 +83,9 @@ public abstract class LoginInterceptor implements HandlerInterceptor {
             }
         }
 
-        for (String iu: this.ignoredList) {
-            if (uri.startsWith(iu)) {
-                isLogin = true;
-            }
+        boolean isIgnore = this.uriIsIgnore(request) ;
+        if(isIgnore){
+            isLogin = true ;
         }
 
         if (isLogin) {
@@ -96,6 +93,24 @@ public abstract class LoginInterceptor implements HandlerInterceptor {
         } else {
             return this.loginFailed(request, response, handler);
         }
+    }
+
+    /**
+     * 检测当前 URI 是否不需要权限控制
+     *
+     * @param request
+     * @return
+     */
+    protected boolean uriIsIgnore(HttpServletRequest request){
+        String uri = request.getRequestURI();
+
+        for (String iu: this.ignoredList) {
+            if (uri.startsWith(iu)) {
+                return true;
+            }
+        }
+
+        return false ;
     }
 
     protected abstract boolean loginSuccess(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException;
