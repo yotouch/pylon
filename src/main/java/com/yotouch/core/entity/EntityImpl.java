@@ -303,7 +303,7 @@ public class EntityImpl implements Entity {
 
     @Override
     public <T extends EntityModel> Entity fromModel(T entityModel) {
-        return fromMap(pojoToMap(entityModel));
+        return fromMap(modelToMap(entityModel));
     }
 
     @Override
@@ -331,9 +331,9 @@ public class EntityImpl implements Entity {
         return this;
     }
 
-    private Map<String, Object> pojoToMap(Object pojo){
+    private <T extends EntityModel> Map<String, Object> modelToMap(T entityModel){
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.convertValue(pojo, new TypeReference<Map<String, Object>>() {});
+        return mapper.convertValue(entityModel, new TypeReference<Map<String, Object>>() {});
     }
 
     @Override
