@@ -5,7 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yotouch.core.Consts;
+import com.yotouch.core.model.EntityModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -24,6 +27,7 @@ import com.yotouch.core.exception.MetaFieldIsNotSingleReference;
 import com.yotouch.core.exception.NoSuchMetaFieldException;
 import com.yotouch.core.exception.YotouchException;
 import com.yotouch.core.runtime.DbSession;
+
 
 
 public class EntityImpl implements Entity {
@@ -289,6 +293,47 @@ public class EntityImpl implements Entity {
             }
         }
         return m;
+    }
+
+    @Override
+    public <T extends EntityModel> T looksLike(Class<T> clazz) {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.convertValue(asMap(), clazz);
+    }
+
+    @Override
+    public <T extends EntityModel> Entity fromModel(T entityModel) {
+        return fromMap(modelToMap(entityModel));
+    }
+
+    @Override
+    public Entity fromMap(Map<String, Object> map){
+        if (map == null) return this;
+
+        long changeValueCounts = this.getMetaEntity().getMetaFields().stream()
+                .filter(
+                        mf -> !"createdAt".equals(mf.getName())
+                                && !"updatedAt".equals(mf.getName())
+                                && map.containsKey(mf.getName())
+                                && map.get(mf.getName()) != null
+                                && (mf.isSingleReference() || Consts.META_FIELD_TYPE_DATA_FIELD.equals(mf.getFieldType()))
+                )
+                .map(mf -> {
+                    Object tempV = map.get(mf.getName());
+                    if (mf.isSingleReference() && tempV instanceof Map && !StringUtils.isEmpty(((Map) tempV).get("uuid"))) {
+                        setValue(mf.getName(), ((Map) tempV).get("uuid"));
+                    } else {
+                        setValue(mf.getName(), tempV);
+                    }
+                    return mf;
+                }).count();
+
+        return this;
+    }
+
+    private <T extends EntityModel> Map<String, Object> modelToMap(T entityModel){
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.convertValue(entityModel, new TypeReference<Map<String, Object>>() {});
     }
 
     @Override

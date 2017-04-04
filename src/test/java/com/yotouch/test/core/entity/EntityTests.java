@@ -2,11 +2,7 @@ package com.yotouch.test.core.entity;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
@@ -260,4 +256,24 @@ public class EntityTests {
 
     }
 
+    @Test
+    public void testAsPojo() {
+        YotouchRuntime rt = ytApp.getRuntime();
+
+        DbSession ds = rt.createDbSession();
+        logger.info("DbSession : " + ds);
+
+        Entity e1 = ds.newEntity("user");
+        Entity e2 = ds.newEntity("user");
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("nickname", "king");
+        map.put("age", 14);
+        e1.fromMap(map);
+
+        e2.setValue("nickname", "king");
+        e2.setValue("age", 14);
+
+        assertEquals(e2, e1);
+    }
 }
