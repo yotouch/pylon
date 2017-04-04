@@ -55,7 +55,7 @@ public interface Entity {
 
     <T extends EntityModel> T looksLike(Class<T> clazz);
 
-    <T extends EntityModel> Entity fromPojo(T pojo);
+    <T extends EntityModel> Entity fromModel(T entityModel);
 
     Entity fromMap(Map<String, Object> map);
 }
