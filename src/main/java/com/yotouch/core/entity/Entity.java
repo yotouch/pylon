@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.yotouch.core.exception.NoSuchMetaFieldException;
+import com.yotouch.core.model.EntityModel;
 import com.yotouch.core.runtime.DbSession;
 
 public interface Entity {
@@ -52,11 +53,9 @@ public interface Entity {
 
     Map<String, Object> asMap();
 
-    <T extends Object> T looksLike(Class<T> clazz);
+    <T extends EntityModel> T looksLike(Class<T> clazz);
 
-    <T extends Object> T asPojo(Class<T> clazz);
-
-    Entity fromPojo(Object pojo);
+    <T extends EntityModel> Entity fromPojo(T pojo);
 
     Entity fromMap(Map<String, Object> map);
 }
