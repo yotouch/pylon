@@ -35,13 +35,13 @@ public class BizEntityManagerImpl implements BizEntityManager {
         
     @Autowired
     private EntityManager entityMgr;
-    
+
     @Autowired
     private WorkflowManager wfMgr;
-    
+
     @Autowired
     private Configure config;
-    
+
     @Autowired
     private DbSession dbSession;
     

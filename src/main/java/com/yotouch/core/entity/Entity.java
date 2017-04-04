@@ -51,4 +51,12 @@ public interface Entity {
     Entity sr(DbSession dbSession, String fieldName);
 
     Map<String, Object> asMap();
+
+    <T extends Object> T looksLike(Class<T> clazz);
+
+    <T extends Object> T asPojo(Class<T> clazz);
+
+    Entity fromPojo(Object pojo);
+
+    Entity fromMap(Map<String, Object> map);
 }
