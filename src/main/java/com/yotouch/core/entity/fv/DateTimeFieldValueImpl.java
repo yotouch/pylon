@@ -21,9 +21,13 @@ public class DateTimeFieldValueImpl extends AbstractFieldValue<Calendar> impleme
             return null;
         } else if (v instanceof Calendar) {
             return (Calendar) v;
-        } else if (v instanceof Date){
+        } else if (v instanceof Date) {
             Calendar cal = Calendar.getInstance();
             cal.setTime((Date) v);
+            return cal;
+        } else if (v instanceof Long) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis((Long) v);
             return cal;
         } else {
             String s = (String) v.toString();

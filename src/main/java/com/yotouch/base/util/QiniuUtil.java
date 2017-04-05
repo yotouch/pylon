@@ -164,17 +164,20 @@ public class QiniuUtil {
         return convertToType(content, host, "avthumb/mp3");
     }
 
+    public String convertToMp3(byte[] content, String host, String notiUrl) throws IOException {
+        return convertToType(content, host, notiUrl, "avthumb/mp3");
+    }
+
     public String convertToMp4(byte[] content, String host) throws IOException {
         return convertToType(content, host, "avthumb/mp4");
     }
 
-    public String convertToType(byte[] content, String host, String type) throws IOException {
-
+    public String convertToType(byte[] content, String host, String url, String type) throws IOException {
         String name =  "attachment/" + System.currentTimeMillis() + "_" + Math.random() * 100;
         StringMap policy = new StringMap();
         policy.put("persistentOps",type);
         policy.put("persistentPipeline", this.pipeline);
-        policy.put("persistentNotifyUrl", host + persistentNotifyUrl);
+        policy.put("persistentNotifyUrl", host + url);
 
         try {
             Response res = uploadManager.put(content, name, getOverwriteToken(this.bucket, name, policy));
@@ -193,6 +196,10 @@ public class QiniuUtil {
                 return "";
             }
         }
+    }
+
+    public String convertToType(byte[] content, String host, String type) throws IOException {
+        return convertToType(content, host, persistentNotifyUrl, type);
     }
 
 
