@@ -1,18 +1,14 @@
 package com.yotouch.base.service;
 
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.io.IOException;
-
-import com.google.common.io.ByteStreams;
 import org.apache.tika.Tika;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.yotouch.core.runtime.YotouchApplication;
 import com.yotouch.core.entity.Entity;
@@ -25,6 +21,10 @@ public class AttachmentServiceImpl implements AttachmentService {
 
     @Autowired
     protected YotouchApplication ytApp;
+
+    @Value("${app.attachment.saveBinary:}")
+    String saveBinary;
+
 
     @Override
     public Entity saveAttachment(byte[] bytes) {
@@ -41,13 +41,16 @@ public class AttachmentServiceImpl implements AttachmentService {
         logger.info("Try to save attachment MD5 " + md5 + " size " + bytes.length);
 
         Entity att = dbSession.queryOneRawSql("attachment", "md5 = ?", new Object[]{md5});
-
+        
         if (att == null) {
             att = dbSession.newEntity("attachment");
             att.setValue("md5",  md5);
-            att.setValue("content", bytes);
+
+            if (!"false".equalsIgnoreCase(saveBinary)) {
+                att.setValue("content", bytes);
+            }
             att.setValue("mime", contentType);
-            att = dbSession.save(att);
+            att = dbSession.save(att);   
         }
 
         return att;
