@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.yotouch.core.entity.query.Query;
+import com.yotouch.core.model.EntityModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -220,10 +221,38 @@ public class DbSessionImpl implements DbSession {
     }
 
     @Override
+    public <M extends EntityModel> List<M> queryRawSql(String entityName, String where, Object[] args, Class<M> clazz) {
+        List<Entity> entityList = queryRawSql(entityName, where, args);
+
+        if (entityList != null && !entityList.isEmpty()) {
+            return entityList
+                    .stream()
+                    .map(entity -> Entity.looksLike(this, entity, clazz))
+                    .collect(Collectors.toList());
+        }
+
+        return null;
+    }
+
+    @Override
     public List<Entity> getAll(String entityName) {
         MetaEntity me = entityMgr.getMetaEntity(entityName);
         List<Entity> el = this.dbStore.querySql(me, "", null, new EntityRowMapper(this, me, isMrLazy()));
         return el;
+    }
+
+    @Override
+    public <M extends EntityModel> List<M> getAll(String string, Class<M> clazz) {
+        List<Entity> entityList = getAll(string);
+
+        if (entityList != null && !entityList.isEmpty()) {
+            return entityList
+                    .stream()
+                    .map(entity -> Entity.looksLike(this, entity, clazz))
+                    .collect(Collectors.toList());
+        }
+
+        return null;
     }
 
     @Override
@@ -239,6 +268,17 @@ public class DbSessionImpl implements DbSession {
         }
         
         return el.get(0);
+    }
+
+    @Override
+    public <M extends EntityModel> M queryOneRawSql(String entityName, String where, Object[] args, Class<M> clazz) {
+        Entity entity = queryOneRawSql(entityName, where, args);
+
+        if (entity != null) {
+            return Entity.looksLike(this, entity, clazz);
+        }
+
+        return null;
     }
 
     @Override
