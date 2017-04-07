@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yotouch.core.Consts;
 import com.yotouch.core.exception.NoSuchMetaFieldException;
@@ -75,6 +76,7 @@ public interface Entity {
 
     static  <T extends EntityModel> T looksLike(DbSession dbSession, Entity entity, Class<T> clazz) {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
         return mapper.convertValue(Entity.asMap(dbSession, entity), clazz);
     }
 

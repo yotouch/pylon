@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yotouch.core.Consts;
@@ -298,6 +299,7 @@ public class EntityImpl implements Entity {
     @Override
     public <T extends EntityModel> T looksLike(Class<T> clazz) {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
         return mapper.convertValue(asMap(), clazz);
     }
 
@@ -333,6 +335,7 @@ public class EntityImpl implements Entity {
 
     private <T extends EntityModel> Map<String, Object> modelToMap(T entityModel){
         ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
         return mapper.convertValue(entityModel, new TypeReference<Map<String, Object>>() {});
     }
 
