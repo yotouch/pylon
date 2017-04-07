@@ -1,12 +1,14 @@
 package com.yotouch.core.entity;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yotouch.core.Consts;
 import com.yotouch.core.exception.NoSuchMetaFieldException;
 import com.yotouch.core.model.EntityModel;
 import com.yotouch.core.runtime.DbSession;
-
 public interface Entity {
     
     MetaEntity getMetaEntity();
@@ -53,7 +55,28 @@ public interface Entity {
 
     Map<String, Object> asMap();
 
+    static Map<String, Object> asMap(DbSession dbSession, Entity entity){
+        if (entity == null){
+            return null;
+        }
+
+        Map<String, Object> m = new HashMap<>();
+        for (MetaField<?> mf : entity.getMetaEntity().getMetaFields()){
+            if (mf.getFieldType().equals(Consts.META_FIELD_TYPE_DATA_FIELD)) {
+                m.put(mf.getName(), entity.v(mf.getName()));
+            } else if (mf.isSingleReference()) {
+                m.put(mf.getName(), Entity.asMap(dbSession, entity.sr(dbSession, mf.getName())));
+            }
+        }
+        return m;
+    }
+
     <T extends EntityModel> T looksLike(Class<T> clazz);
+
+    static  <T extends EntityModel> T looksLike(DbSession dbSession, Entity entity, Class<T> clazz) {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.convertValue(Entity.asMap(dbSession, entity), clazz);
+    }
 
     <T extends EntityModel> Entity fromModel(T entityModel);
 
