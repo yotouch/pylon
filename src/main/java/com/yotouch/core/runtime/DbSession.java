@@ -5,6 +5,7 @@ import java.util.List;
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.entity.MetaEntity;
 import com.yotouch.core.entity.query.Query;
+import com.yotouch.core.model.EntityModel;
 
 public interface DbSession {
 
@@ -19,10 +20,16 @@ public interface DbSession {
     Entity getEntity(MetaEntity me, String uuid);
 
     List<Entity> queryRawSql(String entityName, String where, Object[] args);
-    
+
+    <M extends EntityModel> List<M> queryRawSql(String entityName, String where, Object[] args, Class<M> clazz);
+
     Entity queryOneRawSql(String entityName, String where, Object[] args);
 
+    <M extends EntityModel> M queryOneRawSql(String entityName, String where, Object[] args, Class<M> clazz);
+
     List<Entity> getAll(String string);
+
+    <M extends EntityModel> List<M> getAll(String string, Class<M> clazz);
 
     void deleteEntity(MetaEntity me, String uuid);
 
