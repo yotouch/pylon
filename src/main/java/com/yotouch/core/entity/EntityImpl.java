@@ -372,7 +372,10 @@ public class EntityImpl implements Entity {
 
     @Override
     public boolean isNew() {
-        return StringUtils.isEmpty(this.getUuid());
+        String uuid = this.getUuid();
+        // NOTE: yinwm -- It's a workaround strategy for outside give uuid, start with minus sign seems a new entity 
+        // when save to storage, DBSession should check and remove prefix minus sign, change update to insert
+        return StringUtils.isEmpty(this.getUuid()) || uuid.startsWith("-");
     }
 
     @Override

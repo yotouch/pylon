@@ -83,4 +83,5 @@ public interface Entity {
     <T extends EntityModel> Entity fromModel(T entityModel);
 
     Entity fromMap(Map<String, Object> map);
+
 }
