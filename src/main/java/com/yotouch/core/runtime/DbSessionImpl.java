@@ -224,7 +224,13 @@ public class DbSessionImpl implements DbSession {
             return el.get(0);
         }
     }
-    
+
+    @Override
+    public <M extends EntityModel> M getEntity(String entityName, String uuid, Class<M> clazz) {
+        Entity entity = this.getEntity(entityName, uuid);
+        return entity.looksLike(clazz);
+    }
+
     @Override
     public List<Entity> queryRawSql(String entityName, String where, Object[] args) {
         MetaEntity me = entityMgr.getMetaEntity(entityName);
@@ -360,5 +366,6 @@ public class DbSessionImpl implements DbSession {
         return this.queryOneRawSql(metaEntity, fieldName + "= ?", new Object[]{ value });
     }
 
+    
 
 }

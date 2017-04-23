@@ -19,6 +19,8 @@ public interface DbSession {
     
     Entity getEntity(MetaEntity me, String uuid);
 
+    <M extends EntityModel> M getEntity(String entityName, String uuid, Class<M> clazz);
+
     List<Entity> queryRawSql(String entityName, String where, Object[] args);
 
     <M extends EntityModel> List<M> queryRawSql(String entityName, String where, Object[] args, Class<M> clazz);
