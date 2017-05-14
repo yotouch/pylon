@@ -3,6 +3,8 @@ package com.yotouch.core.workflow;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +16,8 @@ import com.yotouch.core.runtime.DbSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.yaml.snakeyaml.Yaml;
@@ -48,12 +52,28 @@ public class WorkflowManagerImpl implements WorkflowManager {
     
     private void loadFileWorkflow() {
         File ytHome = config.getRuntimeHome();
+        
+        if (ytHome == null) {
+            
+            PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+            try {
+                Resource[] resources = resolver.getResources("/etc/workflows.yaml");
+                for (Resource resource : resources) {
+                    InputStream is = resource.getInputStream();
+                    parseWorkflowConfigInputStream(is);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            
+        } else {
 
-        for (File ah: ytHome.listFiles()) {
-            if (ah.isDirectory()) {
-                if (ah.getName().startsWith("addon-")
-                        || ah.getName().startsWith("app-")) {
-                    parserWorkflowConfigFile(new File(ah, "etc/workflows.yaml"));
+            for (File ah : ytHome.listFiles()) {
+                if (ah.isDirectory()) {
+                    if (ah.getName().startsWith("addon-")
+                            || ah.getName().startsWith("app-")) {
+                        parserWorkflowConfigFile(new File(ah, "etc/workflows.yaml"));
+                    }
                 }
             }
         }
@@ -145,29 +165,34 @@ public class WorkflowManagerImpl implements WorkflowManager {
             wfState.setType(Consts.WORKFLOW_STATE_TYPE_NORMAL);
         }
     }
+    
+    private void parseWorkflowConfigInputStream(InputStream is) {
+        Yaml yaml = new Yaml();
+        @SuppressWarnings("unchecked")
+        Map<String, Object> m = (Map<String, Object>) yaml.load(is);
+        @SuppressWarnings("unchecked")
+        List<Object> workflows = (List<Object>) m.get("workflows");
+        logger.info("workflows " + workflows);
+
+        if (workflows == null) {
+            return ;
+        }
+
+        for (Object o: workflows) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> wfMap = (Map<String, Object>) o;
+            this.buildWorkflow(wfMap);
+        }
+
+    }
 
     private void parserWorkflowConfigFile(File workflowFile) {
         logger.info("Parse workflow " + workflowFile);
         if (workflowFile.exists()) {
-            Yaml yaml = new Yaml();
+            
             try {
-                @SuppressWarnings("unchecked")
-                Map<String, Object> m = (Map<String, Object>) yaml.load(new FileInputStream(workflowFile));
-
-                @SuppressWarnings("unchecked")
-                List<Object> workflows = (List<Object>) m.get("workflows");
-                logger.info("workflows " + workflows);
-
-                if (workflows == null) {
-                    return ;
-                }
-
-                for (Object o: workflows) {
-                    @SuppressWarnings("unchecked")
-                    Map<String, Object> wfMap = (Map<String, Object>) o;
-                    this.buildWorkflow(wfMap);
-                }
-
+                InputStream is = new FileInputStream(workflowFile);
+                parseWorkflowConfigInputStream(is);
 
             } catch (FileNotFoundException e) {
             }

@@ -3,15 +3,21 @@ package com.yotouch.core.entity;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import org.yaml.snakeyaml.Yaml;
 
 import com.yotouch.core.Consts;
@@ -161,19 +167,34 @@ public class EntityManagerImpl implements EntityManager {
 
     private void loadUserEntities() {
         File ytHome = config.getRuntimeHome();
+        
+        if (ytHome == null) {
 
-        for (File ah: ytHome.listFiles()) {
-            if (ah.isDirectory()) {
-                if (ah.getName().startsWith("addon-")
-                        || ah.getName().startsWith("app-")) {
+            PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+            try {
+                Resource[] resources = resolver.getResources("/etc/**.entities.yaml");
+                for (Resource resource : resources) {
+                    InputStream is = resource.getInputStream();
+                    loadMetaEntitiesFromInputStream(is, "usr_");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            
+        } else {
 
-                    scanEtcUserEntities(ah);
+            for (File ah : ytHome.listFiles()) {
+                if (ah.isDirectory()) {
+                    if (ah.getName().startsWith("addon-")
+                            || ah.getName().startsWith("app-")) {
+                        scanEtcUserEntities(ah);
+                    }
                 }
             }
-        }
 
-        if (ytHome.getName().equals("pylon")) {
-            scanEtcUserEntities(ytHome);
+            if (ytHome.getName().equals("pylon")) {
+                scanEtcUserEntities(ytHome);
+            }
         }
 
     }
@@ -195,28 +216,40 @@ public class EntityManagerImpl implements EntityManager {
 
     private void loadSystemMetaEntities() {
         File ytHome = config.getRuntimeHome();
+        
+        if (ytHome == null) {
+            // load file from classpath
+            PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+            try {
+                Resource[] resources = resolver.getResources("/etc/systemEntities.yaml");
+                for (Resource resource : resources) {
+                    InputStream is = resource.getInputStream();
+                    loadMetaEntitiesFromInputStream(is, "");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            File pylonHome = null;
+            File appHome = null;
+            for (File ah : ytHome.listFiles()) {
+                if (ah.getName().equals("pylon")) {
+                    pylonHome = ah;
+                }
 
-        File pylonHome = null;
-        File appHome = null;
-        for (File ah: ytHome.listFiles()) {
-            if (ah.getName().equals("pylon")) {
-                pylonHome = ah;
+                if (ah.getName().startsWith("app-")) {
+                    appHome = ah;
+                }
             }
 
-            if (ah.getName().startsWith("app-")) {
-                appHome = ah;
+            logger.info("PYLON HOME " + pylonHome);
+            logger.info("APP   HOME " + appHome);
+
+            loadFileMetaEntities(new File(pylonHome, "etc/systemEntities.yaml"), "");
+            if (appHome != null) {
+                loadFileMetaEntities(new File(appHome, "etc/systemEntities.yaml"), "");
             }
         }
-
-        logger.info("PYLON HOME " + pylonHome);
-        logger.info("APP   HOME " + appHome);
-
-        loadFileMetaEntities(new File(pylonHome, "etc/systemEntities.yaml"), "");
-        if (appHome != null) {
-            loadFileMetaEntities(new File(appHome, "etc/systemEntities.yaml"), "");
-        }
-
-
     }
 
     private void loadFileMetaEntitiesFormat2(Map<String, Object> m, String defaultPrefix) {
@@ -254,52 +287,60 @@ public class EntityManagerImpl implements EntityManager {
         }
 
     }
+    
+    
+    private void loadMetaEntitiesFromInputStream(InputStream is, String prefix) {
+        Yaml yaml = new Yaml();
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> m = (Map<String, Object>) yaml.load(is);
+        if (m == null) {
+            return;
+        }
+
+        if (m.containsKey("format")) {
+            int format = (int) m.get("format");
+            if (format == 2) {
+                loadFileMetaEntitiesFormat2(m, prefix);
+                return ;
+            }
+        }
+
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> entities = (Map<String, Object>) m.get("entities");
+
+        for (String en : entities.keySet()) {
+            String uuid = "uuid-sys-" + en;
+
+            MetaEntityImpl mei = (MetaEntityImpl) this.userEntities.get(en);
+            if (mei == null) {
+                mei = new MetaEntityImpl(uuid, en, en, prefix, this.isLowerCase());
+            }
+
+            // parse files
+            @SuppressWarnings("unchecked")
+            Map<String, Object> fields = (Map<String, Object>) entities.get(en);
+
+            buildEntityFields(uuid, mei, fields);
+
+            appendSysFields(uuid, mei);
+
+            this.userEntities.put(mei.getName(), mei);
+            logger.warn("Build System metaEntity " + mei);
+            //logger.warn("Build System metaEntity fiels " + mei.getMetaFields());
+        }
+    }
 
     private void loadFileMetaEntities(File file, String prefix) {
 
         logger.info("Load entities " + file + " WITH defaultPrefix " + prefix);
 
         if (file.exists()) {
-            Yaml yaml = new Yaml();
+            
             try {
-                @SuppressWarnings("unchecked")
-                Map<String, Object> m = (Map<String, Object>) yaml.load(new FileInputStream(file));
-                if (m == null) {
-                    return;
-                }
-
-                if (m.containsKey("format")) {
-                    int format = (int) m.get("format");
-                    if (format == 2) {
-                        loadFileMetaEntitiesFormat2(m, prefix);
-                        return ;
-                    }
-                }
-
-
-                @SuppressWarnings("unchecked")
-                Map<String, Object> entities = (Map<String, Object>) m.get("entities");
-
-                for (String en : entities.keySet()) {
-                    String uuid = "uuid-sys-" + en;
-
-                    MetaEntityImpl mei = (MetaEntityImpl) this.userEntities.get(en);
-                    if (mei == null) {
-                        mei = new MetaEntityImpl(uuid, en, en, prefix, this.isLowerCase());
-                    }
-
-                    // parse files
-                    @SuppressWarnings("unchecked")
-                    Map<String, Object> fields = (Map<String, Object>) entities.get(en);
-
-                    buildEntityFields(uuid, mei, fields);
-
-                    appendSysFields(uuid, mei);
-
-                    this.userEntities.put(mei.getName(), mei);
-                    logger.warn("Build System metaEntity " + mei);
-                    //logger.warn("Build System metaEntity fiels " + mei.getMetaFields());
-                }
+                InputStream is = new FileInputStream(file); 
+                loadMetaEntitiesFromInputStream(is, prefix);
 
             } catch (FileNotFoundException e) {
                 logger.error("Load system field error", e);
@@ -350,28 +391,61 @@ public class EntityManagerImpl implements EntityManager {
         this.systemFields = new HashMap<>();
 
         File ytHome = config.getRuntimeHome();
+        
+        if (ytHome == null) {
+            // load file from classpath
+            PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+            try {
+                Resource[] resources = resolver.getResources("/etc/systemFields.yaml");
+                for (Resource resource : resources) {
+                    InputStream is = resource.getInputStream();
+                    loadSysFieldsFromInputStream(is);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }            
+        } else {
 
-        File pylonHome = null;
-        File appHome = null;
-        for (File ah: ytHome.listFiles()) {
-            if (ah.getName().equals("pylon")) {
-                pylonHome = ah;
+            File pylonHome = null;
+            File appHome = null;
+            for (File ah : ytHome.listFiles()) {
+                if (ah.getName().equals("pylon")) {
+                    pylonHome = ah;
+                }
+
+                if (ah.getName().startsWith("app-")) {
+                    appHome = ah;
+                }
             }
 
-            if (ah.getName().startsWith("app-")) {
-                appHome = ah;
-            }
+            logger.info("PYLON HOME " + pylonHome);
+            logger.info("APP   HOME " + appHome);
+
+
+            loadSysFields(pylonHome);
+            loadSysFields(appHome);
         }
-
-        logger.info("PYLON HOME " + pylonHome);
-        logger.info("APP   HOME " + appHome);
-
-
-        loadSysFields(pylonHome);
-        loadSysFields(appHome);
 
     }
 
+    private void loadSysFieldsFromInputStream(InputStream is) {
+        Yaml yaml = new Yaml();
+        @SuppressWarnings("unchecked")
+        Map<String, Object> m = (Map<String, Object>) yaml.load(is);
+        logger.info("Load system fields " + m);
+        @SuppressWarnings("unchecked")
+        Map<String, Object> fields = (Map<String, Object>) m.get("systemFields");
+
+        for (String fn : fields.keySet()) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> fMap = (Map<String, Object>) fields.get(fn);
+            fMap.put("name", fn);
+            fMap.put("uuid", "-");
+            fMap.put("type", "system");
+            this.systemFields.put(fn, MetaFieldImpl.build(this, fMap));
+        }
+    }
+    
     private void loadSysFields(File appHome) {
         File ytEtcDir = new File(appHome, "etc");
 
@@ -382,23 +456,10 @@ public class EntityManagerImpl implements EntityManager {
         logger.warn("Load system meta fields " + sysFieldFile + " exists " + sysFieldFile.exists());
 
         if (sysFieldFile.exists()) {
-            Yaml yaml = new Yaml();
+            
             try {
-                @SuppressWarnings("unchecked")
-                Map<String, Object> m = (Map<String, Object>) yaml.load(new FileInputStream(sysFieldFile));
-                logger.info("Load system fields " + m);
-                @SuppressWarnings("unchecked")
-                Map<String, Object> fields = (Map<String, Object>) m.get("systemFields");
-
-                for (String fn : fields.keySet()) {
-                    @SuppressWarnings("unchecked")
-                    Map<String, Object> fMap = (Map<String, Object>) fields.get(fn);
-                    fMap.put("name", fn);
-                    fMap.put("uuid", "-");
-                    fMap.put("type", "system");
-                    this.systemFields.put(fn, MetaFieldImpl.build(this, fMap));
-                }
-
+                InputStream is = new FileInputStream(sysFieldFile); 
+                loadSysFieldsFromInputStream(is);
                 //logger.warn("System fields " + this.systemFields);
             } catch (FileNotFoundException e) {
                 logger.error("Load system field error", e);
