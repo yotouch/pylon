@@ -57,7 +57,7 @@ public class WorkflowManagerImpl implements WorkflowManager {
             
             PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
             try {
-                Resource[] resources = resolver.getResources("/etc/workflows.yaml");
+                Resource[] resources = resolver.getResources("classpath*:/etc/workflows.yaml");
                 for (Resource resource : resources) {
                     InputStream is = resource.getInputStream();
                     parseWorkflowConfigInputStream(is);

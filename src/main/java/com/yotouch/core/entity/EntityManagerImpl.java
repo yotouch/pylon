@@ -172,8 +172,9 @@ public class EntityManagerImpl implements EntityManager {
 
             PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
             try {
-                Resource[] resources = resolver.getResources("/etc/**.entities.yaml");
+                Resource[] resources = resolver.getResources("classpath*:/etc/**.entities.yaml");
                 for (Resource resource : resources) {
+                    logger.info("Load user entity from classpath : " + resource.getFilename());
                     InputStream is = resource.getInputStream();
                     loadMetaEntitiesFromInputStream(is, "usr_");
                 }
@@ -221,7 +222,7 @@ public class EntityManagerImpl implements EntityManager {
             // load file from classpath
             PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
             try {
-                Resource[] resources = resolver.getResources("/etc/systemEntities.yaml");
+                Resource[] resources = resolver.getResources("classpath*:/etc/systemEntities.yaml");
                 for (Resource resource : resources) {
                     InputStream is = resource.getInputStream();
                     loadMetaEntitiesFromInputStream(is, "");
@@ -396,7 +397,7 @@ public class EntityManagerImpl implements EntityManager {
             // load file from classpath
             PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
             try {
-                Resource[] resources = resolver.getResources("/etc/systemFields.yaml");
+                Resource[] resources = resolver.getResources("classpath*:/etc/systemFields.yaml");
                 for (Resource resource : resources) {
                     InputStream is = resource.getInputStream();
                     loadSysFieldsFromInputStream(is);

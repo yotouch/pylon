@@ -72,7 +72,7 @@ public class BizEntityManagerImpl implements BizEntityManager {
         if (ytHome == null) {
             PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
             try {
-                Resource[] resources = resolver.getResources("/etc/bizEntities.yaml");
+                Resource[] resources = resolver.getResources("classpath*:/etc/bizEntities.yaml");
                 for (Resource resource : resources) {
                     InputStream is = resource.getInputStream();
                     parseBizEntityInputStream(is);
