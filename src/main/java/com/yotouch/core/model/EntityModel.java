@@ -1,5 +1,6 @@
 package com.yotouch.core.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.yotouch.core.Consts;
 
 import java.util.Calendar;
@@ -7,6 +8,7 @@ import java.util.Calendar;
 /**
  * Created by king on 3/29/17.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class EntityModel {
     private String uuid;
     private String creatorUuid;
