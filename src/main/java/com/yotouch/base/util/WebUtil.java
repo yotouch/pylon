@@ -291,4 +291,16 @@ public class WebUtil {
         
         return "";
     }
+
+    public Map<String, Object> getRetMap() {
+        Map<String, Object> m = new HashMap<>();
+        m.put("errorCode", 0);
+        m.put("errorMsg", "");
+
+        Map<String, Object> rm = new HashMap<>();
+        m.put("data", rm);
+
+        return m;
+    }
+
 }
