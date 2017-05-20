@@ -292,10 +292,18 @@ public class DbStoreImpl implements DbStore {
 
     @Override
     public String insert(MetaEntity me, List<FieldValue<?>> fvs) {
-        
+        String uuid = UUID.randomUUID().toString();
+        return this.insert(me, fvs, uuid);
+    }
+
+    @Override
+    public String insert(MetaEntity me, List<FieldValue<?>> fvs, String uuid) {
+
         MetaEntityImpl mei = (MetaEntityImpl) me;
         
-        String uuid = UUID.randomUUID().toString();
+        if (StringUtils.isEmpty(uuid)) {
+            uuid = UUID.randomUUID().toString();
+        }
         
         String sql = "INSERT INTO " + mei.getTableName() + " (uuid ";
         
@@ -324,11 +332,12 @@ public class DbStoreImpl implements DbStore {
         
         logger.debug("Do INSERT " + sql);
         
+        final String theUuid = uuid;
         this.jdbcTpl.update(sql, new PreparedStatementSetter() {
 
             @Override
             public void setValues(PreparedStatement ps) throws SQLException {
-                ps.setString(1,  uuid);
+                ps.setString(1,  theUuid);
                 
                 int pos = 2;
                 for (int i = 0; i < fvs.size(); i++) {

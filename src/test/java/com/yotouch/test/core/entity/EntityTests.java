@@ -276,4 +276,26 @@ public class EntityTests {
 
         assertEquals(e2, e1);
     }
+    
+    @Test
+    public void outterUuid() {
+        YotouchRuntime rt = ytApp.getRuntime();
+
+        DbSession ds = rt.createDbSession();
+        logger.info("DbSession : " + ds);
+
+        Entity u1 = ds.newEntity("user");
+        u1.setValue("nickname", "UUID name");
+        
+        String uuid = UUID.randomUUID().toString();
+        u1.setValue("uuid", "-" + uuid);
+        
+        assertTrue(u1.isNew());
+        u1 = ds.save(u1);
+        assertEquals(uuid, u1.getUuid());
+
+        Entity u2 = ds.getEntity("user", uuid);
+        assertEquals(u2, u1);
+                
+    }
 }

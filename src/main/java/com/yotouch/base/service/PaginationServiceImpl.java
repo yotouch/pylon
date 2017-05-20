@@ -69,6 +69,9 @@ public class PaginationServiceImpl implements PaginationService {
         Map<String, Object> pageInfoResult = new HashMap<>();
 
         int totalPage = (int) Math.ceil(total/(itemPerPage + 0.0));
+        if(totalPage < 1){
+            totalPage = 1 ;
+        }
         if (currentPage < 1){
             currentPage = 1;
         }
