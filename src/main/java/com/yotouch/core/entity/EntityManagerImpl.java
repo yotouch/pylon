@@ -166,24 +166,20 @@ public class EntityManagerImpl implements EntityManager {
     }
 
     private void loadUserEntities() {
-        File ytHome = config.getRuntimeHome();
-        
-        if (ytHome == null) {
-
-            PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-            try {
-                Resource[] resources = resolver.getResources("classpath*:/etc/**.entities.yaml");
-                for (Resource resource : resources) {
-                    logger.info("Load user entity from classpath : " + resource.getFilename());
-                    InputStream is = resource.getInputStream();
-                    loadMetaEntitiesFromInputStream(is, "usr_");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        try {
+            Resource[] resources = resolver.getResources("classpath*:/etc/**.entities.yaml");
+            for (Resource resource : resources) {
+                logger.info("Load user entity from classpath : " + resource.getFilename());
+                InputStream is = resource.getInputStream();
+                loadMetaEntitiesFromInputStream(is, "usr_");
             }
-            
-        } else {
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        File ytHome = config.getRuntimeHome();
+        if (ytHome != null) {
             for (File ah : ytHome.listFiles()) {
                 if (ah.isDirectory()) {
                     if (ah.getName().startsWith("addon-")
@@ -197,7 +193,6 @@ public class EntityManagerImpl implements EntityManager {
                 scanEtcUserEntities(ytHome);
             }
         }
-
     }
 
     private void scanEtcUserEntities(File ah) {
@@ -216,21 +211,20 @@ public class EntityManagerImpl implements EntityManager {
     }
 
     private void loadSystemMetaEntities() {
-        File ytHome = config.getRuntimeHome();
-        
-        if (ytHome == null) {
-            // load file from classpath
-            PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-            try {
-                Resource[] resources = resolver.getResources("classpath*:/etc/systemEntities.yaml");
-                for (Resource resource : resources) {
-                    InputStream is = resource.getInputStream();
-                    loadMetaEntitiesFromInputStream(is, "");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+        // load file from classpath
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        try {
+            Resource[] resources = resolver.getResources("classpath*:/etc/systemEntities.yaml");
+            for (Resource resource : resources) {
+                InputStream is = resource.getInputStream();
+                loadMetaEntitiesFromInputStream(is, "");
             }
-        } else {
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        File ytHome = config.getRuntimeHome();
+        if (ytHome != null) {
             File pylonHome = null;
             File appHome = null;
             for (File ah : ytHome.listFiles()) {
@@ -391,22 +385,19 @@ public class EntityManagerImpl implements EntityManager {
 
         this.systemFields = new HashMap<>();
 
-        File ytHome = config.getRuntimeHome();
-        
-        if (ytHome == null) {
-            // load file from classpath
-            PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-            try {
-                Resource[] resources = resolver.getResources("classpath*:/etc/systemFields.yaml");
-                for (Resource resource : resources) {
-                    InputStream is = resource.getInputStream();
-                    loadSysFieldsFromInputStream(is);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }            
-        } else {
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        try {
+            Resource[] resources = resolver.getResources("classpath*:/etc/systemFields.yaml");
+            for (Resource resource : resources) {
+                InputStream is = resource.getInputStream();
+                loadSysFieldsFromInputStream(is);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        File ytHome = config.getRuntimeHome();
+        if (ytHome != null) {
             File pylonHome = null;
             File appHome = null;
             for (File ah : ytHome.listFiles()) {

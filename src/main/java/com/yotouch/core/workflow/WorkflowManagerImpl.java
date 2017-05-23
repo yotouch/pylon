@@ -51,23 +51,19 @@ public class WorkflowManagerImpl implements WorkflowManager {
     }
     
     private void loadFileWorkflow() {
-        File ytHome = config.getRuntimeHome();
-        
-        if (ytHome == null) {
-            
-            PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-            try {
-                Resource[] resources = resolver.getResources("classpath*:/etc/workflows.yaml");
-                for (Resource resource : resources) {
-                    InputStream is = resource.getInputStream();
-                    parseWorkflowConfigInputStream(is);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        try {
+            Resource[] resources = resolver.getResources("classpath*:/etc/workflows.yaml");
+            for (Resource resource : resources) {
+                InputStream is = resource.getInputStream();
+                parseWorkflowConfigInputStream(is);
             }
-            
-        } else {
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        File ytHome = config.getRuntimeHome();
+        if (ytHome != null) {
             for (File ah : ytHome.listFiles()) {
                 if (ah.isDirectory()) {
                     if (ah.getName().startsWith("addon-")

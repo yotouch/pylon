@@ -63,24 +63,23 @@ public class BizEntityManagerImpl implements BizEntityManager {
 
     @PostConstruct
     public void init() {
-        
+
         this.entityNamedMap = new HashMap<>();
         this.wfNamedMap = new HashMap<>();
 
-        File ytHome = config.getRuntimeHome();
-        
-        if (ytHome == null) {
-            PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-            try {
-                Resource[] resources = resolver.getResources("classpath*:/etc/bizEntities.yaml");
-                for (Resource resource : resources) {
-                    InputStream is = resource.getInputStream();
-                    parseBizEntityInputStream(is);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        try {
+            Resource[] resources = resolver.getResources("classpath*:/etc/bizEntities.yaml");
+            for (Resource resource : resources) {
+                InputStream is = resource.getInputStream();
+                parseBizEntityInputStream(is);
             }
-        } else {
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        File ytHome = config.getRuntimeHome();
+        if (ytHome != null) {
             for (File ah : ytHome.listFiles()) {
                 if (ah.isDirectory()) {
                     if (ah.getName().startsWith("addon-")
@@ -95,10 +94,10 @@ public class BizEntityManagerImpl implements BizEntityManager {
         if (pylonTest != null && pylonTest.toLowerCase().equals("true")) {
             parseBizEntityConfigFile(new File(ytHome, "etc/bizEntities.yaml"));
         }
-        
+
         loadDbBizEntity();
 
-        ((EntityManagerImpl)this.entityMgr).rebuildDb();
+        ((EntityManagerImpl) this.entityMgr).rebuildDb();
 
     }
 
