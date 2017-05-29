@@ -1,30 +1,30 @@
 package com.yotouch.core.entity;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
-
-import javax.annotation.PostConstruct;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import org.yaml.snakeyaml.Yaml;
-
 import com.yotouch.core.Consts;
 import com.yotouch.core.config.Configure;
 import com.yotouch.core.entity.mf.MultiReferenceMetaFieldImpl;
 import com.yotouch.core.exception.NoSuchMetaEntityException;
 import com.yotouch.core.store.db.DbStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.stereotype.Service;
+import org.yaml.snakeyaml.Yaml;
+
+import javax.annotation.PostConstruct;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class EntityManagerImpl implements EntityManager {
@@ -280,9 +280,7 @@ public class EntityManagerImpl implements EntityManager {
 
             this.userEntities.put(mei.getName(), mei);
         }
-
     }
-    
     
     private void loadMetaEntitiesFromInputStream(InputStream is, String prefix) {
         Yaml yaml = new Yaml();

@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
         
         logger.info("Instance name " + instanceName);
         String pwdStr = "yotouch:" + instanceName + ":" + user.getUuid() + ":" + password;
-        logger.info("Gen plain password " + pwdStr);
+        //logger.info("Gen plain password " + pwdStr);
         String md5Pwd = DigestUtils.md5DigestAsHex(pwdStr.getBytes());
         return md5Pwd;
     }
