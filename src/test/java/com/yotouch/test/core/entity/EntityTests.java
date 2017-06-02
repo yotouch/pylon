@@ -121,7 +121,15 @@ public class EntityTests {
         assertEquals(e2.getValue("nickname"), "Jerry");
         assertFalse(e2.isFieldChanged("nickname"));
         assertNull(e2.getOldValue("nickname"));
-        
+
+        //test int default value is null, not 0
+        assertNull(e2.getValue("age"));
+        assertFalse(e2.isFieldChanged("age"));
+
+        //test long default value is null, not 0l;
+        assertNull(e2.getValue("lastTouched"));
+        assertFalse(e2.isFieldChanged("lastTouched"));
+
     }
     
     @Test(expected = NoSuchMetaFieldException.class)

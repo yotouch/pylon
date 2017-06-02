@@ -118,16 +118,31 @@ public class EntityRowMapper implements RowMapper<Entity> {
                     || Consts.META_FIELD_DATA_TYPE_TEXT.equalsIgnoreCase(mf.getDataType())
                     ) {
                 e.setValue(fname, rs.getString(fname));
-            } else if (Consts.META_FIELD_DATA_TYPE_DATETIME.equals(mf.getDataType())) {
+            } else if (Consts.META_FIELD_DATA_TYPE_DATETIME.equalsIgnoreCase(mf.getDataType())) {
                 Date d = rs.getTimestamp(fname);
                 e.setValue(fname, d);
-            } else if (Consts.META_FIELD_DATA_TYPE_INT.equals(mf.getDataType())) {
-                e.setValue(fname, rs.getInt(fname));
-            } else if (Consts.META_FIELD_DATA_TYPE_LONG.equals(mf.getDataType())) {
-                e.setValue(fname, rs.getLong(fname));
-            } else if (Consts.META_FIELD_DATA_TYPE_DOUBLE.equals(mf.getDataType())) {
-                e.setValue(fname, rs.getDouble(fname));
-            } else if (Consts.META_FIELD_DATA_TYPE_BINARY.equals(mf.getDataType())) {
+            } else if (Consts.META_FIELD_DATA_TYPE_INT.equalsIgnoreCase(mf.getDataType())) {
+                Object o = rs.getObject(fname);
+                if (o == null) {
+                    e.setValue(fname, null);
+                } else {
+                    e.setValue(fname, rs.getInt(fname));
+                }
+            } else if (Consts.META_FIELD_DATA_TYPE_LONG.equalsIgnoreCase(mf.getDataType())) {
+                Object o = rs.getObject(fname);
+                if (o == null) {
+                    e.setValue(fname, null);
+                } else {
+                    e.setValue(fname, rs.getLong(fname));
+                }
+            } else if (Consts.META_FIELD_DATA_TYPE_DOUBLE.equalsIgnoreCase(mf.getDataType())) {
+                Object o = rs.getObject(fname);
+                if (o == null) {
+                    e.setValue(fname, null);
+                } else {
+                    e.setValue(fname, rs.getDouble(fname));
+                }
+            } else if (Consts.META_FIELD_DATA_TYPE_BINARY.equalsIgnoreCase(mf.getDataType())) {
 
                 Blob blob = rs.getBlob(fname);
                 if (blob == null) {
