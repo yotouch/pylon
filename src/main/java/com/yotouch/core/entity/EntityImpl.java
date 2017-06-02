@@ -44,6 +44,12 @@ public class EntityImpl implements Entity {
     public EntityImpl(MetaEntity me) {
         this.me = me;
         this.valueMap = new HashMap<>();
+
+        long defaultValueCount = me.getMetaFields().stream()
+                .filter(mf -> mf.getDefaultFieldValue() != null && !StringUtils.isEmpty(mf.getDefaultFieldValue().getValue())) //由于StringFieldValue默认为"" 所以用isEmpty
+                .map(mf -> this.valueMap.put(mf.getName(), mf.getDefaultFieldValue()))
+                .count();
+
         this.srMap = new HashMap<>();
     }
 
