@@ -124,9 +124,11 @@ public class EntityTests {
 
         //test int default value is null, not 0
         assertNull(e2.getValue("age"));
+        assertFalse(e2.isFieldChanged("age"));
 
         //test long default value is null, not 0l;
         assertNull(e2.getValue("lastTouched"));
+        assertFalse(e2.isFieldChanged("lastTouched"));
 
     }
     
