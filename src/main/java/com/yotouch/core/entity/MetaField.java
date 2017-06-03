@@ -18,6 +18,8 @@ public interface MetaField<T> extends QueryField {
     boolean isRequired();
     
     T getDefaultValue();
+
+    FieldValue<T> getDefaultFieldValue();
     
     String getUuid();
     

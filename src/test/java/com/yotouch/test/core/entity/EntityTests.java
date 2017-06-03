@@ -265,6 +265,21 @@ public class EntityTests {
     }
 
     @Test
+    public void testDefaultValueFromYaml() {
+
+        YotouchRuntime rt = ytApp.getRuntime();
+
+        DbSession ds = rt.createDbSession();
+        logger.info("DbSession : " + ds);
+
+        Entity e = ds.newEntity("party");
+        assertEquals((String)e.v("name"), "默认party");
+
+        e = ds.save(e);
+        assertEquals("默认party", (String) e.v("name"));
+    }
+
+    @Test
     public void testAsPojo() {
         YotouchRuntime rt = ytApp.getRuntime();
 

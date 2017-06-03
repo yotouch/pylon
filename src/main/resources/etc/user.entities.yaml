@@ -54,6 +54,7 @@ entities:
     party:
         name:
             dataType: STRING
+            defaultValue: 默认party
 
     item:
         name:
