@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.yotouch.test.core.model.Party;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -298,6 +299,21 @@ public class EntityTests {
         e2.setValue("age", 14);
 
         assertEquals(e2, e1);
+
+        Party party = new Party();
+        party.setName("testModelParty");
+
+        assertNull(party.getUuid());
+
+        Party party1 = ds.save(party, "party");
+
+        assertNotNull(party1.getUuid());
+
+        assertNotEquals(party, party1);
+
+        Party party2 = ds.getEntity("party", party1.getUuid(), Party.class);
+
+        assertEquals(party1.getUuid(), party2.getUuid());
     }
     
     @Test
