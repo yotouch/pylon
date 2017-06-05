@@ -184,6 +184,18 @@ public class DbSessionImpl implements DbSession {
     }
 
     @Override
+    public <M extends EntityModel> M save(M entityModel, String entityName) {
+        Entity entity;
+        if (entityModel != null && !StringUtils.isEmpty(entityModel.getUuid())) {
+            entity = this.getEntity(entityName, entityModel.getUuid());
+        } else {
+            entity = this.newEntity(entityName);
+        }
+
+        return this.save(entity.fromModel(entityModel)).looksLike((Class<M>) entityModel.getClass());
+    }
+
+    @Override
     public void deleteRawSql(MetaEntity me, String where, Object[] args) {
         this.dbStore.deleteRawSql(me, where, args);
     }

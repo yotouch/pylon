@@ -47,15 +47,7 @@ public class EntityDaoImpl<M extends EntityModel> implements EntityDao<M> {
 
     @Override
     public M save(M model) {
-        Entity entity;
-        if (model != null && !StringUtils.isEmpty(model.getUuid())) {
-            entity = dbSession.getEntity(entityName, model.getUuid());
-        } else {
-            entity = dbSession.newEntity(entityName);
-        }
-
-        entity = dbSession.save(entity.fromModel(model));
-        return Entity.looksLike(dbSession, entity, clazz);
+        return dbSession.save(model, entityName);
     }
 
     @Override
