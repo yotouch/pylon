@@ -3,6 +3,7 @@ package com.yotouch.base.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yotouch.base.util.WebUtil;
 import com.yotouch.core.Consts;
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.runtime.DbSession;
@@ -35,6 +36,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private WebUtil webUtil ;
 
     @Override
     public String genPassword(Entity user, String password) {
@@ -149,7 +153,7 @@ public class UserServiceImpl implements UserService {
         String userToken = this.genLoginToken(user);
         logger.info("userToken: " + userToken);
         Cookie c = new Cookie("userToken", userToken);
-        c.setPath("/");
+        c.setPath(webUtil.getDefaultCookiePath()) ;
         response.addCookie(c);
     }
 

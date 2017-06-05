@@ -33,6 +33,16 @@ public class WebUtil {
     @Value("${ssl:}")
     private String ssl;
 
+    @Value("${defaultCookiePath:}")
+    private String cookiePath ;
+
+    public String getDefaultCookiePath(){
+        if(StringUtils.isEmpty(cookiePath)){
+            return "/" ;
+        }
+        return cookiePath ;
+    }
+
     public String getThemeTpl(String prefix, String theme, String file) {
         String s = prefix + "/theme/" + theme + "/" + file;
 
@@ -274,7 +284,7 @@ public class WebUtil {
 
     public void seedCookie(HttpServletResponse response, String name, String value) {
         Cookie c = new Cookie(name, value);
-        c.setPath("/");
+        c.setPath(this.getDefaultCookiePath());
         c.setMaxAge(Integer.MAX_VALUE);
         response.addCookie(c);
     }
