@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class StrUtil {
-    
+
     public String randStr() {
         return UUID.randomUUID().toString().toString().replace("-", "");
     }
@@ -30,4 +30,29 @@ public class StrUtil {
         return this.genVCode(4);
     }
 
+    public static String firstCharToLowercase (String string) {
+        if (string == null || string.length() == 0) {
+            return string;
+        }
+        char c[] = string.toCharArray();
+        c[0] = Character.toLowerCase(c[0]);
+        return new String(c);
+    }
+
+    public static String firstCharToUpercase (String string) {
+        if (string == null || string.length() == 0) {
+            return string;
+        }
+        char c[] = string.toCharArray();
+        c[0] = Character.toUpperCase(c[0]);
+        return new String(c);
+    }
+
+    public static String entityNameToModelName(String entityName) {
+        return firstCharToUpercase(entityName);
+    }
+
+    public static String modelNameToEntityName(String modelName) {
+        return firstCharToLowercase(modelName);
+    }
 }

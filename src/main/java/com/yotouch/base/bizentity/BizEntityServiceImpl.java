@@ -6,6 +6,10 @@ import java.util.Map;
 import com.yotouch.base.bizentity.handler.AfterActionHandler;
 import com.yotouch.base.bizentity.handler.BeforeActionHandler;
 import com.yotouch.base.bizentity.handler.CanDoActionHandler;
+import com.yotouch.core.entity.EntityManager;
+import com.yotouch.core.model.EntityModel;
+import com.yotouch.core.util.EntityUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +29,9 @@ public class BizEntityServiceImpl implements BizEntityService {
     
     @Autowired
     private BizEntityManager beMgr;
+
+    @Autowired
+    private EntityManager entityManager;
 
     @Override
     public BizEntity prepareWorkflow(BizMetaEntity bme) {
@@ -57,6 +64,13 @@ public class BizEntityServiceImpl implements BizEntityService {
         BizEntityImpl bei = new BizEntityImpl(bme, entity);
 
         return bei;
+    }
+
+    @Override
+    public BizEntity convert(Workflow workflow, EntityModel entityModel) {
+        BizEntityModelImpl bem = new BizEntityModelImpl(workflow, entityModel);
+
+        return bem;
     }
 
     @Override
@@ -137,6 +151,20 @@ public class BizEntityServiceImpl implements BizEntityService {
         afterActionHandler.doAfterAction(dbSession, wfa, entity, args);
 
         return this.convert(wfa.getWorkflow(), entity);
+    }
+
+    @Override
+    public BizEntity doAction(DbSession dbSession, String workflowName, String actionName, EntityModel entityModel, BeforeActionHandler beforeActionHandler, AfterActionHandler afterActionHandler, Map<String, Object> args) throws WorkflowException {
+        Entity entity = EntityUtil.convert(entityModel);
+        TransitResult tr = doTransit(dbSession, workflowName, actionName, entity, beforeActionHandler, args);
+        entity = tr.entity;
+        WorkflowAction wfa = tr.wfa;
+
+        afterActionHandler.doAfterAction(dbSession, wfa, entity, args);
+
+        BeanUtils.copyProperties(entity.looksLike(entityModel.getClass()), entityModel); //这里新建了一个entityModel, 需要返回原来的entityModel
+
+        return this.convert(wfa.getWorkflow(), entityModel);
     }
 
     @Override

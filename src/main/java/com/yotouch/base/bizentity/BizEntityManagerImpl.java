@@ -12,6 +12,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import com.yotouch.core.entity.Entity;
+import com.yotouch.core.model.EntityModel;
 import com.yotouch.core.runtime.DbSession;
 import com.yotouch.core.workflow.WorkflowManagerImpl;
 import org.slf4j.Logger;
@@ -207,5 +208,6 @@ public class BizEntityManagerImpl implements BizEntityManager {
     public BizMetaEntity getBizMetaEntityByWorkflow(String wfName) {
         return this.wfNamedMap.get(wfName);
     }
+
 
 }

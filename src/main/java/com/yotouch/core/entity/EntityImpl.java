@@ -302,14 +302,14 @@ public class EntityImpl implements Entity {
     }
 
     @Override
-    public <T extends EntityModel> T looksLike(Class<T> clazz) {
+    public <M extends EntityModel> M looksLike(Class<M> clazz) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
         return mapper.convertValue(asMap(), clazz);
     }
 
     @Override
-    public <T extends EntityModel> Entity fromModel(T entityModel) {
+    public <M extends EntityModel> Entity fromModel(M entityModel) {
         return fromMap(modelToMap(entityModel));
     }
 

@@ -1,5 +1,11 @@
 package com.yotouch.base.bizentity;
 
+import com.yotouch.core.entity.EntityManager;
+import com.yotouch.core.model.EntityModel;
+import com.yotouch.core.util.EntityUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
 import com.yotouch.core.Consts;
@@ -36,4 +42,8 @@ public class BizEntityImpl implements BizEntity {
         return this.entity;
     }
 
+    @Override
+    public <M extends EntityModel> M getEntityModel() {
+        return EntityUtil.convert(entity);
+    }
 }

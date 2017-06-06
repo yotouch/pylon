@@ -18,6 +18,9 @@ public class EntityModel {
     private int status = Consts.STATUS_NORMAL;
     private String company;
 
+    private String wf_workflow;
+    private String wf_state;
+
     public String getCompany() {
         return company;
     }
@@ -72,5 +75,21 @@ public class EntityModel {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getWf_workflow() {
+        return wf_workflow;
+    }
+
+    public void setWf_workflow(String wf_workflow) {
+        this.wf_workflow = wf_workflow;
+    }
+
+    public String getWf_state() {
+        return wf_state;
+    }
+
+    public void setWf_state(String wf_state) {
+        this.wf_state = wf_state;
     }
 }

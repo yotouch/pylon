@@ -6,6 +6,7 @@ import com.yotouch.base.bizentity.handler.AfterActionHandler;
 import com.yotouch.base.bizentity.handler.BeforeActionHandler;
 import com.yotouch.base.bizentity.handler.CanDoActionHandler;
 import com.yotouch.core.entity.Entity;
+import com.yotouch.core.model.EntityModel;
 import com.yotouch.core.runtime.DbSession;
 import com.yotouch.core.workflow.Workflow;
 import com.yotouch.core.workflow.WorkflowAction;
@@ -21,6 +22,8 @@ public interface BizEntityService {
 
     BizEntity convert(Workflow workflow, Entity entity);
 
+    BizEntity convert(Workflow workflow, EntityModel entityModel);
+
     @Deprecated
     BizEntity doAction(DbSession dbSession, String actionName, BizEntity bizEntity);
 
@@ -31,6 +34,7 @@ public interface BizEntityService {
     BizEntity doAction(DbSession dbSession, String actionName, Entity entity, BeforeActionHandler beforeActionHandler, AfterActionHandler afterActionHandler, Map<String, Object> args) throws WorkflowException;
 
     BizEntity doAction(DbSession dbSession, String workflowName, String actionName, Entity entity, BeforeActionHandler beforeActionHandler, AfterActionHandler afterActionHandler, Map<String, Object> args) throws WorkflowException;
+    BizEntity doAction(DbSession dbSession, String workflowName, String actionName, EntityModel entityModel, BeforeActionHandler beforeActionHandler, AfterActionHandler afterActionHandler, Map<String, Object> args) throws WorkflowException;
 
     boolean canDoAction(DbSession dbSession, WorkflowAction wa, Entity entity, CanDoActionHandler canDoActionHandler, Map<String, Object> args);
 }

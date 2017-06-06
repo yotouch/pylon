@@ -3,10 +3,16 @@ package com.yotouch.test.core.bizentity;
 import static org.junit.Assert.*;
 
 import com.yotouch.base.PylonApplication;
-import com.yotouch.base.bizentity.BizEntity;
+import com.yotouch.base.bizentity.*;
+import com.yotouch.base.bizentity.handler.AfterActionHandler;
+import com.yotouch.base.bizentity.handler.BeforeActionHandler;
+import com.yotouch.core.model.EntityModel;
 import com.yotouch.core.runtime.DbSession;
 import com.yotouch.core.runtime.YotouchApplication;
 
+import com.yotouch.core.workflow.WorkflowAction;
+import com.yotouch.core.workflow.WorkflowException;
+import com.yotouch.test.core.model.Party;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -18,11 +24,9 @@ import com.yotouch.core.Consts;
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.entity.EntityManager;
 import com.yotouch.core.entity.MetaEntity;
-import com.yotouch.base.bizentity.BizEntityManager;
-import com.yotouch.base.bizentity.BizEntityService;
-import com.yotouch.base.bizentity.BizMetaEntity;
 import com.yotouch.core.workflow.Workflow;
 
+import java.util.Map;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = PylonApplication.class)
@@ -74,6 +78,58 @@ public class BizEntityTests {
         beParty = beService.doAction(dbSession, "edit", partyEntity);
         assertEquals("apply", beParty.getState().getName());
 
+        BizMetaEntity bme2 = beMgr.getBizMetaEntityByWorkflow("party");
+
+        Workflow wf2 = bme2.getWorkflow();
+        assertEquals("party", wf2.getName());
+
+        MetaEntity me2 = bme.getMetaEntity();
+        assertEquals(entityMgr.getMetaEntity("party"), me2);
+
+        BizEntity partyBizModel = beService.prepareWorkflow(bme2);
+
+        assertEquals("party", partyBizModel.getWorkflow().getName());
+        assertEquals("party", partyBizModel.getEntity().v("wf_workflow"));
+        assertEquals("", partyBizModel.getEntity().v("wf_state"));
+        assertEquals("party", partyBizModel.getEntityModel().getWf_workflow());
+        assertEquals("", partyBizModel.getEntityModel().getWf_state());
+
+        Party partyModel = dbSession.save( partyBizModel.getEntityModel(), "party");
+
+        assertEquals("party", partyModel.getWf_workflow());
+        assertEquals("", partyModel.getWf_state());
+
+        BizEntity beParty2 = beService.convert(wf2, partyModel);
+
+        partyModel.setName("测试partyWorkflow");
+        beParty2 = beService.doAction(dbSession, wf2.getName(), "start", partyModel, new BeforeActionHandler() {
+            @Override
+            public void doBeforeAction(DbSession dbSession, WorkflowAction workflowAction, Entity entity, Map<String, Object> args) throws WorkflowException {
+
+            }
+        }, new AfterActionHandler() {
+            @Override
+            public void doAfterAction(DbSession dbSession, WorkflowAction workflowAction, Entity entity, Map<String, Object> args) {
+
+            }
+        }, null);
+        assertEquals("apply", beParty2.getState().getName());
+        assertTrue(beParty2 instanceof BizEntityModelImpl);
+
+        beParty2 = beService.doAction(dbSession, wf2.getName(), "edit", partyModel, new BeforeActionHandler() {
+            @Override
+            public void doBeforeAction(DbSession dbSession, WorkflowAction workflowAction, Entity entity, Map<String, Object> args) throws WorkflowException {
+
+            }
+        }, new AfterActionHandler() {
+            @Override
+            public void doAfterAction(DbSession dbSession, WorkflowAction workflowAction, Entity entity, Map<String, Object> args) {
+
+            }
+        }, null);
+
+        assertEquals("apply", beParty2.getState().getName());
+        assertTrue(beParty2 instanceof BizEntityModelImpl);
     }
 
 
