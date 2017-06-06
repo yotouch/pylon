@@ -309,7 +309,7 @@ public class EntityTests {
 
         assertNotNull(party1.getUuid());
 
-        assertNotEquals(party, party1);
+        assertEquals(party, party1);
 
         Party party2 = ds.getEntity("party", party1.getUuid(), Party.class);
 
