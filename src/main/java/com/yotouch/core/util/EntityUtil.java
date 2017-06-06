@@ -7,7 +7,6 @@ import com.yotouch.core.runtime.DbSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 /**
  * Created by king on 6/6/17.
@@ -31,12 +30,7 @@ public class EntityUtil {
         String modelName = entityModel.getClass().getSimpleName();
         String entityName = StrUtil.modelNameToEntityName(modelName);
 
-        Entity entity;
-        if (!StringUtils.isEmpty(entityModel.getUuid())) {
-            entity = dbSession.getEntity(entityName, entityModel.getUuid());
-        } else {
-            entity = entityManager.getMetaEntity(entityName).newEntity();
-        }
+        Entity entity = entityManager.getMetaEntity(entityName).newEntity();
 
         return entity.fromModel(entityModel);
     }

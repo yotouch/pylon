@@ -1,6 +1,7 @@
 package com.yotouch.core.entity;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -333,6 +334,11 @@ public class EntityImpl implements Entity {
                         setValue(mf.getName(), tempV);
                     }
                 });
+
+        //手动设置一个。否则updateAt字段的isChanged为false，不会自动更新。
+        if (v("updatedAt") == null) {
+            setValue("updatedAt", new Date());
+        }
 
         return this;
     }
