@@ -35,7 +35,7 @@ public class LoginController extends BaseController {
 
     @Value("${defaultHome:/}")
     private String defaultHome;
-    
+
     @Autowired(required =  false)
     private PasswordChecker passwordChecker;
 
@@ -46,7 +46,6 @@ public class LoginController extends BaseController {
             Model model,
             HttpServletRequest request
     ) {
-
         String mainCompany = Consts.DEFAULT_COMPANY_NAME;
         model.addAttribute("companyName", mainCompany);
 
@@ -156,11 +155,11 @@ public class LoginController extends BaseController {
             Model model
     ){
         Cookie cookie = new Cookie("userToken", "");
-        cookie.setPath("/");
+        cookie.setPath(webUtil.getDefaultCookiePath());
         response.addCookie(cookie);
 
         cookie = new Cookie(Consts.COOKIE_NAME_WX_USER_UUID, "");
-        cookie.setPath("/");
+        cookie.setPath(webUtil.getDefaultCookiePath());
         response.addCookie(cookie);
         
         String bkUrl = defaultHome;

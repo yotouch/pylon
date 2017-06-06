@@ -4,11 +4,13 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.yotouch.base.util.WebUtil;
 import com.yotouch.core.Consts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -33,6 +35,9 @@ public abstract class LoginInterceptor implements HandlerInterceptor {
     private UserService userService;
 
     private List<String> ignoredList;
+
+    @Autowired
+    private WebUtil webUtil ;
 
     public LoginInterceptor() {
         this(new ArrayList<>());
@@ -76,7 +81,7 @@ public abstract class LoginInterceptor implements HandlerInterceptor {
                         isLogin = true;
                     } else {
                         Cookie cookie = new Cookie("userToken", "");
-                        cookie.setPath("/");
+                        cookie.setPath(webUtil.getDefaultCookiePath()) ;
                         response.addCookie(cookie);
                     }
                 }
