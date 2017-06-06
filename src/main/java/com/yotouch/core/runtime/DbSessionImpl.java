@@ -21,6 +21,7 @@ import com.yotouch.core.entity.MetaEntity;
 import com.yotouch.core.entity.MetaField;
 import com.yotouch.core.entity.mf.MultiReferenceMetaFieldImpl;
 import com.yotouch.core.store.db.DbStore;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
@@ -191,8 +192,9 @@ public class DbSessionImpl implements DbSession {
         } else {
             entity = this.newEntity(entityName);
         }
-
-        return this.save(entity.fromModel(entityModel)).looksLike((Class<M>) entityModel.getClass());
+        EntityModel tempEntityModel = this.save(entity.fromModel(entityModel)).looksLike(entityModel.getClass());
+        BeanUtils.copyProperties(tempEntityModel, entityModel);
+        return entityModel;
     }
 
     @Override

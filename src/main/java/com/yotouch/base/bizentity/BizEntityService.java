@@ -22,7 +22,7 @@ public interface BizEntityService {
 
     BizEntity convert(Workflow workflow, Entity entity);
 
-    BizEntity convert(Workflow workflow, EntityModel entityModel);
+    <M extends EntityModel> BizEntity convert(Workflow workflow, M entityModel);
 
     @Deprecated
     BizEntity doAction(DbSession dbSession, String actionName, BizEntity bizEntity);

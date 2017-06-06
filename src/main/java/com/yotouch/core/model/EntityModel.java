@@ -15,7 +15,7 @@ public class EntityModel {
     private Calendar createdAt;
     private Calendar updatedAt;
     private String updaterUuid;
-    private int status = Consts.STATUS_NORMAL;
+    private Integer status = Consts.STATUS_NORMAL;
     private String company;
 
     private String wf_workflow;
@@ -69,11 +69,11 @@ public class EntityModel {
         this.updaterUuid = updaterUuid;
     }
 
-    public int getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 

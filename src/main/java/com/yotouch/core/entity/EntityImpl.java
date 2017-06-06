@@ -317,7 +317,7 @@ public class EntityImpl implements Entity {
     public Entity fromMap(Map<String, Object> map){
         if (map == null) return this;
 
-        long changeValueCounts = this.getMetaEntity().getMetaFields().stream()
+        this.getMetaEntity().getMetaFields().stream()
                 .filter(
                         mf -> !"createdAt".equals(mf.getName())
                                 && !"updatedAt".equals(mf.getName())
@@ -325,15 +325,14 @@ public class EntityImpl implements Entity {
                                 && map.get(mf.getName()) != null
                                 && (mf.isSingleReference() || Consts.META_FIELD_TYPE_DATA_FIELD.equals(mf.getFieldType()))
                 )
-                .map(mf -> {
+                .forEach(mf -> {
                     Object tempV = map.get(mf.getName());
                     if (mf.isSingleReference() && tempV instanceof Map && !StringUtils.isEmpty(((Map) tempV).get("uuid"))) {
                         setValue(mf.getName(), ((Map) tempV).get("uuid"));
                     } else {
                         setValue(mf.getName(), tempV);
                     }
-                    return mf;
-                }).count();
+                });
 
         return this;
     }

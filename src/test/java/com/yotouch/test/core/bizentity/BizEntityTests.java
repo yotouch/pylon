@@ -51,7 +51,7 @@ public class BizEntityTests {
 
         Workflow wf = bme.getWorkflow();
         assertEquals("party", wf.getName());
-        
+
         MetaEntity me = bme.getMetaEntity();
         assertEquals(entityMgr.getMetaEntity("party"), me);
 
@@ -61,29 +61,32 @@ public class BizEntityTests {
         assertEquals("party", party1.getWorkflow().getName());
         assertEquals("party", party1.getEntity().v("wf_workflow"));
         assertEquals("", party1.getEntity().v("wf_state"));
-        
+
         Entity partyEntity = dbSession.save(party1.getEntity());
-        
+
         assertEquals("party", partyEntity.v(Consts.BIZ_ENTITY_FIELD_WORKFLOW));
         assertEquals("", partyEntity.v(Consts.BIZ_ENTITY_FIELD_STATE));
-        
+
         BizEntity beParty = beService.convert(partyEntity);
-        
+
         partyEntity.setValue("quota", 10);
         partyEntity.setValue("address", "东直门麦当劳");
-                
+
         beParty = beService.doAction(dbSession, "start", partyEntity);
         assertEquals("apply", beParty.getState().getName());
-        
+
         beParty = beService.doAction(dbSession, "edit", partyEntity);
         assertEquals("apply", beParty.getState().getName());
+
+
+
 
         BizMetaEntity bme2 = beMgr.getBizMetaEntityByWorkflow("party");
 
         Workflow wf2 = bme2.getWorkflow();
         assertEquals("party", wf2.getName());
 
-        MetaEntity me2 = bme.getMetaEntity();
+        MetaEntity me2 = bme2.getMetaEntity();
         assertEquals(entityMgr.getMetaEntity("party"), me2);
 
         BizEntity partyBizModel = beService.prepareWorkflow(bme2);
