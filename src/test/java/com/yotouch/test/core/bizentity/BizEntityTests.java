@@ -94,13 +94,13 @@ public class BizEntityTests {
         assertEquals("party", partyBizModel.getWorkflow().getName());
         assertEquals("party", partyBizModel.getEntity().v("wf_workflow"));
         assertEquals("", partyBizModel.getEntity().v("wf_state"));
-        assertEquals("party", partyBizModel.getEntityModel().getWf_workflow());
-        assertEquals("", partyBizModel.getEntityModel().getWf_state());
+        assertEquals("party", partyBizModel.getEntityModel().getWfWorkflow());
+        assertEquals("", partyBizModel.getEntityModel().getWfState());
 
         Party partyModel = dbSession.save( partyBizModel.getEntityModel(), "party");
 
-        assertEquals("party", partyModel.getWf_workflow());
-        assertEquals("", partyModel.getWf_state());
+        assertEquals("party", partyModel.getWfWorkflow());
+        assertEquals("", partyModel.getWfState());
 
         BizEntity beParty2 = beService.convert(wf2, partyModel);
 

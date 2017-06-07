@@ -25,7 +25,7 @@ public class BizEntityModelImpl implements BizEntity {
 
     @Override
     public WorkflowState getState() {
-        String wf_state = this.entityModel.getWf_state();
+        String wf_state = this.entityModel.getWfState();
 
         if (StringUtils.isEmpty(wf_state)) {
             return null;

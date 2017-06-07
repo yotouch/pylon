@@ -1,6 +1,7 @@
 package com.yotouch.core.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yotouch.core.Consts;
 
 import java.util.Calendar;
@@ -18,8 +19,10 @@ public class EntityModel {
     private Integer status = Consts.STATUS_NORMAL;
     private String company;
 
-    private String wf_workflow;
-    private String wf_state;
+    @JsonProperty(value = "wf_workflow")
+    private String wfWorkflow;
+    @JsonProperty(value = "wf_state")
+    private String wfState;
 
     public String getCompany() {
         return company;
@@ -77,19 +80,19 @@ public class EntityModel {
         this.status = status;
     }
 
-    public String getWf_workflow() {
-        return wf_workflow;
+    public String getWfWorkflow() {
+        return wfWorkflow;
     }
 
-    public void setWf_workflow(String wf_workflow) {
-        this.wf_workflow = wf_workflow;
+    public void setWfWorkflow(String wfWorkflow) {
+        this.wfWorkflow = wfWorkflow;
     }
 
-    public String getWf_state() {
-        return wf_state;
+    public String getWfState() {
+        return wfState;
     }
 
-    public void setWf_state(String wf_state) {
-        this.wf_state = wf_state;
+    public void setWfState(String wfState) {
+        this.wfState = wfState;
     }
 }
