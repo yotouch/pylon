@@ -303,7 +303,7 @@ public class EntityTests {
         Party party = new Party();
         party.setName("testModelParty");
 
-        assertNull(party.getUuid());
+        assertNotNull(party.getUuid());
 
         Party party1 = ds.save(party, "party");
 

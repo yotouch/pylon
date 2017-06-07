@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yotouch.core.Consts;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Calendar;
+import java.util.UUID;
 
 /**
  * Created by king on 3/29/17.
@@ -25,6 +27,10 @@ public class EntityModel {
     private String wfWorkflow;
     @JsonProperty(value = "wf_state")
     private String wfState;
+
+    public EntityModel(){
+        this.uuid = "-" + UUID.randomUUID().toString();
+    }
 
     public String getCompany() {
         return company;

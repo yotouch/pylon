@@ -211,6 +211,13 @@ public class BizEntityManagerImpl implements BizEntityManager {
         return this.wfNamedMap.get(wfName);
     }
 
+    /**
+     * 获取新的workflowEntityModel 获取的时候就已经prepare好了 不用再prepare了
+     *
+     * @param workflowName
+     * @param <M>
+     * @return
+     */
     @Override
     public <M extends EntityModel> WorkflowEntityModel<M> getWorkflowEntityModelByWorkflow(String workflowName) {
         BizMetaEntityImpl bizMetaEntity = this.wfNamedMap.get(workflowName);
@@ -218,7 +225,15 @@ public class BizEntityManagerImpl implements BizEntityManager {
         Workflow workflow = bizMetaEntity.getWorkflow();
         M entityModel = EntityUtil.convert(bizMetaEntity.getMetaEntity().newEntity());
 
-        return new WorkflowEntityModel<>(workflow, entityModel);
+        entityModel.setWfWorkflow(workflowName);
+        entityModel.setWfState("");
+
+        WorkflowEntityModel<M> workflowEntityModel = new WorkflowEntityModel<>();
+
+        workflowEntityModel.setWorkflow(workflow);
+        workflowEntityModel.setEntityModel(entityModel);
+
+        return workflowEntityModel;
     }
 
 

@@ -69,6 +69,14 @@ public class BizEntityServiceImpl implements BizEntityService {
     }
 
     @Override
+    public <M extends EntityModel> WorkflowEntityModel<M> convert(Workflow workflow, M entityModel) {
+        WorkflowEntityModel<M> workflowEntityModelByWorkflow = this.beMgr.getWorkflowEntityModelByWorkflow(workflow.getName());
+
+        workflowEntityModelByWorkflow.setEntityModel(entityModel);
+        return workflowEntityModelByWorkflow;
+    }
+
+    @Override
     public BizEntity doAction(DbSession dbSession, String actionName, BizEntity bizEntity) {
         return this.doAction(dbSession, actionName, bizEntity.getEntity());
     }

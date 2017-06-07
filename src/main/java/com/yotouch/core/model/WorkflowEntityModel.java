@@ -12,11 +12,6 @@ public class WorkflowEntityModel<M extends EntityModel> {
     private Workflow workflow;
     private M entityModel;
 
-    public WorkflowEntityModel(Workflow workflow, M entityModel) {
-        this.workflow = workflow;
-        this.entityModel = entityModel;
-    }
-
     public Workflow getWorkflow() {
         return workflow;
     }

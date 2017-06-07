@@ -7,6 +7,7 @@ import com.yotouch.base.bizentity.*;
 import com.yotouch.base.bizentity.handler.AfterActionHandler;
 import com.yotouch.base.bizentity.handler.BeforeActionHandler;
 import com.yotouch.core.model.EntityModel;
+import com.yotouch.core.model.WorkflowEntityModel;
 import com.yotouch.core.runtime.DbSession;
 import com.yotouch.core.runtime.YotouchApplication;
 
@@ -79,6 +80,73 @@ public class BizEntityTests {
         assertEquals("apply", beParty.getState().getName());
 
 
+    }
+
+    @Test
+    public void testWorkflowEntityModel() {
+        //test get
+        WorkflowEntityModel<Party> party = beMgr.getWorkflowEntityModelByWorkflow("party");
+
+        Workflow workflow = party.getWorkflow();
+        Party partyModel = party.getEntityModel();
+        assertEquals("party", workflow.getName());
+        assertEquals("party", partyModel.getWfWorkflow());
+        assertEquals("", partyModel.getWfState());
+
+        partyModel.setName("testDoAction");
+        WorkflowEntityModel<Party> started = beService.doAction(party, "start", new BeforeActionHandler() {
+            @Override
+            public void doBeforeAction(DbSession dbSession, WorkflowAction workflowAction, Entity entity, Map<String, Object> args) throws WorkflowException {
+
+            }
+
+            @Override
+            public <M extends EntityModel> void doBeforeAction(WorkflowAction workflowAction, M entityModel, Map<String, Object> args) throws WorkflowException {
+
+            }
+        }, new AfterActionHandler() {
+            @Override
+            public void doAfterAction(DbSession dbSession, WorkflowAction workflowAction, Entity entity, Map<String, Object> args) {
+
+            }
+
+            @Override
+            public <M extends EntityModel> void doAfterAction(WorkflowAction workflowAction, M entityModel, Map<String, Object> args) {
+
+            }
+        }, null);
+        assertEquals("apply", started.getEntityModel().getWfState());
+        assertEquals("testDoAction", started.getEntityModel().getName());
+
+        WorkflowEntityModel<Party> edited = beService.doAction(party, "edit", new BeforeActionHandler() {
+            @Override
+            public void doBeforeAction(DbSession dbSession, WorkflowAction workflowAction, Entity entity, Map<String, Object> args) throws WorkflowException {
+
+            }
+
+            @Override
+            public <M extends EntityModel> void doBeforeAction(WorkflowAction workflowAction, M entityModel, Map<String, Object> args) throws WorkflowException {
+
+            }
+        }, new AfterActionHandler() {
+            @Override
+            public void doAfterAction(DbSession dbSession, WorkflowAction workflowAction, Entity entity, Map<String, Object> args) {
+
+            }
+
+            @Override
+            public <M extends EntityModel> void doAfterAction(WorkflowAction workflowAction, M entityModel, Map<String, Object> args) {
+
+            }
+        }, null);
+        assertEquals("apply", edited.getEntityModel().getWfState());
+
+        assertEquals("testDoAction", edited.getEntityModel().getName());
+
+        //test convert
+        partyModel.setWfState("OK");
+        WorkflowEntityModel<Party> convertedWfem = beService.convert(workflow, partyModel);
+        assertEquals("OK", convertedWfem.getEntityModel().getWfState());
     }
 
 
