@@ -8,8 +8,7 @@ import com.yotouch.base.bizentity.handler.BeforeActionHandler;
 import com.yotouch.base.bizentity.handler.CanDoActionHandler;
 import com.yotouch.core.entity.EntityManager;
 import com.yotouch.core.model.EntityModel;
-import com.yotouch.core.util.EntityUtil;
-import org.springframework.beans.BeanUtils;
+import com.yotouch.core.model.WorkflowEntityModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +31,9 @@ public class BizEntityServiceImpl implements BizEntityService {
 
     @Autowired
     private EntityManager entityManager;
+
+    @Autowired
+    private DbSession dbSession;
 
     @Override
     public BizEntity prepareWorkflow(BizMetaEntity bme) {
@@ -67,13 +69,6 @@ public class BizEntityServiceImpl implements BizEntityService {
     }
 
     @Override
-    public BizEntity convert(Workflow workflow, EntityModel entityModel) {
-        BizEntityModelImpl bem = new BizEntityModelImpl(workflow, entityModel);
-
-        return bem;
-    }
-
-    @Override
     public BizEntity doAction(DbSession dbSession, String actionName, BizEntity bizEntity) {
         return this.doAction(dbSession, actionName, bizEntity.getEntity());
     }
@@ -86,6 +81,43 @@ public class BizEntityServiceImpl implements BizEntityService {
         entity.setValue(Consts.BIZ_ENTITY_FIELD_STATE, wfa.getTo().getName());
         entity = dbSession.save(entity);
         return this.convert(wfa.getWorkflow(), entity);
+    }
+
+    private <M extends EntityModel> WorkflowAction checkWorkflowAndGetAction(String workflowName, String actionName, M entityModel) {
+        WorkflowEntityModel<M> workflowEntityModel = this.beMgr.getWorkflowEntityModelByWorkflow(workflowName);
+
+        if (workflowEntityModel == null) {
+            throw new WorkflowException("No such workflow for EntityModel [" + entityModel.getClass().getName() + "]");
+        }
+
+        Workflow workflow = workflowEntityModel.getWorkflow();
+        String stateName = entityModel.getWfState();
+
+        WorkflowState workflowState;
+        if (StringUtils.isEmpty(stateName)){
+            workflowState = workflow.getStartState();
+        } else {
+            workflowState = workflow.getState(stateName);
+        }
+
+        if (workflowState == null) {
+            throw new WorkflowException("No such state [" + stateName + "] for workfow [ " + workflow.getName() + "]");
+        }
+
+        List<WorkflowAction> actList = workflowState.getOutActions();
+        WorkflowAction wfa = null;
+
+        for (WorkflowAction act: actList) {
+            if (act.getName().equalsIgnoreCase(actionName)) {
+                wfa = act;
+                break;
+            }
+        }
+
+        if (wfa == null) {
+            throw new WorkflowException("No such action [" + actionName + "] for workflow [" + workflow.getName() + "]");
+        }
+        return wfa;
     }
 
     private WorkflowAction checkWorkflowAndGetAction(String workflowName, String actionName, Entity entity) {
@@ -154,17 +186,26 @@ public class BizEntityServiceImpl implements BizEntityService {
     }
 
     @Override
-    public BizEntity doAction(DbSession dbSession, String workflowName, String actionName, EntityModel entityModel, BeforeActionHandler beforeActionHandler, AfterActionHandler afterActionHandler, Map<String, Object> args) throws WorkflowException {
-        Entity entity = EntityUtil.convert(entityModel);
-        TransitResult tr = doTransit(dbSession, workflowName, actionName, entity, beforeActionHandler, args);
-        entity = tr.entity;
-        WorkflowAction wfa = tr.wfa;
+    public <M extends EntityModel> WorkflowEntityModel<M> doAction(WorkflowEntityModel<M> workflowEntityModel, String actionName, BeforeActionHandler beforeActionHandler, AfterActionHandler afterActionHandler, Map<String, Object> args) throws WorkflowException {
+        Workflow workflow = workflowEntityModel.getWorkflow();
+        M entityModel = workflowEntityModel.getEntityModel();
 
-        afterActionHandler.doAfterAction(dbSession, wfa, entity, args);
+        WorkflowAction action = checkWorkflowAndGetAction(workflow.getName(), actionName, entityModel);
+        beforeActionHandler.doBeforeAction(action, entityModel, args);
 
-        BeanUtils.copyProperties(entity.looksLike(entityModel.getClass()), entityModel); //这里新建了一个entityModel, 需要返回原来的entityModel
+        entityModel.setWfState(action.getTo().getName());
 
-        return this.convert(wfa.getWorkflow(), entityModel);
+        afterActionHandler.doAfterAction(action, entityModel, args);
+
+        // TODO KingRiver  how and when to log?
+        Entity wfaLog = dbSession.newEntity("workflowActionLog");
+        wfaLog.setValue("action", actionName);
+        wfaLog.setValue("workflow", workflow.getName());
+        wfaLog.setValue("entityUuid", entityModel.getUuid());
+        wfaLog.setValue("entityName", entityModel.getClass().getName());
+        dbSession.save(wfaLog);
+
+        return workflowEntityModel;
     }
 
     @Override

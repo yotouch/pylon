@@ -1,5 +1,8 @@
 package com.yotouch.base.bizentity;
 
+import com.yotouch.core.model.EntityModel;
+import com.yotouch.core.model.WorkflowEntityModel;
+
 public interface BizEntityManager {
 
     void reload();
@@ -10,7 +13,7 @@ public interface BizEntityManager {
      * 
      * 应该是一对多的关系，所以 BizMetaEntity 这个概念可能有问题
      * 
-     * @param wfName
+     * @param
      * @return
      */
     @Deprecated
@@ -18,4 +21,5 @@ public interface BizEntityManager {
     
     BizMetaEntity getBizMetaEntityByWorkflow(String wfName);
 
+    <M extends EntityModel> WorkflowEntityModel<M> getWorkflowEntityModelByWorkflow(String workflowName);
 }

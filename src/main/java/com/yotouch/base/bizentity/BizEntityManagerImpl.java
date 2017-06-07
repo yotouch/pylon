@@ -13,7 +13,9 @@ import javax.annotation.PostConstruct;
 
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.model.EntityModel;
+import com.yotouch.core.model.WorkflowEntityModel;
 import com.yotouch.core.runtime.DbSession;
+import com.yotouch.core.util.EntityUtil;
 import com.yotouch.core.workflow.WorkflowManagerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -207,6 +209,16 @@ public class BizEntityManagerImpl implements BizEntityManager {
     @Override
     public BizMetaEntity getBizMetaEntityByWorkflow(String wfName) {
         return this.wfNamedMap.get(wfName);
+    }
+
+    @Override
+    public <M extends EntityModel> WorkflowEntityModel<M> getWorkflowEntityModelByWorkflow(String workflowName) {
+        BizMetaEntityImpl bizMetaEntity = this.wfNamedMap.get(workflowName);
+
+        Workflow workflow = bizMetaEntity.getWorkflow();
+        M entityModel = EntityUtil.convert(bizMetaEntity.getMetaEntity().newEntity());
+
+        return new WorkflowEntityModel<>(workflow, entityModel);
     }
 
 

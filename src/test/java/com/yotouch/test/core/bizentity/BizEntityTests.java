@@ -79,60 +79,6 @@ public class BizEntityTests {
         assertEquals("apply", beParty.getState().getName());
 
 
-
-
-        BizMetaEntity bme2 = beMgr.getBizMetaEntityByWorkflow("party");
-
-        Workflow wf2 = bme2.getWorkflow();
-        assertEquals("party", wf2.getName());
-
-        MetaEntity me2 = bme2.getMetaEntity();
-        assertEquals(entityMgr.getMetaEntity("party"), me2);
-
-        BizEntity partyBizModel = beService.prepareWorkflow(bme2);
-
-        assertEquals("party", partyBizModel.getWorkflow().getName());
-        assertEquals("party", partyBizModel.getEntity().v("wf_workflow"));
-        assertEquals("", partyBizModel.getEntity().v("wf_state"));
-        assertEquals("party", partyBizModel.getEntityModel().getWfWorkflow());
-        assertEquals("", partyBizModel.getEntityModel().getWfState());
-
-        Party partyModel = dbSession.save( partyBizModel.getEntityModel(), "party");
-
-        assertEquals("party", partyModel.getWfWorkflow());
-        assertEquals("", partyModel.getWfState());
-
-        BizEntity beParty2 = beService.convert(wf2, partyModel);
-
-        partyModel.setName("测试partyWorkflow");
-        beParty2 = beService.doAction(dbSession, wf2.getName(), "start", partyModel, new BeforeActionHandler() {
-            @Override
-            public void doBeforeAction(DbSession dbSession, WorkflowAction workflowAction, Entity entity, Map<String, Object> args) throws WorkflowException {
-
-            }
-        }, new AfterActionHandler() {
-            @Override
-            public void doAfterAction(DbSession dbSession, WorkflowAction workflowAction, Entity entity, Map<String, Object> args) {
-
-            }
-        }, null);
-        assertEquals("apply", beParty2.getState().getName());
-        assertTrue(beParty2 instanceof BizEntityModelImpl);
-
-        beParty2 = beService.doAction(dbSession, wf2.getName(), "edit", partyModel, new BeforeActionHandler() {
-            @Override
-            public void doBeforeAction(DbSession dbSession, WorkflowAction workflowAction, Entity entity, Map<String, Object> args) throws WorkflowException {
-
-            }
-        }, new AfterActionHandler() {
-            @Override
-            public void doAfterAction(DbSession dbSession, WorkflowAction workflowAction, Entity entity, Map<String, Object> args) {
-
-            }
-        }, null);
-
-        assertEquals("apply", beParty2.getState().getName());
-        assertTrue(beParty2 instanceof BizEntityModelImpl);
     }
 
 
