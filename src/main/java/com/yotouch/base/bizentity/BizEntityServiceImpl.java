@@ -2,6 +2,7 @@ package com.yotouch.base.bizentity;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.yotouch.base.bizentity.handler.AfterActionHandler;
 import com.yotouch.base.bizentity.handler.BeforeActionHandler;
@@ -72,6 +73,15 @@ public class BizEntityServiceImpl implements BizEntityService {
     public <M extends EntityModel> WorkflowEntityModel<M> convert(Workflow workflow, M entityModel) {
         WorkflowEntityModel<M> workflowEntityModel = new WorkflowEntityModel<>();
         workflowEntityModel.setWorkflow(workflow);
+
+        //相当于初始化
+        if (entityModel.getWfWorkflow() == null || !Objects.equals(entityModel.getWfWorkflow(), workflow.getName())) {
+            entityModel.setWfWorkflow(workflow.getName());
+        }
+        if (entityModel.getWfState() == null) {
+            entityModel.setWfState("");
+        }
+
         workflowEntityModel.setEntityModel(entityModel);
 
         return workflowEntityModel;

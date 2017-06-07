@@ -147,6 +147,19 @@ public class BizEntityTests {
         partyModel.setWfState("OK");
         WorkflowEntityModel<Party> convertedWfem = beService.convert(workflow, partyModel);
         assertEquals("OK", convertedWfem.getEntityModel().getWfState());
+
+        //test convert case 2
+        Party party1 = new Party();
+        WorkflowEntityModel<Party> convert = beService.convert(workflow, party1);
+        assertEquals("", convert.getEntityModel().getWfState());
+
+        //test convert case 3
+        Party party2 = new Party();
+        party2.setWfWorkflow("xxx");
+        party2.setWfState("start");
+        WorkflowEntityModel<Party> convert1 = beService.convert(workflow, party2);
+        assertEquals("party", party2.getWfWorkflow());
+        assertEquals("start", party2.getWfState());
     }
 
 
