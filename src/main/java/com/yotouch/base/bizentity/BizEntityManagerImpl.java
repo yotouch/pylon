@@ -223,7 +223,7 @@ public class BizEntityManagerImpl implements BizEntityManager {
         BizMetaEntityImpl bizMetaEntity = this.wfNamedMap.get(workflowName);
 
         Workflow workflow = bizMetaEntity.getWorkflow();
-        M entityModel = EntityUtil.convert(bizMetaEntity.getMetaEntity().newEntity());
+        M entityModel = EntityUtil.getEntityModel(bizMetaEntity.getMetaEntity().getName());
 
         entityModel.setWfWorkflow(workflowName);
         entityModel.setWfState("");

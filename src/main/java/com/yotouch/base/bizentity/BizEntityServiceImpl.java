@@ -70,10 +70,11 @@ public class BizEntityServiceImpl implements BizEntityService {
 
     @Override
     public <M extends EntityModel> WorkflowEntityModel<M> convert(Workflow workflow, M entityModel) {
-        WorkflowEntityModel<M> workflowEntityModelByWorkflow = this.beMgr.getWorkflowEntityModelByWorkflow(workflow.getName());
+        WorkflowEntityModel<M> workflowEntityModel = new WorkflowEntityModel<>();
+        workflowEntityModel.setWorkflow(workflow);
+        workflowEntityModel.setEntityModel(entityModel);
 
-        workflowEntityModelByWorkflow.setEntityModel(entityModel);
-        return workflowEntityModelByWorkflow;
+        return workflowEntityModel;
     }
 
     @Override
@@ -92,13 +93,13 @@ public class BizEntityServiceImpl implements BizEntityService {
     }
 
     private <M extends EntityModel> WorkflowAction checkWorkflowAndGetAction(String workflowName, String actionName, M entityModel) {
-        WorkflowEntityModel<M> workflowEntityModel = this.beMgr.getWorkflowEntityModelByWorkflow(workflowName);
+        BizMetaEntity bizMetaEntity = this.beMgr.getBizMetaEntityByWorkflow(workflowName);
 
-        if (workflowEntityModel == null) {
+        if (bizMetaEntity == null) {
             throw new WorkflowException("No such workflow for EntityModel [" + entityModel.getClass().getName() + "]");
         }
 
-        Workflow workflow = workflowEntityModel.getWorkflow();
+        Workflow workflow = bizMetaEntity.getWorkflow();
         String stateName = entityModel.getWfState();
 
         WorkflowState workflowState;

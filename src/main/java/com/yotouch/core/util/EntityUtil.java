@@ -40,4 +40,8 @@ public class EntityUtil {
         M entityModel = (M)ctx.getBean(entityName);
         return Entity.looksLike(dbSession, entity, (Class<M>) entityModel.getClass());
     }
+
+    public static <M extends EntityModel> M getEntityModel(String modelName) {
+       return (M)ctx.getBean(modelName);
+    }
 }
