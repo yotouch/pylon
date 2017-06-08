@@ -9,7 +9,6 @@ import com.yotouch.base.bizentity.handler.BeforeActionHandler;
 import com.yotouch.base.bizentity.handler.CanDoActionHandler;
 import com.yotouch.core.entity.EntityManager;
 import com.yotouch.core.model.EntityModel;
-import com.yotouch.core.model.WorkflowEntityModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,9 +31,6 @@ public class BizEntityServiceImpl implements BizEntityService {
 
     @Autowired
     private EntityManager entityManager;
-
-    @Autowired
-    private DbSession dbSession;
 
     @Override
     public BizEntity prepareWorkflow(BizMetaEntity bme) {
@@ -70,10 +66,8 @@ public class BizEntityServiceImpl implements BizEntityService {
     }
 
     @Override
-    public <M extends EntityModel> WorkflowEntityModel<M> convert(Workflow workflow, M entityModel) {
-        WorkflowEntityModel<M> workflowEntityModel = new WorkflowEntityModel<>();
-        workflowEntityModel.setWorkflow(workflow);
-
+    public <M extends EntityModel> M convert(Workflow workflow, M entityModel) {
+        entityModel.setWorkflow(workflow);
         //相当于初始化
         if (entityModel.getWfWorkflow() == null || !Objects.equals(entityModel.getWfWorkflow(), workflow.getName())) {
             entityModel.setWfWorkflow(workflow.getName());
@@ -82,9 +76,7 @@ public class BizEntityServiceImpl implements BizEntityService {
             entityModel.setWfState("");
         }
 
-        workflowEntityModel.setEntityModel(entityModel);
-
-        return workflowEntityModel;
+        return entityModel;
     }
 
     @Override
@@ -205,11 +197,8 @@ public class BizEntityServiceImpl implements BizEntityService {
     }
 
     @Override
-    public <M extends EntityModel> WorkflowEntityModel<M> doAction(WorkflowEntityModel<M> workflowEntityModel, String actionName, BeforeActionHandler beforeActionHandler, AfterActionHandler afterActionHandler, Map<String, Object> args) throws WorkflowException {
-        Workflow workflow = workflowEntityModel.getWorkflow();
-        M entityModel = workflowEntityModel.getEntityModel();
-
-        WorkflowAction action = checkWorkflowAndGetAction(workflow.getName(), actionName, entityModel);
+    public <M extends EntityModel> M doAction(DbSession dbSession, M entityModel, String actionName, BeforeActionHandler beforeActionHandler, AfterActionHandler afterActionHandler, Map<String, Object> args) throws WorkflowException {
+        WorkflowAction action = checkWorkflowAndGetAction(entityModel.getWfWorkflow(), actionName, entityModel);
         beforeActionHandler.doBeforeAction(action, entityModel, args);
 
         entityModel.setWfState(action.getTo().getName());
@@ -219,12 +208,12 @@ public class BizEntityServiceImpl implements BizEntityService {
         // TODO KingRiver  how and when to log?
         Entity wfaLog = dbSession.newEntity("workflowActionLog");
         wfaLog.setValue("action", actionName);
-        wfaLog.setValue("workflow", workflow.getName());
+        wfaLog.setValue("workflow", entityModel.getWfWorkflow());
         wfaLog.setValue("entityUuid", entityModel.getUuid());
         wfaLog.setValue("entityName", entityModel.getClass().getName());
         dbSession.save(wfaLog);
 
-        return workflowEntityModel;
+        return entityModel;
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.yotouch.core.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yotouch.core.Consts;
+import com.yotouch.core.workflow.Workflow;
 import org.springframework.stereotype.Component;
 
 import java.util.Calendar;
@@ -26,6 +27,8 @@ public class EntityModel {
     private String wfWorkflow;
     @JsonProperty(value = "wf_state")
     private String wfState;
+
+    private Workflow workflow;
 
     public EntityModel(){
         this.uuid = "-" + UUID.randomUUID().toString();
@@ -101,5 +104,13 @@ public class EntityModel {
 
     public void setWfState(String wfState) {
         this.wfState = wfState;
+    }
+
+    public Workflow getWorkflow() {
+        return workflow;
+    }
+
+    public void setWorkflow(Workflow workflow) {
+        this.workflow = workflow;
     }
 }

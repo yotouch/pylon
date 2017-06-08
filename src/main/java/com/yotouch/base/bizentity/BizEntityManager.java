@@ -1,7 +1,6 @@
 package com.yotouch.base.bizentity;
 
 import com.yotouch.core.model.EntityModel;
-import com.yotouch.core.model.WorkflowEntityModel;
 
 public interface BizEntityManager {
 
@@ -21,5 +20,5 @@ public interface BizEntityManager {
     
     BizMetaEntity getBizMetaEntityByWorkflow(String wfName);
 
-    <M extends EntityModel> WorkflowEntityModel<M> getWorkflowEntityModelByWorkflow(String workflowName);
+    <M extends EntityModel> M getEntityModelByWorkflow(String workflowName);
 }

@@ -7,7 +7,6 @@ import com.yotouch.base.bizentity.*;
 import com.yotouch.base.bizentity.handler.AfterActionHandler;
 import com.yotouch.base.bizentity.handler.BeforeActionHandler;
 import com.yotouch.core.model.EntityModel;
-import com.yotouch.core.model.WorkflowEntityModel;
 import com.yotouch.core.runtime.DbSession;
 import com.yotouch.core.runtime.YotouchApplication;
 
@@ -44,6 +43,9 @@ public class BizEntityTests {
     
     @Autowired
     private BizEntityService beService;
+
+    @Autowired
+    private DbSession dbSession;
     
     @Test
     public void getBizEntity() {
@@ -85,16 +87,14 @@ public class BizEntityTests {
     @Test
     public void testWorkflowEntityModel() {
         //test get
-        WorkflowEntityModel<Party> party = beMgr.getWorkflowEntityModelByWorkflow("party");
-
+        Party party = beMgr.getEntityModelByWorkflow("party");
         Workflow workflow = party.getWorkflow();
-        Party partyModel = party.getEntityModel();
-        assertEquals("party", workflow.getName());
-        assertEquals("party", partyModel.getWfWorkflow());
-        assertEquals("", partyModel.getWfState());
 
-        partyModel.setName("testDoAction");
-        WorkflowEntityModel<Party> started = beService.doAction(party, "start", new BeforeActionHandler() {
+        assertEquals("party", party.getWfWorkflow());
+        assertEquals("", party.getWfState());
+
+        party.setName("testDoAction");
+        Party started = beService.doAction(dbSession, party, "start", new BeforeActionHandler() {
             @Override
             public void doBeforeAction(DbSession dbSession, WorkflowAction workflowAction, Entity entity, Map<String, Object> args) throws WorkflowException {
 
@@ -115,10 +115,10 @@ public class BizEntityTests {
 
             }
         }, null);
-        assertEquals("apply", started.getEntityModel().getWfState());
-        assertEquals("testDoAction", started.getEntityModel().getName());
+        assertEquals("apply", started.getWfState());
+        assertEquals("testDoAction", started.getName());
 
-        WorkflowEntityModel<Party> edited = beService.doAction(party, "edit", new BeforeActionHandler() {
+        Party edited = beService.doAction(dbSession, party, "edit", new BeforeActionHandler() {
             @Override
             public void doBeforeAction(DbSession dbSession, WorkflowAction workflowAction, Entity entity, Map<String, Object> args) throws WorkflowException {
 
@@ -139,27 +139,29 @@ public class BizEntityTests {
 
             }
         }, null);
-        assertEquals("apply", edited.getEntityModel().getWfState());
+        assertEquals("apply", edited.getWfState());
 
-        assertEquals("testDoAction", edited.getEntityModel().getName());
+        assertEquals("testDoAction", edited.getName());
 
         //test convert
-        partyModel.setWfState("OK");
-        WorkflowEntityModel<Party> convertedWfem = beService.convert(workflow, partyModel);
-        assertEquals("OK", convertedWfem.getEntityModel().getWfState());
+        party.setWfState("OK");
+        Party convertedParty = beService.convert(workflow, party);
+        assertEquals("OK", convertedParty.getWfState());
 
         //test convert case 2
         Party party1 = new Party();
-        WorkflowEntityModel<Party> convert = beService.convert(workflow, party1);
-        assertEquals("", convert.getEntityModel().getWfState());
+        Party convertedParty1 = beService.convert(workflow, party1);
+        assertEquals("", convertedParty1.getWfState());
 
         //test convert case 3
         Party party2 = new Party();
         party2.setWfWorkflow("xxx");
         party2.setWfState("start");
-        WorkflowEntityModel<Party> convert1 = beService.convert(workflow, party2);
+        Party convertedParty2 = beService.convert(workflow, party2);
         assertEquals("party", party2.getWfWorkflow());
         assertEquals("start", party2.getWfState());
+        assertEquals("party", convertedParty2.getWfWorkflow());
+        assertEquals("start", convertedParty2.getWfState());
     }
 
 

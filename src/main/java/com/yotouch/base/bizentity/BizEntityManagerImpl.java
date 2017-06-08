@@ -13,7 +13,6 @@ import javax.annotation.PostConstruct;
 
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.model.EntityModel;
-import com.yotouch.core.model.WorkflowEntityModel;
 import com.yotouch.core.runtime.DbSession;
 import com.yotouch.core.util.EntityUtil;
 import com.yotouch.core.workflow.WorkflowManagerImpl;
@@ -215,25 +214,21 @@ public class BizEntityManagerImpl implements BizEntityManager {
      * 获取新的workflowEntityModel 获取的时候就已经prepare好了 不用再prepare了
      *
      * @param workflowName
-     * @param <M>
      * @return
      */
     @Override
-    public <M extends EntityModel> WorkflowEntityModel<M> getWorkflowEntityModelByWorkflow(String workflowName) {
+    public <M extends EntityModel> M getEntityModelByWorkflow(String workflowName) {
         BizMetaEntityImpl bizMetaEntity = this.wfNamedMap.get(workflowName);
 
         Workflow workflow = bizMetaEntity.getWorkflow();
+
         M entityModel = EntityUtil.getEntityModel(bizMetaEntity.getMetaEntity().getName());
 
         entityModel.setWfWorkflow(workflowName);
         entityModel.setWfState("");
+        entityModel.setWorkflow(workflow);
 
-        WorkflowEntityModel<M> workflowEntityModel = new WorkflowEntityModel<>();
-
-        workflowEntityModel.setWorkflow(workflow);
-        workflowEntityModel.setEntityModel(entityModel);
-
-        return workflowEntityModel;
+        return entityModel;
     }
 
 
