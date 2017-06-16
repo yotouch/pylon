@@ -309,4 +309,21 @@ public class QiniuUtil {
 
         return tempPostResult;
     }
+
+
+    public int getMediaDuration(String qiniuUrl){
+        int duration = 0;
+
+        try {
+            Map<String, Object> result = getMediaInfo(qiniuUrl);
+            Map postResult = (Map) result.get("format");
+            String durationString = (String) postResult.get("duration");
+            double durationDouble = Double.parseDouble(durationString);
+            duration = (int) durationDouble;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return duration;
+    }
 }
