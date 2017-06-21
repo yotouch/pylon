@@ -378,6 +378,16 @@ public class DbSessionImpl implements DbSession {
         return this.queryOneRawSql(metaEntity, fieldName + "= ?", new Object[]{ value });
     }
 
-    
+    @Override
+    public List<Entity> queryListByField(String metaEntity, String fieldName, Object value) {
+
+        return this.queryRawSql(
+                metaEntity, 
+                fieldName + "= ?", 
+                new Object[]{ value }
+        );
+
+    }
+
 
 }
