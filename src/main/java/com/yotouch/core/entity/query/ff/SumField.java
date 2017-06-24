@@ -4,6 +4,10 @@ import com.yotouch.core.Consts;
 
 public class SumField extends FunctionField {
 
+    public SumField(String name) {
+        super(name);
+    }
+
     public SumField() {
         super("func_sum");
     }

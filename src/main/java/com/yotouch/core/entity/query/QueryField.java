@@ -6,5 +6,7 @@ public interface QueryField {
 
     String getName();
 
+    void setName(String name);
+
     String getDataType();
 }

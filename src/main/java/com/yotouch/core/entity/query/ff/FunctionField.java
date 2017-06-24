@@ -22,4 +22,8 @@ public abstract class FunctionField implements QueryField {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
 }
