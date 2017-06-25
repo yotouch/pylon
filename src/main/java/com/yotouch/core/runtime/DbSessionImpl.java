@@ -320,7 +320,7 @@ public class DbSessionImpl implements DbSession {
     @Override
     public List<Entity> query(String entityName, Query q) {
         MetaEntity me = entityMgr.getMetaEntity(entityName);
-        List<Entity> el = this.dbStore.querySql(me, q.getFields(), q.getWhere(), q.getArgs(), new EntityRowMapper(this, me, isMrLazy()));
+        List<Entity> el = this.dbStore.query(me, q, new EntityRowMapper(this, me, isMrLazy()));
         if (el.isEmpty()) {
             return null;
         } else {

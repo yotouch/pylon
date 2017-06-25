@@ -7,6 +7,7 @@ import com.yotouch.core.entity.Entity;
 import com.yotouch.core.entity.EntityRowMapper;
 import com.yotouch.core.entity.MetaEntity;
 import com.yotouch.core.entity.fv.FieldValue;
+import com.yotouch.core.entity.query.Query;
 import com.yotouch.core.entity.query.QueryField;
 
 public interface DbStore {
@@ -32,6 +33,8 @@ public interface DbStore {
     List<Entity> querySql(MetaEntity me, String where, Object[] args, EntityRowMapper mapper);
 
     List<Entity> querySql(MetaEntity me, List<QueryField> fields, String where, Object[] args, EntityRowMapper entityRowMapper);
+
+    List<Entity> query(MetaEntity me, Query query, EntityRowMapper entityRowMapper);
 
     void increase(MetaEntity me, String uuid, String field, int amount);
 

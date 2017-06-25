@@ -177,11 +177,87 @@ public class QueryTests {
         List<Entity> el = ds.query("user", q);
 
         int age99Count = el.get(0).v(qf.getName());
-        assertEquals(2, age99Count, 0);
-
-
+        assertEquals(2, age99Count);
         int  age88Count = el.get(1).v(qf.getName());
-        assertEquals(1, age88Count, 0);
+        assertEquals(1, age88Count);
 
+
+        q = new Query();
+        qf = new CountField("ageCount2");
+        q.addField(qf).addField(age);
+        q.addGroupBy("age");
+        q.rawSql("nickname LIKE ?", new Object[]{"f99%"});
+
+        el = ds.query("user", q);
+
+        assertEquals(1, (int)el.get(0).v(qf.getName()));
+        assertEquals(2, (int)el.get(1).v(qf.getName()));
+
+
+        q = new Query();
+        qf = new CountField("ageCount2");
+        q.addField(qf).addField(age);
+        q.addOrderBy("age", "desc");
+        q.addGroupBy("age");
+        q.rawSql("nickname LIKE ?", new Object[]{"f99%"});
+
+        el = ds.query("user", q);
+
+        assertEquals(2, el.size());
+        assertEquals(2, (int)el.get(0).v(qf.getName()));
+        assertEquals(1, (int)el.get(1).v(qf.getName()));
+    }
+
+    @Test
+    public void testOrderBy() {
+        YotouchRuntime rt = ytApp.getRuntime();
+        DbSession ds = rt.createDbSession();
+
+        Query q = new Query();
+        q.addOrderBy("age", "desc");
+        q.rawSql("nickname LIKE ?", new Object[]{"f99%"});
+        List<Entity> el = ds.query("user", q);
+
+        assertEquals(99, (int)el.get(0).v("age"));
+        assertEquals(99, (int)el.get(1).v("age"));
+        assertEquals(88, (int)el.get(2).v("age"));
+
+
+        q = new Query();
+        q.addOrderBy("age");
+        q.rawSql("nickname LIKE ?", new Object[]{"f99%"});
+        el = ds.query("user", q);
+
+        assertEquals(88, (int)el.get(0).v("age"));
+        assertEquals(99, (int)el.get(1).v("age"));
+        assertEquals(99, (int)el.get(2).v("age"));
+
+
+        q = new Query();
+        q.addOrderBy("nickname");
+        q.addOrderBy("age");
+        q.rawSql("nickname LIKE ?", new Object[]{"f99%"});
+        el = ds.query("user", q);
+
+        assertEquals(88, (int)el.get(0).v("age"));
+        assertEquals("f99", (String)el.get(0).v("nickname"));
+        assertEquals(99, (int)el.get(1).v("age"));
+        assertEquals("f99", (String)el.get(1).v("nickname"));
+        assertEquals(99, (int)el.get(2).v("age"));
+        assertEquals("f99-2", (String)el.get(2).v("nickname"));
+
+
+        q = new Query();
+        q.addOrderBy("nickname");
+        q.addOrderBy("age", "desc");
+        q.rawSql("nickname LIKE ?", new Object[]{"f99%"});
+        el = ds.query("user", q);
+
+        assertEquals(99, (int)el.get(0).v("age"));
+        assertEquals("f99", (String)el.get(0).v("nickname"));
+        assertEquals(88, (int)el.get(1).v("age"));
+        assertEquals("f99", (String)el.get(1).v("nickname"));
+        assertEquals(99, (int)el.get(2).v("age"));
+        assertEquals("f99-2", (String)el.get(2).v("nickname"));
     }
 }
