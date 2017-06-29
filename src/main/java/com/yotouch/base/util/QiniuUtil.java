@@ -317,9 +317,11 @@ public class QiniuUtil {
         try {
             Map<String, Object> result = getMediaInfo(qiniuUrl);
             Map postResult = (Map) result.get("format");
-            String durationString = (String) postResult.get("duration");
-            double durationDouble = Double.parseDouble(durationString);
-            duration = (int) durationDouble;
+            if (postResult.get("duration") != null) {
+                String durationString = (String) postResult.get("duration");
+                double durationDouble = Double.parseDouble(durationString);
+                duration = (int) durationDouble;
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
