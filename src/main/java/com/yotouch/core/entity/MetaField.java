@@ -3,7 +3,6 @@ package com.yotouch.core.entity;
 import com.yotouch.core.entity.fv.FieldValue;
 import com.yotouch.core.entity.query.QueryField;
 
-import java.util.Map;
 
 public interface MetaField<T> extends QueryField {
     
