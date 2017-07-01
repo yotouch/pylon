@@ -1,8 +1,7 @@
 package com.yotouch.core.entity;
 
-import java.util.ArrayList;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.yotouch.core.entity.mf.LongMetaFieldImpl;
