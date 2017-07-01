@@ -448,7 +448,7 @@ public class EntityManagerImpl implements EntityManager {
         if (options != null && !options.isEmpty()) {
             int weight = 0;
             for (String o : options) {
-                mfi.addValueOption(new ValueOption(o, mfi, weight++, false));
+                mfi.addValueOption(ValueOption.build(o, mfi, weight++, false));
             }
         }
     }
@@ -565,7 +565,7 @@ public class EntityManagerImpl implements EntityManager {
                 for (Map<String, Object> o : valueOptions) {
                     Integer weight = (Integer) o.get("weight");
                     Integer checked = (Integer) o.get("checked");
-                    mfi.addValueOption(new ValueOption((String) o.get("displayName"), mfi, weight, 1 == checked));
+                    mfi.addValueOption(ValueOption.build((String) o.get("displayName"), mfi, weight, 1 == checked));
                 }
             }
         } catch (BadSqlGrammarException e) {

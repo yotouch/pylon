@@ -9,19 +9,20 @@ import java.util.Map;
  * Created by tammy on 01/07/2017.
  */
 public class ValueOption {
-    private String displayName;
-    private String value;
+    private String       displayName;
+    private String       value;
     private MetaField<?> metaField;
-    private String fieldName;
-    private MetaEntity metaEntity;
-    private String entityName;
-    private String pinYin;
-    private boolean checked;
-    private Integer weight;
+    private String       fieldName;
+    private MetaEntity   metaEntity;
+    private String       entityName;
+    private String       pinYin;
+    private boolean      checked;
+    private Integer      weight;
 
-    private static Map<String, Integer> idx = new HashMap<>();
+    private static Map<String, Integer>     idx          = new HashMap<>();
+    private static Map<String, ValueOption> valueOptions = new HashMap<>();
 
-    public ValueOption(String displayName, MetaField<?> metaField, Integer weight, boolean checked) {
+    private ValueOption(String displayName, MetaField<?> metaField, Integer weight, boolean checked) {
         this.displayName = displayName;
         this.metaField = metaField;
         this.fieldName = metaField.getName();
@@ -32,7 +33,7 @@ public class ValueOption {
         this.checked = checked;
         this.weight = weight;
 
-        String valuePrefix = genValuePrefix();
+        String valuePrefix = genValuePrefix(metaField);
         ValueOption.idx.putIfAbsent(valuePrefix, 0);
 
         int id = ValueOption.idx.get(valuePrefix);
@@ -42,7 +43,19 @@ public class ValueOption {
         this.pinYin = Pinyin.toPinyin(this.displayName, "");
     }
 
-    private String genValuePrefix() {
+    public static ValueOption build(String displayName, MetaField<?> metaField, Integer weight, boolean checked) {
+        String key = genValuePrefix(metaField) + displayName;
+
+        if (ValueOption.valueOptions.containsKey(key)) {
+            return ValueOption.valueOptions.get(key);
+        }
+
+        ValueOption valueOption = new ValueOption(displayName, metaField, weight, checked);
+        ValueOption.valueOptions.put(key, valueOption);
+        return valueOption;
+    }
+
+    private static String genValuePrefix(MetaField<?> metaField) {
         if (metaField.getMetaEntity() == null) {
             return "systemField-" + metaField.getName() + "-";
         }

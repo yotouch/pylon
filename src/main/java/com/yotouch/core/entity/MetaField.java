@@ -3,6 +3,8 @@ package com.yotouch.core.entity;
 import com.yotouch.core.entity.fv.FieldValue;
 import com.yotouch.core.entity.query.QueryField;
 
+import java.util.List;
+
 
 public interface MetaField<T> extends QueryField {
     
@@ -35,6 +37,8 @@ public interface MetaField<T> extends QueryField {
     boolean isSingleReference();
 
     ValueOption getValueOption(String optionValueDisplayname);
+
+    List<ValueOption> getValueOptions();
 
     FieldValue<T> newFieldValue(Object value);
     

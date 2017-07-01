@@ -346,6 +346,7 @@ public class EntityTests {
         MetaField<?> dataType = e.getMetaEntity().getMetaField("dataType");
         ValueOption stringOption = dataType.getValueOption("STRING");
 
+        assertEquals(10, dataType.getValueOptions().size(), 0);
         assertEquals("STRING", stringOption.getDisplayName());
         assertEquals(0, stringOption.getWeight(), 0);
         assertEquals("STRING", stringOption.getPinYin());
@@ -355,8 +356,11 @@ public class EntityTests {
         assertEquals(dataType, stringOption.getMetaField());
         assertEquals(e.getMetaEntity(), stringOption.getMetaEntity());
 
+
         MetaField<?> status = e.getMetaEntity().getMetaField("status");
         ValueOption statusOption = status.getValueOption("删除");
+
+        assertEquals(2, status.getValueOptions().size(), 0);
         assertEquals("删除", statusOption.getDisplayName());
         assertEquals(1, statusOption.getWeight(), 0);
         assertEquals("SHANCHU", statusOption.getPinYin());

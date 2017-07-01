@@ -1,8 +1,11 @@
 package com.yotouch.core.entity;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.yotouch.core.entity.mf.LongMetaFieldImpl;
 import org.slf4j.Logger;
@@ -31,7 +34,7 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
     protected String displayName;
     protected boolean isRequired;
     protected FieldValue<T> defaultValue;
-    protected Map<String, ValueOption> valueOptions = new HashMap<>();
+    protected List<ValueOption> valueOptions = new ArrayList<>();
     
     
     @Override
@@ -45,14 +48,22 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
     }
 
     public void addValueOption(ValueOption valueOption) {
-        this.valueOptions.put(valueOption.getDisplayName(), valueOption);
+        if (!this.valueOptions.contains(valueOption)){
+            this.valueOptions.add(valueOption);
+        }
     }
 
     @Override
     public ValueOption getValueOption(String valueOptionDisplayname) {
-        return this.valueOptions.get(valueOptionDisplayname);
+        List<ValueOption> afterFilter = this.valueOptions.stream()
+                .filter(valueOption -> valueOption.getDisplayName().equals(valueOptionDisplayname))
+                .collect(Collectors.toList());
+        return afterFilter.isEmpty() ? null : afterFilter.get(0);
     }
 
+    public List<ValueOption> getValueOptions() {
+        return this.valueOptions;
+    }
 
     @Override
     public String getName() {
