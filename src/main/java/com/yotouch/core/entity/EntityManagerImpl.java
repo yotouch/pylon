@@ -354,6 +354,8 @@ public class EntityManagerImpl implements EntityManager {
             MetaFieldImpl<?> mfi = MetaFieldImpl.build(this, fMap);
             mei.addField(mfi);
             mfi.setMetaEntity(mei);
+
+            loadValueOptions(fMap, mfi);
         }
     }
 
@@ -432,10 +434,24 @@ public class EntityManagerImpl implements EntityManager {
             fMap.put("name", fn);
             fMap.put("uuid", "-");
             fMap.put("type", "system");
-            this.systemFields.put(fn, MetaFieldImpl.build(this, fMap));
+            MetaFieldImpl<?> mfi = MetaFieldImpl.build(this, fMap);
+
+            loadValueOptions(fMap, mfi);
+
+            this.systemFields.put(fn, mfi);
         }
     }
-    
+
+    private void loadValueOptions(Map<String, Object> fMap, MetaFieldImpl<?> mfi) {
+        List<String> options = (ArrayList<String>) fMap.get("valueOption");
+        if (options != null && !options.isEmpty()) {
+            int weight = 0;
+            for (String o : options) {
+                mfi.addValueOption(new ValueOptionImpl(o, mfi, weight++, false));
+            }
+        }
+    }
+
     private void loadSysFields(File appHome) {
         File ytEtcDir = new File(appHome, "etc");
 
@@ -491,6 +507,8 @@ public class EntityManagerImpl implements EntityManager {
                 if (mfMe.getMetaField(mfi.getName()) == null) {
                     mfMe.addField(mfi);
                     mfi.setMetaEntity(mfMe);
+
+                    buildValueOptions(mfi);
                 }
             }            
         }
@@ -517,13 +535,27 @@ public class EntityManagerImpl implements EntityManager {
         MetaEntityImpl mei = new MetaEntityImpl(meUuid, meName, displayName,"usr_", this.isLowerCase());
 
         for (Map<String, Object> fr : fieldRows) {
-            MetaFieldImpl<?> mf = MetaFieldImpl.build(this, fr);
-            mei.addField(mf);
-            mf.setMetaEntity(mei);
+            MetaFieldImpl<?> mfi = MetaFieldImpl.build(this, fr);
+            mei.addField(mfi);
+            mfi.setMetaEntity(mei);
+
+            buildValueOptions(mfi);
         }
 
         return mei;
 
+    }
+
+    private void buildValueOptions(MetaFieldImpl<?> mfi) {
+        MetaEntity valueOption = this.getMetaEntity("valueOption");
+        List<Map<String, Object>> valueOptions = dbStore.fetchList(valueOption, "metaFieldUuid = ?", new Object[]{mfi.getUuid()});
+        if (valueOptions != null && !valueOptions.isEmpty()) {
+            for (Map<String, Object> o : valueOptions) {
+                Integer weight = (Integer) o.get("weight");
+                Integer checked = (Integer) o.get("checked");
+                mfi.addValueOption(new ValueOptionImpl((String) o.get("displayName"), mfi, weight, checked > 0));
+            }
+        }
     }
 
     @Override

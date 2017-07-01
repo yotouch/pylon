@@ -21,6 +21,18 @@ entities:
         dataType:
             dataType: STRING
             displayName: 数据类型
+            valueOption:
+                - STRING
+                - UUID
+                - DATETIME
+                - OBJECT
+                - INT
+                - LONG
+                - DOUBLE
+                - TEXT
+                - BINARY
+                - BOOL
+
         fieldType:
             dataType: STRING
         targetMetaEntityUuid:
