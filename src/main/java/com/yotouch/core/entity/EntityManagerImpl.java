@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.stereotype.Service;
 import org.yaml.snakeyaml.Yaml;
 
@@ -447,7 +448,7 @@ public class EntityManagerImpl implements EntityManager {
         if (options != null && !options.isEmpty()) {
             int weight = 0;
             for (String o : options) {
-                mfi.addValueOption(new ValueOptionImpl(o, mfi, weight++, false));
+                mfi.addValueOption(new ValueOption(o, mfi, weight++, false));
             }
         }
     }
@@ -477,42 +478,52 @@ public class EntityManagerImpl implements EntityManager {
     private void loadDbMetaEntities() {
         logger.info("DbStore " + this.dbStore);
         MetaEntity me = this.getMetaEntity("metaEntity");
-        List<Map<String, Object>> rows = dbStore.fetchAll(me);
-        for (Map<String, Object> row : rows) {
-            logger.info("Processing MetaEntity " + row.get("name") + " with UUID " + row.get("uuid"));
+        try {
+            List<Map<String, Object>> rows = dbStore.fetchAll(me);
 
-            MetaEntityImpl mei = this.buildMetaEntity(row);
-            appendSysFields(mei.getUuid(), mei);
-            this.userEntities.put(mei.getName(), mei);
+            for (Map<String, Object> row : rows) {
+                logger.info("Processing MetaEntity " + row.get("name") + " with UUID " + row.get("uuid"));
 
-            logger.info("Finish build user MetaEntity " + mei);
+                MetaEntityImpl mei = this.buildMetaEntity(row);
+                appendSysFields(mei.getUuid(), mei);
+                this.userEntities.put(mei.getName(), mei);
+
+                logger.info("Finish build user MetaEntity " + mei);
+            }
+        } catch (BadSqlGrammarException e) {
+            logger.warn("No metaEntity table");
         }
+
     }
     
     private void loadDbMetaFields() {
         
         MetaEntity me = this.getMetaEntity("metaField");
-        
-        List<Map<String, Object>> rows = dbStore.fetchAll(me);
-        for (Map<String, Object> row: rows) {
-            logger.info("Processing MetaField " + row.get("name") + " with UUID " + row.get("uuid"));
-            
-            MetaFieldImpl<?> mfi = MetaFieldImpl.build(this, row);
-            
-            String meUuid = (String)row.get("metaEntityUuid");
-            logger.info("Processing MetaField " + mfi + " for me " + meUuid);
-            
-            MetaEntityImpl mfMe = (MetaEntityImpl) this.getMetaEntity(meUuid);
-            if (mfMe != null) {
-                if (mfMe.getMetaField(mfi.getName()) == null) {
-                    mfMe.addField(mfi);
-                    mfi.setMetaEntity(mfMe);
 
-                    buildValueOptions(mfi);
+        try {
+            List<Map<String, Object>> rows = dbStore.fetchAll(me);
+            for (Map<String, Object> row : rows) {
+                logger.info("Processing MetaField " + row.get("name") + " with UUID " + row.get("uuid"));
+
+                MetaFieldImpl<?> mfi = MetaFieldImpl.build(this, row);
+
+                String meUuid = (String) row.get("metaEntityUuid");
+                logger.info("Processing MetaField " + mfi + " for me " + meUuid);
+
+                MetaEntityImpl mfMe = (MetaEntityImpl) this.getMetaEntity(meUuid);
+                if (mfMe != null) {
+                    if (mfMe.getMetaField(mfi.getName()) == null) {
+                        mfMe.addField(mfi);
+                        mfi.setMetaEntity(mfMe);
+
+                        buildValueOptions(mfi);
+                    }
                 }
-            }            
+            }
+        } catch (BadSqlGrammarException e) {
+            logger.warn("No metaField table");
         }
-                
+
     }
 
     private MetaEntityImpl buildMetaEntity(Map<String, Object> row) {
@@ -547,14 +558,18 @@ public class EntityManagerImpl implements EntityManager {
     }
 
     private void buildValueOptions(MetaFieldImpl<?> mfi) {
-        MetaEntity valueOption = this.getMetaEntity("valueOption");
-        List<Map<String, Object>> valueOptions = dbStore.fetchList(valueOption, "metaFieldUuid = ?", new Object[]{mfi.getUuid()});
-        if (valueOptions != null && !valueOptions.isEmpty()) {
-            for (Map<String, Object> o : valueOptions) {
-                Integer weight = (Integer) o.get("weight");
-                Integer checked = (Integer) o.get("checked");
-                mfi.addValueOption(new ValueOptionImpl((String) o.get("displayName"), mfi, weight, checked > 0));
+        try {
+            MetaEntity valueOption = this.getMetaEntity("valueOption");
+            List<Map<String, Object>> valueOptions = dbStore.fetchList(valueOption, "metaFieldUuid = ?", new Object[]{mfi.getUuid()});
+            if (valueOptions != null && !valueOptions.isEmpty()) {
+                for (Map<String, Object> o : valueOptions) {
+                    Integer weight = (Integer) o.get("weight");
+                    Integer checked = (Integer) o.get("checked");
+                    mfi.addValueOption(new ValueOption((String) o.get("displayName"), mfi, weight, 1 == checked));
+                }
             }
+        } catch (BadSqlGrammarException e) {
+            logger.warn("No valueOption table");
         }
     }
 

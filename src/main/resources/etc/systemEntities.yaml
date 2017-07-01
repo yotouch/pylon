@@ -46,6 +46,7 @@ entities:
         visible:
             dataType: BOOL
             defaultValue: false
+
     attachment:
         content:
             dataType: BINARY
@@ -110,4 +111,35 @@ entities:
       entityUuid:
         dataType: UUID
       note:
-        dataType: TEXT        
+        dataType: TEXT
+
+    valueOption:
+      displayName:
+        dataType: STRING
+        displayName: 选项名
+      weight:
+        dataType: INT
+        displayName: 排序
+      value:
+        dataType: STRING
+        displayName: 选项值
+      pinyin:
+        dataType: STRING
+        displayName: 拼音
+      checked:
+        dataType: BOOL
+        displayName: 是否默认被选中
+      metaField:
+        fieldType: SINGLE_REFERENCE
+        targetMetaEntity: metaField
+        displayName: 对应的metaFiel
+      metaEntity:
+        fieldType: SINGLE_REFERENCE
+        targetMetaEntity: metaEntity
+        displayName: 对应的metaEntity
+      entityName:
+        dataType: STRING
+        displayName: entity名
+      fieldName:
+        dataType: STRING
+        displayName: field名

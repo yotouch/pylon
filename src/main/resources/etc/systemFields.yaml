@@ -19,3 +19,6 @@ systemFields:
         dataType: INT
         displayName: 状态
         required: 1
+        valueOption:
+            - 正常
+            - 删除

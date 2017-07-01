@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.yotouch.core.entity.*;
 import com.yotouch.test.core.model.Party;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,10 +16,6 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.yotouch.base.PylonApplication;
-import com.yotouch.core.entity.Entity;
-import com.yotouch.core.entity.EntityManager;
-import com.yotouch.core.entity.MetaEntity;
-import com.yotouch.core.entity.MetaField;
 import com.yotouch.core.exception.NoSuchMetaFieldException;
 import com.yotouch.core.runtime.DbSession;
 import com.yotouch.core.runtime.YotouchApplication;
@@ -336,5 +333,37 @@ public class EntityTests {
         Entity u2 = ds.getEntity("user", uuid);
         assertEquals(u2, u1);
                 
+    }
+
+    @Test
+    public void valueOptions() {
+        YotouchRuntime rt = ytApp.getRuntime();
+
+        DbSession ds = rt.createDbSession();
+
+        Entity e = ds.newEntity("metaField");
+
+        MetaField<?> dataType = e.getMetaEntity().getMetaField("dataType");
+        ValueOption stringOption = dataType.getValueOption("STRING");
+
+        assertEquals("STRING", stringOption.getDisplayName());
+        assertEquals(0, stringOption.getWeight(), 0);
+        assertEquals("STRING", stringOption.getPinYin());
+        assertEquals("metaField-dataType-0", stringOption.getValue());
+        assertEquals("dataType", stringOption.getFieldName());
+        assertEquals("metaField", stringOption.getEntityName());
+        assertEquals(dataType, stringOption.getMetaField());
+        assertEquals(e.getMetaEntity(), stringOption.getMetaEntity());
+
+        MetaField<?> status = e.getMetaEntity().getMetaField("status");
+        ValueOption statusOption = status.getValueOption("删除");
+        assertEquals("删除", statusOption.getDisplayName());
+        assertEquals(1, statusOption.getWeight(), 0);
+        assertEquals("SHANCHU", statusOption.getPinYin());
+        assertEquals("systemField-status-1", statusOption.getValue());
+        assertEquals("status", statusOption.getFieldName());
+        assertNotEquals(status, statusOption.getMetaField());  //一个是原始的systemField 一个是后来的metaField表中的一个field
+        assertNull(statusOption.getMetaEntity()); //systemField是没有metaEntity的
+        assertNull(statusOption.getEntityName()); //systemField是没有metaEntity的
     }
 }
