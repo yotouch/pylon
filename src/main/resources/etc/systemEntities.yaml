@@ -13,8 +13,9 @@ entities:
         name:
             dataType: STRING
             displayName: 字段名称
-        metaEntityUuid:
-            dataType: UUID
+        metaEntity:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: metaEntity
         displayName:
             dataType: STRING
             displayName: 显示名称
@@ -35,8 +36,9 @@ entities:
 
         fieldType:
             dataType: STRING
-        targetMetaEntityUuid:
-            dataType: UUID
+        targetMetaEntity:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: metaEntity
         defaultValue:
             dataType: STRING
         required:
