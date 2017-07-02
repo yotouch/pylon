@@ -1,6 +1,7 @@
 package com.yotouch.core.entity.fv;
 
 import com.yotouch.core.entity.MetaField;
+import org.springframework.util.StringUtils;
 
 public class LongFieldValueImpl extends AbstractFieldValue<Long> implements FieldValue<Long> {
 
@@ -10,7 +11,7 @@ public class LongFieldValueImpl extends AbstractFieldValue<Long> implements Fiel
 
     @Override
     protected Long parseValue(Object v) {
-        if (v == null) {
+        if (StringUtils.isEmpty(v)) {
             return null;
         } else if (v instanceof Integer || v instanceof Long) {
             long value = (long) v;
