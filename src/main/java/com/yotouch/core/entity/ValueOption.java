@@ -34,9 +34,9 @@ public class ValueOption {
         this.weight = weight;
 
         String valuePrefix = genValuePrefix(metaField);
-        ValueOption.idx.putIfAbsent(valuePrefix, 0);
+        Integer originInt = ValueOption.idx.putIfAbsent(valuePrefix, 0);
 
-        int id = ValueOption.idx.get(valuePrefix);
+        int id = originInt == null ? 0 : originInt;
         this.value = valuePrefix + id;
         ValueOption.idx.put(valuePrefix, ++id);
 
