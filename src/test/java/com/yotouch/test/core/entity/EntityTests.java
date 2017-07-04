@@ -350,24 +350,24 @@ public class EntityTests {
         assertEquals("STRING", stringOption.getDisplayName());
         assertEquals(0, stringOption.getWeight(), 0);
         assertEquals("STRING", stringOption.getPinYin());
-        assertEquals("metaField-dataType-0", stringOption.getValue());
-        assertEquals("dataType", stringOption.getFieldName());
-        assertEquals("metaField", stringOption.getEntityName());
+        assertEquals("metaField-dataType-STRING", stringOption.getValue());
+        assertEquals("dataType", stringOption.getMetaField().getName());
+        assertEquals("metaField", stringOption.getMetaEntity().getName());
         assertEquals(dataType, stringOption.getMetaField());
         assertEquals(e.getMetaEntity(), stringOption.getMetaEntity());
 
 
+        e = ds.newEntity("user");
         MetaField<?> status = e.getMetaEntity().getMetaField("status");
         ValueOption statusOption = status.getValueOption("删除");
 
-        assertEquals(2, status.getValueOptions().size(), 0);
+        assertEquals(3, status.getValueOptions().size(), 0);
         assertEquals("删除", statusOption.getDisplayName());
         assertEquals(1, statusOption.getWeight(), 0);
         assertEquals("SHANCHU", statusOption.getPinYin());
-        assertEquals("systemField-status-1", statusOption.getValue());
-        assertEquals("status", statusOption.getFieldName());
-        assertNotEquals(status, statusOption.getMetaField());  //一个是原始的systemField 一个是后来的metaField表中的一个field
-        assertNull(statusOption.getMetaEntity()); //systemField是没有metaEntity的
-        assertNull(statusOption.getEntityName()); //systemField是没有metaEntity的
+        assertEquals("user-status-删除", statusOption.getValue());
+        assertEquals("status", statusOption.getMetaField().getName());
+        assertEquals(status, statusOption.getMetaField());  //一个是原始的systemField 一个是后来的metaField表中的一个field
+        assertEquals(e.getMetaEntity(), statusOption.getMetaEntity());
     }
 }

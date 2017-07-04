@@ -1,6 +1,7 @@
 package com.yotouch.core.entity;
 
 import com.github.promeg.pinyinhelper.Pinyin;
+import com.yotouch.core.exception.MetaFieldHasNoMetaEntityException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,54 +13,40 @@ public class ValueOption {
     private String       displayName;
     private String       value;
     private MetaField<?> metaField;
-    private String       fieldName;
     private MetaEntity   metaEntity;
-    private String       entityName;
     private String       pinYin;
     private boolean      checked;
     private Integer      weight;
+    private static Map<String, ValueOption> loadedValues = new HashMap<>();
 
-    private static Map<String, Integer>     idx          = new HashMap<>();
-    private static Map<String, ValueOption> valueOptions = new HashMap<>();
+    private ValueOption(MetaField<?> metaField, String displayName, Integer weight, boolean checked) {
 
-    private ValueOption(String displayName, MetaField<?> metaField, Integer weight, boolean checked) {
         this.displayName = displayName;
         this.metaField = metaField;
-        this.fieldName = metaField.getName();
         this.metaEntity = metaField.getMetaEntity();
-        if (this.metaEntity != null) {
-            entityName = this.metaEntity.getName();
-        }
         this.checked = checked;
         this.weight = weight;
-
-        String valuePrefix = genValuePrefix(metaField);
-        Integer originInt = ValueOption.idx.putIfAbsent(valuePrefix, 0);
-
-        int id = originInt == null ? 0 : originInt;
-        this.value = valuePrefix + id;
-        ValueOption.idx.put(valuePrefix, ++id);
-
+        this.value = genValue(metaField, displayName);
         this.pinYin = Pinyin.toPinyin(this.displayName, "");
     }
 
-    public static ValueOption build(String displayName, MetaField<?> metaField, Integer weight, boolean checked) {
-        String key = genValuePrefix(metaField) + displayName;
-
-        if (ValueOption.valueOptions.containsKey(key)) {
-            return ValueOption.valueOptions.get(key);
+    public static ValueOption build(MetaField<?> metaField, String displayName, Integer weight, boolean checked) throws MetaFieldHasNoMetaEntityException {
+        if (metaField.getMetaEntity() == null) {
+            throw new MetaFieldHasNoMetaEntityException(metaField);
         }
 
-        ValueOption valueOption = new ValueOption(displayName, metaField, weight, checked);
-        ValueOption.valueOptions.put(key, valueOption);
+        String value = genValue(metaField, displayName);
+        if (loadedValues.containsKey(value)) {
+            return loadedValues.get(value);
+        }
+
+        ValueOption valueOption = new ValueOption(metaField, displayName, weight, checked);
+        loadedValues.put(value, valueOption);
         return valueOption;
     }
 
-    private static String genValuePrefix(MetaField<?> metaField) {
-        if (metaField.getMetaEntity() == null) {
-            return "systemField-" + metaField.getName() + "-";
-        }
-        return metaField.getMetaEntity().getName() + "-" + metaField.getName() + "-";
+    private static String genValue(MetaField<?> metaField, String displayName) {
+        return metaField.getMetaEntity().getName() + "-" + metaField.getName() + "-" + displayName;
     }
 
     public String getDisplayName() {
@@ -88,17 +75,5 @@ public class ValueOption {
 
     public MetaEntity getMetaEntity() {
         return metaEntity;
-    }
-
-    public void setMetaEntity(MetaEntity metaEntity) {
-        this.metaEntity = metaEntity;
-    }
-
-    public String getFieldName() {
-        return fieldName;
-    }
-
-    public String getEntityName() {
-        return entityName;
     }
 }

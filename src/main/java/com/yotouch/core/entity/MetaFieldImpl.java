@@ -2,7 +2,6 @@ package com.yotouch.core.entity;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -47,9 +46,10 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
         return this;
     }
 
+    @Override
     public void addValueOption(ValueOption valueOption) {
-        if (!this.valueOptions.contains(valueOption)){
-            this.valueOptions.add(valueOption);
+        if (!valueOptions.contains(valueOption)) {
+            valueOptions.add(valueOption);
         }
     }
 
@@ -61,8 +61,18 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
         return afterFilter.isEmpty() ? null : afterFilter.get(0);
     }
 
+    @Override
     public List<ValueOption> getValueOptions() {
         return this.valueOptions;
+    }
+
+    @Override
+    public void addValueOptions(List<ValueOption> valueOptions) {
+        if (valueOptions != null && !valueOptions.isEmpty()) {
+           for (ValueOption vo : valueOptions) {
+               this.addValueOption(vo);
+           }
+        }
     }
 
     @Override
@@ -259,5 +269,4 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
         
         return null;
     }
-
 }

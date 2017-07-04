@@ -37,8 +37,10 @@ public interface MetaField<T> extends QueryField {
     boolean isSingleReference();
 
     ValueOption getValueOption(String optionValueDisplayname);
+    void addValueOption(ValueOption valueOption);
 
     List<ValueOption> getValueOptions();
+    void addValueOptions(List<ValueOption> valueOptions);
 
     FieldValue<T> newFieldValue(Object value);
     
