@@ -1,6 +1,10 @@
 package com.yotouch.core.entity;
 
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.yotouch.core.entity.mf.LongMetaFieldImpl;
 import org.slf4j.Logger;
@@ -29,6 +33,7 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
     protected String displayName;
     protected boolean isRequired;
     protected FieldValue<T> defaultValue;
+    protected List<ValueOption> valueOptions = new ArrayList<>();
     
     
     @Override
@@ -40,7 +45,35 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
         this.type = type;
         return this;
     }
-    
+
+    @Override
+    public void addValueOption(ValueOption valueOption) {
+        if (!valueOptions.contains(valueOption)) {
+            valueOptions.add(valueOption);
+        }
+    }
+
+    @Override
+    public ValueOption getValueOption(String valueOptionDisplayname) {
+        List<ValueOption> afterFilter = this.valueOptions.stream()
+                .filter(valueOption -> valueOption.getDisplayName().equals(valueOptionDisplayname))
+                .collect(Collectors.toList());
+        return afterFilter.isEmpty() ? null : afterFilter.get(0);
+    }
+
+    @Override
+    public List<ValueOption> getValueOptions() {
+        return this.valueOptions;
+    }
+
+    @Override
+    public void addValueOptions(List<ValueOption> valueOptions) {
+        if (valueOptions != null && !valueOptions.isEmpty()) {
+           for (ValueOption vo : valueOptions) {
+               this.addValueOption(vo);
+           }
+        }
+    }
 
     @Override
     public String getName() {
@@ -112,11 +145,11 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
         
         String dataType = (String) fr.get("dataType");
         String fieldType = (String) fr.get("fieldType");
-        
+
         MetaFieldImpl<?> mfi = null;
         
         logger.debug("Build MetaField " + fr.get("name") + " with dataType " + dataType + " with fieldType " + fieldType);
-        
+
         if (Consts.META_FIELD_TYPE_SINGLE_REFERENCE.equalsIgnoreCase(fieldType)) {
             String targetMetaEntity = (String) fr.get("targetMetaEntity");
             mfi = new SingleReferenceMetaFieldImpl(entityMgr, targetMetaEntity);
@@ -146,7 +179,7 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
                 mfi = new ObjectMetaFieldImpl();
             }
         }
-        
+
         //mfi.setMetaEntity(mei);
         
         mfi.setUuid((String) fr.get("uuid"));
@@ -154,12 +187,12 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
         mfi.setDisplayName((String) fr.get("displayName"));
         mfi.setDefaultValue(fr.get("defaultValue"));
         mfi.setRequired("1".equals(fr.get("required")));
-        
+
         String type = (String)fr.get("type");
         if (type != null && !type.equals("")) {
             mfi.setType(type);
-        }        
-        
+        }
+
         //logger.info("Try to build MetaField " + fr);
         //mei.addField(mfi);
 
@@ -236,5 +269,4 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
         
         return null;
     }
-
 }
