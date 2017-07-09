@@ -10,6 +10,6 @@ public interface EntityManager {
 
     MetaEntity getMetaEntity(String name);
 
-    void rebuildDb();
+    void reload();
 
 }
