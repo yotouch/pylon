@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ValueOptionModel extends EntityModel {
     private String          displayName;
-    private String          name;
+    private String          value;
     private String          pinyin;
     private boolean         checked;
     private Integer         weight;
@@ -23,12 +23,12 @@ public class ValueOptionModel extends EntityModel {
         this.displayName = displayName;
     }
 
-    public String getName() {
-        return name;
+    public String getValue() {
+        return value;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setValue(String value) {
+        this.value = value;
     }
 
     public String getPinyin() {
