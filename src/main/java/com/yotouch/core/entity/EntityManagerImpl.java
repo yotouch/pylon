@@ -535,7 +535,6 @@ public class EntityManagerImpl implements EntityManager {
                 logger.info("Processing MetaField " + row.get("name") + " with UUID " + row.get("uuid"));
 
                 MetaFieldImpl<?> mfi = MetaFieldImpl.build(this, row);
-                loadDbValueOptions(mfi);
 
                 String meUuid = (String) row.get("metaEntityUuid");
                 logger.info("Processing MetaField " + mfi + " for me " + meUuid);
@@ -545,6 +544,7 @@ public class EntityManagerImpl implements EntityManager {
                     if (mfMe.getMetaField(mfi.getName()) == null) {
                         mfMe.addField(mfi);
                         mfi.setMetaEntity(mfMe);
+                        loadDbValueOptions(mfi);
                     }
                 }
             }
@@ -560,8 +560,8 @@ public class EntityManagerImpl implements EntityManager {
             if (valueOptions != null && !valueOptions.isEmpty()) {
                 for (Map<String, Object> row : valueOptions) {
                     logger.info("Processing ValueOption " + row.get("displayName") + " for mf " + metaField.getUuid());
-                    Integer weight = (Integer) row.get("weight");
-                    Integer checked = (Integer) row.get("checked");
+                    Integer weight = Integer.valueOf((String) row.get("weight"));
+                    Integer checked = Integer.valueOf((String) row.get("checked"));
                     metaField.addValueOption(ValueOption.build(metaField, (String) row.get("displayName"), weight, 1 == checked));
                 }
             }

@@ -139,9 +139,3 @@ entities:
         fieldType: SINGLE_REFERENCE
         targetMetaEntity: metaEntity
         displayName: 对应的metaEntity
-      entityName:
-        dataType: STRING
-        displayName: entity名
-      fieldName:
-        dataType: STRING
-        displayName: field名
