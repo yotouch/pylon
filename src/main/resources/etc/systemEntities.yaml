@@ -48,6 +48,10 @@ entities:
         visible:
             dataType: BOOL
             defaultValue: false
+        disabled:
+            dataType: BOOL
+            defaultValue: false
+            displayName: 该metaField是否被禁用
 
     attachment:
         content:
