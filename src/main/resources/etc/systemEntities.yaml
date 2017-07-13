@@ -13,18 +13,32 @@ entities:
         name:
             dataType: STRING
             displayName: 字段名称
-        metaEntityUuid:
-            dataType: UUID
+        metaEntity:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: metaEntity
         displayName:
             dataType: STRING
             displayName: 显示名称
         dataType:
             dataType: STRING
             displayName: 数据类型
+            valueOption:
+                - STRING
+                - UUID
+                - DATETIME
+                - OBJECT
+                - INT
+                - LONG
+                - DOUBLE
+                - TEXT
+                - BINARY
+                - BOOL
+
         fieldType:
             dataType: STRING
-        targetMetaEntityUuid:
-            dataType: UUID
+        targetMetaEntity:
+            fieldType: SINGLE_REFERENCE
+            targetMetaEntity: metaEntity
         defaultValue:
             dataType: STRING
         required:
@@ -34,6 +48,7 @@ entities:
         visible:
             dataType: BOOL
             defaultValue: false
+
     attachment:
         content:
             dataType: BINARY
@@ -98,4 +113,29 @@ entities:
       entityUuid:
         dataType: UUID
       note:
-        dataType: TEXT        
+        dataType: TEXT
+
+    valueOption:
+      displayName:
+        dataType: STRING
+        displayName: 选项名
+      weight:
+        dataType: INT
+        displayName: 排序
+      value:
+        dataType: STRING
+        displayName: 选项值
+      pinyin:
+        dataType: STRING
+        displayName: 拼音
+      checked:
+        dataType: BOOL
+        displayName: 是否默认被选中
+      metaField:
+        fieldType: SINGLE_REFERENCE
+        targetMetaEntity: metaField
+        displayName: 对应的metaFiel
+      metaEntity:
+        fieldType: SINGLE_REFERENCE
+        targetMetaEntity: metaEntity
+        displayName: 对应的metaEntity

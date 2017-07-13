@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.yotouch.core.entity.MetaField;
+import org.springframework.util.StringUtils;
 
 public class BoolFieldValueImpl extends AbstractFieldValue<Boolean> implements FieldValue<Boolean> {
     
@@ -16,7 +17,7 @@ public class BoolFieldValueImpl extends AbstractFieldValue<Boolean> implements F
     @Override
     protected Boolean parseValue(Object v) {
         
-        if (v == null) {
+        if (StringUtils.isEmpty(v)) {
             return null;
         } else if (v instanceof Boolean) {
             return (Boolean) v;
