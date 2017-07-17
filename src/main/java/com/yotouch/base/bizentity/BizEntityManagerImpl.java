@@ -12,7 +12,9 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import com.yotouch.core.entity.Entity;
+import com.yotouch.core.model.EntityModel;
 import com.yotouch.core.runtime.DbSession;
+import com.yotouch.core.util.EntityUtil;
 import com.yotouch.core.workflow.WorkflowManagerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -207,5 +209,27 @@ public class BizEntityManagerImpl implements BizEntityManager {
     public BizMetaEntity getBizMetaEntityByWorkflow(String wfName) {
         return this.wfNamedMap.get(wfName);
     }
+
+    /**
+     * 获取新的workflowEntityModel 获取的时候就已经prepare好了 不用再prepare了
+     *
+     * @param workflowName
+     * @return
+     */
+    @Override
+    public <M extends EntityModel> M getEntityModelByWorkflow(String workflowName) {
+        BizMetaEntityImpl bizMetaEntity = this.wfNamedMap.get(workflowName);
+
+        Workflow workflow = bizMetaEntity.getWorkflow();
+
+        M entityModel = EntityUtil.getEntityModel(bizMetaEntity.getMetaEntity().getName());
+
+        entityModel.setWfWorkflow(workflowName);
+        entityModel.setWfState("");
+        entityModel.setWorkflow(workflow);
+
+        return entityModel;
+    }
+
 
 }

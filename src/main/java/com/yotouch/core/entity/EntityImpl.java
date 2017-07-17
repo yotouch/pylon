@@ -1,6 +1,7 @@
 package com.yotouch.core.entity;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -302,14 +303,14 @@ public class EntityImpl implements Entity {
     }
 
     @Override
-    public <T extends EntityModel> T looksLike(Class<T> clazz) {
+    public <M extends EntityModel> M looksLike(Class<M> clazz) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
         return mapper.convertValue(asMap(), clazz);
     }
 
     @Override
-    public <T extends EntityModel> Entity fromModel(T entityModel) {
+    public <M extends EntityModel> Entity fromModel(M entityModel) {
         return fromMap(modelToMap(entityModel));
     }
 
@@ -317,7 +318,7 @@ public class EntityImpl implements Entity {
     public Entity fromMap(Map<String, Object> map){
         if (map == null) return this;
 
-        long changeValueCounts = this.getMetaEntity().getMetaFields().stream()
+        this.getMetaEntity().getMetaFields().stream()
                 .filter(
                         mf -> !"createdAt".equals(mf.getName())
                                 && !"updatedAt".equals(mf.getName())
@@ -325,15 +326,19 @@ public class EntityImpl implements Entity {
                                 && map.get(mf.getName()) != null
                                 && (mf.isSingleReference() || Consts.META_FIELD_TYPE_DATA_FIELD.equals(mf.getFieldType()))
                 )
-                .map(mf -> {
+                .forEach(mf -> {
                     Object tempV = map.get(mf.getName());
                     if (mf.isSingleReference() && tempV instanceof Map && !StringUtils.isEmpty(((Map) tempV).get("uuid"))) {
                         setValue(mf.getName(), ((Map) tempV).get("uuid"));
                     } else {
                         setValue(mf.getName(), tempV);
                     }
-                    return mf;
-                }).count();
+                });
+
+        //手动设置一个。否则updateAt字段的isChanged为false，不会自动更新。
+        if (v("updatedAt") == null) {
+            setValue("updatedAt", new Date());
+        }
 
         return this;
     }

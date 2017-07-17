@@ -300,13 +300,13 @@ public class EntityTests {
         Party party = new Party();
         party.setName("testModelParty");
 
-        assertNull(party.getUuid());
+        assertNotNull(party.getUuid());
 
         Party party1 = ds.save(party, "party");
 
         assertNotNull(party1.getUuid());
 
-        assertNotEquals(party, party1);
+        assertEquals(party, party1);
 
         Party party2 = ds.getEntity("party", party1.getUuid(), Party.class);
 

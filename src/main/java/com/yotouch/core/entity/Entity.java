@@ -72,15 +72,15 @@ public interface Entity {
         return m;
     }
 
-    <T extends EntityModel> T looksLike(Class<T> clazz);
+    <M extends EntityModel> M looksLike(Class<M> clazz);
 
-    static  <T extends EntityModel> T looksLike(DbSession dbSession, Entity entity, Class<T> clazz) {
+    static  <M extends EntityModel> M looksLike(DbSession dbSession, Entity entity, Class<M> clazz) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
         return mapper.convertValue(Entity.asMap(dbSession, entity), clazz);
     }
 
-    <T extends EntityModel> Entity fromModel(T entityModel);
+    <M extends EntityModel> Entity fromModel(M entityModel);
 
     Entity fromMap(Map<String, Object> map);
 

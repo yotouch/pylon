@@ -1,22 +1,38 @@
 package com.yotouch.core.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yotouch.core.Consts;
+import com.yotouch.core.workflow.Workflow;
+import org.springframework.stereotype.Component;
 
 import java.util.Calendar;
+import java.util.UUID;
 
 /**
  * Created by king on 3/29/17.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Component
 public class EntityModel {
     private String uuid;
     private String creatorUuid;
     private Calendar createdAt;
     private Calendar updatedAt;
     private String updaterUuid;
-    private int status = Consts.STATUS_NORMAL;
+    private Integer status = Consts.STATUS_NORMAL;
     private String company;
+
+    @JsonProperty(value = "wf_workflow")
+    private String wfWorkflow;
+    @JsonProperty(value = "wf_state")
+    private String wfState;
+
+    private Workflow workflow;
+
+    public EntityModel(){
+        this.uuid = "-" + UUID.randomUUID().toString();
+    }
 
     public String getCompany() {
         return company;
@@ -66,11 +82,35 @@ public class EntityModel {
         this.updaterUuid = updaterUuid;
     }
 
-    public int getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getWfWorkflow() {
+        return wfWorkflow;
+    }
+
+    public void setWfWorkflow(String wfWorkflow) {
+        this.wfWorkflow = wfWorkflow;
+    }
+
+    public String getWfState() {
+        return wfState;
+    }
+
+    public void setWfState(String wfState) {
+        this.wfState = wfState;
+    }
+
+    public Workflow getWorkflow() {
+        return workflow;
+    }
+
+    public void setWorkflow(Workflow workflow) {
+        this.workflow = workflow;
     }
 }

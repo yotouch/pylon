@@ -11,5 +11,4 @@ public interface BizEntity  {
     WorkflowState getState();
     
     Entity getEntity();
-
 }

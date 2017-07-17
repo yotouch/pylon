@@ -35,5 +35,4 @@ public class BizEntityImpl implements BizEntity {
     public Entity getEntity() {
         return this.entity;
     }
-
 }
