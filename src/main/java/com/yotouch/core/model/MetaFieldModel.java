@@ -16,6 +16,7 @@ public class MetaFieldModel extends EntityModel {
     private MetaEntityModel targetMetaEntity;
     private Integer         weight;
     private boolean         visible;
+    private boolean         disabled;
     private MetaEntityModel metaEntity;
 
     public String getDisplayName() {
@@ -96,5 +97,13 @@ public class MetaFieldModel extends EntityModel {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 }
