@@ -186,7 +186,7 @@ public class DbSessionImpl implements DbSession {
     @Override
     public <M extends EntityModel> M save(M entityModel, String entityName) {
         Entity entity;
-        if (entityModel != null && !StringUtils.isEmpty(entityModel.getUuid())) {
+        if (entityModel != null && !StringUtils.isEmpty(entityModel.getUuid()) && !entityModel.getUuid().startsWith("-")) {
             entity = this.getEntity(entityName, entityModel.getUuid());
         } else {
             entity = this.newEntity(entityName);
