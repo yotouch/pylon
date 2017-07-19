@@ -6,7 +6,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.yotouch.core.entity.*;
+import com.yotouch.core.model.MetaFieldModel;
 import com.yotouch.test.core.model.Party;
+import com.yotouch.test.core.model.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -311,6 +313,42 @@ public class EntityTests {
         Party party2 = ds.getEntity("party", party1.getUuid(), Party.class);
 
         assertEquals(party1.getUuid(), party2.getUuid());
+    }
+
+    @Test
+    public void testObjectMapperInterge0() {
+        YotouchRuntime rt = ytApp.getRuntime();
+
+        DbSession ds = rt.createDbSession();
+        Entity e1 = ds.newEntity("user");
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("nickname", "king");
+        map.put("age", 0);
+        e1.fromMap(map);
+
+        assertEquals(0, (int)e1.v("age"));
+
+        User user = new User();
+        assertNull(user.getAge());
+
+        user.setAge(0);
+        user.setNickname("king");
+        e1.fromModel(user);
+
+        assertEquals(0, (int)e1.v("age"));
+
+        user = ds.save(user, "user");
+        assertNotNull(user.getAge());
+
+        MetaFieldModel metaFieldModel = new MetaFieldModel();
+        assertNull(metaFieldModel.getWeight());
+
+        metaFieldModel.setWeight(0);
+
+        metaFieldModel = ds.save(metaFieldModel, "metaField");
+
+        assertNotNull(metaFieldModel.getWeight());
     }
     
     @Test
