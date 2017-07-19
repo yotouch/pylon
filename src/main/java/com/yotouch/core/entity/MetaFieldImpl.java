@@ -33,7 +33,7 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
     protected String displayName;
     protected boolean isRequired;
     protected boolean isVisible;
-    protected boolean isDisabled;
+    protected boolean isDeleted;
     protected FieldValue<T> defaultValue;
     protected List<ValueOption> valueOptions = new ArrayList<>();
     
@@ -122,12 +122,12 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
     }
 
     @Override
-    public boolean isDisabled() {
-        return this.isDisabled;
+    public boolean isDeleted() {
+        return this.isDeleted;
     }
 
-    void setDisabled(boolean disabled) {
-        this.isDisabled = disabled;
+    void setDeleted(boolean deleted) {
+        this.isDeleted = deleted;
     }
 
 
@@ -209,7 +209,7 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
         mfi.setDefaultValue(fr.get("defaultValue"));
         mfi.setRequired("1".equals(fr.get("required")));
         mfi.setVisible("1".equals(fr.get("visible")));
-        mfi.setDisabled("1".equals(fr.get("disabled")));
+        mfi.setDeleted("1".equals(fr.get("deleted")));
 
         String type = (String)fr.get("type");
         if (type != null && !type.equals("")) {

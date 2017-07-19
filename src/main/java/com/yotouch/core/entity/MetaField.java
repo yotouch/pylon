@@ -22,7 +22,7 @@ public interface MetaField<T> extends QueryField {
 
     boolean isVisible();
 
-    boolean isDisabled();
+    boolean isDeleted();
 
     T getDefaultValue();
 
