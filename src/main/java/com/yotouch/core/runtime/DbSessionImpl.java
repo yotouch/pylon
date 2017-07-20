@@ -4,7 +4,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
 import com.yotouch.core.entity.query.Query;
 import com.yotouch.core.exception.DbSessionException;
 import com.yotouch.core.model.EntityModel;
@@ -24,8 +23,6 @@ import com.yotouch.core.store.db.DbStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -186,7 +183,7 @@ public class DbSessionImpl implements DbSession {
     @Override
     public <M extends EntityModel> M save(M entityModel, String entityName) {
         Entity entity;
-        if (entityModel != null && !StringUtils.isEmpty(entityModel.getUuid())) {
+        if (entityModel != null && !StringUtils.isEmpty(entityModel.getUuid()) && !entityModel.getUuid().startsWith("-")) {
             entity = this.getEntity(entityName, entityModel.getUuid());
         } else {
             entity = this.newEntity(entityName);

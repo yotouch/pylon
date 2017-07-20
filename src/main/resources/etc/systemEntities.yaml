@@ -48,6 +48,10 @@ entities:
         visible:
             dataType: BOOL
             defaultValue: false
+        deleted:
+            dataType: BOOL
+            defaultValue: false
+            displayName: 该metaField是否被删除
 
     attachment:
         content:

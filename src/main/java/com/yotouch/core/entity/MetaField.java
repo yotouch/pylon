@@ -19,7 +19,11 @@ public interface MetaField<T> extends QueryField {
     String getDataType();
     
     boolean isRequired();
-    
+
+    boolean isVisible();
+
+    boolean isDeleted();
+
     T getDefaultValue();
 
     FieldValue<T> getDefaultFieldValue();
