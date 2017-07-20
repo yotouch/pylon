@@ -16,10 +16,11 @@ public class ValueOption {
     private MetaEntity   metaEntity;
     private String       pinYin;
     private boolean      checked;
+    private boolean      deleted;
     private Integer      weight;
     private static Map<String, ValueOption> loadedValues = new HashMap<>();
 
-    private ValueOption(MetaField<?> metaField, String displayName, Integer weight, boolean checked) {
+    private ValueOption(MetaField<?> metaField, String displayName, Integer weight, boolean checked, boolean deleted) {
 
         this.displayName = displayName;
         this.metaField = metaField;
@@ -28,9 +29,10 @@ public class ValueOption {
         this.weight = weight;
         this.value = genValue(metaField, displayName);
         this.pinYin = Pinyin.toPinyin(this.displayName, "");
+        this.deleted = deleted;
     }
 
-    public static ValueOption build(MetaField<?> metaField, String displayName, Integer weight, boolean checked) throws MetaFieldHasNoMetaEntityException {
+    public static ValueOption build(MetaField<?> metaField, String displayName, Integer weight, boolean checked, boolean deleted) throws MetaFieldHasNoMetaEntityException {
         if (metaField.getMetaEntity() == null) {
             throw new MetaFieldHasNoMetaEntityException(metaField);
         }
@@ -40,7 +42,7 @@ public class ValueOption {
             return loadedValues.get(value);
         }
 
-        ValueOption valueOption = new ValueOption(metaField, displayName, weight, checked);
+        ValueOption valueOption = new ValueOption(metaField, displayName, weight, checked, deleted);
         loadedValues.put(value, valueOption);
         return valueOption;
     }
@@ -75,5 +77,9 @@ public class ValueOption {
 
     public MetaEntity getMetaEntity() {
         return metaEntity;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
     }
 }
