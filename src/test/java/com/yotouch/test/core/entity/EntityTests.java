@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.yotouch.core.Consts;
 import com.yotouch.core.entity.*;
 import com.yotouch.core.model.MetaFieldModel;
 import com.yotouch.test.core.model.Party;
@@ -344,11 +345,21 @@ public class EntityTests {
         MetaFieldModel metaFieldModel = new MetaFieldModel();
         assertNull(metaFieldModel.getWeight());
 
+        metaFieldModel.setName("test");
+        metaFieldModel.setFieldType(Consts.META_FIELD_TYPE_DATA_FIELD);
+        metaFieldModel.setDataType(Consts.META_FIELD_DATA_TYPE_STRING);
+        metaFieldModel.setDisplayName("测试");
         metaFieldModel.setWeight(0);
 
-        metaFieldModel = ds.save(metaFieldModel, "metaField");
+        Entity metaField = ds.newEntity("metaField");
+
+        metaField = metaField.fromModel(metaFieldModel);
+        assertNotNull(metaField.v("weight"));
+
+        metaFieldModel = metaField.looksLike(MetaFieldModel.class);
 
         assertNotNull(metaFieldModel.getWeight());
+        assertEquals(0, metaFieldModel.getWeight(), 0);
     }
     
     @Test
