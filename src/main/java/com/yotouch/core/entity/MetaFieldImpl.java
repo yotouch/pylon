@@ -28,12 +28,12 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
     
     protected MetaEntity me;
     protected String type = "user";
-    protected String uuid;
-    protected String name;
-    protected String displayName;
-    protected boolean isRequired;
-    protected boolean isVisible;
-    protected boolean isDeleted;
+    protected String        uuid;
+    protected String        name;
+    protected String        displayName;
+    protected boolean       required;
+    protected boolean       visible;
+    protected boolean       deleted;
     protected FieldValue<T> defaultValue;
     protected List<ValueOption> valueOptions = new ArrayList<>();
     
@@ -105,29 +105,29 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
         
     @Override
     public boolean isRequired() {
-        return this.isRequired;
+        return this.required;
     }
     
     void setRequired(boolean required) {
-        this.isRequired = required;
+        this.required = required;
     }
 
     @Override
     public boolean isVisible() {
-        return this.isVisible;
+        return this.visible;
     }
 
     void setVisible(boolean visible) {
-        this.isVisible = visible;
+        this.visible = visible;
     }
 
     @Override
     public boolean isDeleted() {
-        return this.isDeleted;
+        return this.deleted;
     }
 
     void setDeleted(boolean deleted) {
-        this.isDeleted = deleted;
+        this.deleted = deleted;
     }
 
 
@@ -277,7 +277,7 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
     @Override
     public String toString() {
         return "MetaFieldImpl [\n\tme=" + (me == null ? "NULL" : me.getName()) + ", \n\tuuid=" + uuid + ", \n\tname=" + name + ", \n\tdisplayName=" + displayName
-                + ", \n\tfieldType=" + this.getFieldType() + "\n\tdataType=" + this.getDataType() + ", \n\tisRequired=" + isRequired + ", \n\tdefaultValue=" + defaultValue + "\n]\n";
+                + ", \n\tfieldType=" + this.getFieldType() + "\n\tdataType=" + this.getDataType() + ", \n\trequired=" + required  + ", \n\tvisible=" + visible + ", \n\tdeleted=" + deleted + ", \n\tdefaultValue=" + defaultValue + "\n]\n";
     }
 
     public MetaFieldImpl<?> copy(String uuid) {
