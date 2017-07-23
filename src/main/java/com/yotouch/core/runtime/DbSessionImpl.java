@@ -182,6 +182,13 @@ public class DbSessionImpl implements DbSession {
 
     @Override
     public <M extends EntityModel> M save(M entityModel, String entityName) {
+        Entity entity = getEntityFromModel(entityModel, entityName);
+
+        return this.save(entity.fromModel(entityModel)).looksLike((Class<M>) entityModel.getClass());
+    }
+
+    @Override
+    public <M extends EntityModel> Entity getEntityFromModel(M entityModel, String entityName) {
         Entity entity;
         if (entityModel != null && !StringUtils.isEmpty(entityModel.getUuid()) && !entityModel.getUuid().startsWith("-")) {
             entity = this.getEntity(entityName, entityModel.getUuid());
@@ -189,7 +196,7 @@ public class DbSessionImpl implements DbSession {
             entity = this.newEntity(entityName);
         }
 
-        return this.save(entity.fromModel(entityModel)).looksLike((Class<M>) entityModel.getClass());
+        return entity;
     }
 
     @Override

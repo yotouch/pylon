@@ -17,6 +17,8 @@ public interface DbSession {
 
     <M extends EntityModel> M save(M entityModel, String entityName);
 
+    <M extends EntityModel> Entity getEntityFromModel(M entityModel, String entityName);
+
     Entity getEntity(String entityName, String uuid);
     
     Entity getEntity(MetaEntity me, String uuid);
