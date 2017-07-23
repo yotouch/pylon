@@ -305,7 +305,7 @@ public class EntityImpl implements Entity {
     public <T extends EntityModel> T looksLike(Class<T> clazz) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        return mapper.convertValue(asMap(), clazz);
+        return mapper.convertValue(valueMap(), clazz);
     }
 
     @Override
