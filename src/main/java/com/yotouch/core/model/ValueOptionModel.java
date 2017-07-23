@@ -11,6 +11,7 @@ public class ValueOptionModel extends EntityModel {
     private String          value;
     private String          pinyin;
     private boolean         checked;
+    private boolean         deleted;
     private Integer         weight;
     private MetaEntityModel metaEntity;
     private MetaFieldModel  metaField;
@@ -69,5 +70,13 @@ public class ValueOptionModel extends EntityModel {
 
     public void setMetaField(MetaFieldModel metaField) {
         this.metaField = metaField;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

@@ -135,6 +135,10 @@ entities:
       checked:
         dataType: BOOL
         displayName: 是否默认被选中
+      deleted:
+        dataType: BOOL
+        displayName: 是否被删除
+        defaultValue: false
       metaField:
         fieldType: SINGLE_REFERENCE
         targetMetaEntity: metaField
