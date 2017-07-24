@@ -56,6 +56,7 @@ public interface Entity {
 
     Map<String, Object> asMap();
 
+    @Deprecated
     static Map<String, Object> asMap(DbSession dbSession, Entity entity){
         if (entity == null){
             return null;
@@ -74,6 +75,7 @@ public interface Entity {
 
     <T extends EntityModel> T looksLike(Class<T> clazz);
 
+    @Deprecated
     static  <T extends EntityModel> T looksLike(DbSession dbSession, Entity entity, Class<T> clazz) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);

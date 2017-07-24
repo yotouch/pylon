@@ -39,8 +39,7 @@ public class EntityDaoImpl<M extends EntityModel> implements EntityDao<M> {
 
     @Override
     public M getByUuid(DbSession dbSession, String uuid) {
-        Entity entity = dbSession.getEntity(entityName, uuid);
-        return entity == null ? null : Entity.looksLike(dbSession, entity, clazz);
+        return dbSession.getEntity(entityName, uuid, clazz);
     }
 
     @Override

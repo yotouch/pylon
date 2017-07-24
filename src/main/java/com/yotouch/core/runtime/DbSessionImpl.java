@@ -260,7 +260,7 @@ public class DbSessionImpl implements DbSession {
         if (entityList != null && !entityList.isEmpty()) {
             return entityList
                     .stream()
-                    .map(entity -> Entity.looksLike(this, entity, clazz))
+                    .map(entity -> entity.looksLike(clazz))
                     .collect(Collectors.toList());
         }
 
@@ -281,7 +281,7 @@ public class DbSessionImpl implements DbSession {
         if (entityList != null && !entityList.isEmpty()) {
             return entityList
                     .stream()
-                    .map(entity -> Entity.looksLike(this, entity, clazz))
+                    .map(entity -> entity.looksLike(clazz))
                     .collect(Collectors.toList());
         }
 
@@ -308,7 +308,7 @@ public class DbSessionImpl implements DbSession {
         Entity entity = queryOneRawSql(entityName, where, args);
 
         if (entity != null) {
-            return Entity.looksLike(this, entity, clazz);
+            return entity.looksLike(clazz);
         }
 
         return null;
