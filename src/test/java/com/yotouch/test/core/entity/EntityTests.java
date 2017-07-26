@@ -395,6 +395,7 @@ public class EntityTests {
 
         MetaField<?> dataType = e.getMetaEntity().getMetaField("dataType");
         ValueOption stringOption = dataType.getValueOption("STRING");
+        assertFalse(stringOption.isDeleted());
 
         assertEquals(10, dataType.getValueOptions().size(), 0);
         assertEquals("STRING", stringOption.getDisplayName());

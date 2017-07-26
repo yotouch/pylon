@@ -367,7 +367,7 @@ public class EntityManagerImpl implements EntityManager {
         if (options != null && !options.isEmpty()) {
             int weight = mfi.getValueOptions().size();
             for (String o : options) {
-                mfi.addValueOption(ValueOption.build(mfi, o, weight++, false));
+                mfi.addValueOption(ValueOption.build(mfi, o, weight++, false, false));
             }
         }
     }
@@ -400,7 +400,7 @@ public class EntityManagerImpl implements EntityManager {
         if (this.systemValueOptions.containsKey(mf.getName())) { //这个mf有systemValueOptions
             int weight = mf.getValueOptions().size();
             for (String displayName : this.systemValueOptions.get(mf.getName())) {
-                mf.addValueOption(ValueOption.build(mf, displayName, weight++, false));
+                mf.addValueOption(ValueOption.build(mf, displayName, weight++, false, false));
             }
         }
     }
@@ -541,10 +541,13 @@ public class EntityManagerImpl implements EntityManager {
 
                 MetaEntityImpl mfMe = (MetaEntityImpl) this.getMetaEntity(meUuid);
                 if (mfMe != null) {
-                    if (mfMe.getMetaField(mfi.getName()) == null) {
+                    MetaField<?> mfMeMetaField = mfMe.getMetaField(mfi.getName());
+                    if (mfMeMetaField == null) {
                         mfMe.addField(mfi);
                         mfi.setMetaEntity(mfMe);
                         loadDbValueOptions(mfi);
+                    } else {
+                        loadDbValueOptions(mfMeMetaField);
                     }
                 }
             }
@@ -559,10 +562,13 @@ public class EntityManagerImpl implements EntityManager {
             List<Map<String, Object>> valueOptions = dbStore.fetchList(valueOption, "metaFieldUuid = ?", new Object[]{metaField.getUuid()});
             if (valueOptions != null && !valueOptions.isEmpty()) {
                 for (Map<String, Object> row : valueOptions) {
+                    if ("1".equals(row.get("deleted"))) {
+                        continue;
+                    }
                     logger.info("Processing ValueOption " + row.get("displayName") + " for mf " + metaField.getUuid());
-                    Integer weight = Integer.valueOf((String) row.get("weight"));
-                    Integer checked = Integer.valueOf((String) row.get("checked"));
-                    metaField.addValueOption(ValueOption.build(metaField, (String) row.get("displayName"), weight, 1 == checked));
+                    Integer weight = row.get("weight") == null ? null : Integer.valueOf((String) row.get("weight"));
+                    Integer checked = row.get("checked") == null ? 0 : Integer.valueOf((String) row.get("checked"));
+                    metaField.addValueOption(ValueOption.build(metaField, (String) row.get("displayName"), weight, 1 == checked, false));
                 }
             }
         } catch (BadSqlGrammarException e) {
