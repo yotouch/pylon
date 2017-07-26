@@ -72,7 +72,7 @@ public class ValueOptionModel extends EntityModel {
         this.metaField = metaField;
     }
 
-    public Boolean isDeleted() {
+    public Boolean getDeleted() {
         return deleted;
     }
 
