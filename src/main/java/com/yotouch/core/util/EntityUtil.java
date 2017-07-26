@@ -7,7 +7,7 @@ import com.yotouch.core.runtime.DbSession;
 import java.util.List;
 
 public class EntityUtil {
-    public static List<Entity> listChild(DbSession dbSession, String childEntityName, String childSrFieldName, String fatherUuid) {
+    public static List<Entity> brList(DbSession dbSession, String childEntityName, String childSrFieldName, String fatherUuid) {
         return dbSession.queryRawSql(
                 childEntityName,
                 childSrFieldName + "Uuid = ? ORDER BY createdAt DESC",
@@ -15,7 +15,7 @@ public class EntityUtil {
         );
     }
 
-    public static <C extends EntityModel> List<C> listChild(DbSession dbSession, String childEntityName, String childSrFieldName, String fatherUuid, Class<C> childClass) {
+    public static <C extends EntityModel> List<C> brList(DbSession dbSession, String childEntityName, String childSrFieldName, String fatherUuid, Class<C> childClass) {
         return dbSession.queryRawSql(
                 childEntityName,
                 childSrFieldName + "Uuid = ? ORDER BY createdAt DESC",
