@@ -5,6 +5,7 @@ import java.util.List;
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.entity.MetaEntity;
 import com.yotouch.core.entity.query.Query;
+import com.yotouch.core.helper.PaginationHelper;
 import com.yotouch.core.model.EntityModel;
 
 public interface DbSession {
@@ -26,6 +27,8 @@ public interface DbSession {
     <M extends EntityModel> M getEntity(String entityName, String uuid, Class<M> clazz);
 
     List<Entity> queryRawSql(String entityName, String where, Object[] args);
+
+    PaginationHelper<Entity> queryRawSql(String entityName, String where, Object[] args, PaginationHelper<Entity> paginationHelper);
 
     <M extends EntityModel> List<M> queryRawSql(String entityName, String where, Object[] args, Class<M> clazz);
 

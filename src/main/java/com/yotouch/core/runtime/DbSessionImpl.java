@@ -5,7 +5,10 @@ import java.util.stream.Collectors;
 
 import com.google.common.base.Joiner;
 import com.yotouch.core.entity.query.Query;
+import com.yotouch.core.entity.query.QueryField;
+import com.yotouch.core.entity.query.ff.CountField;
 import com.yotouch.core.exception.DbSessionException;
+import com.yotouch.core.helper.PaginationHelper;
 import com.yotouch.core.model.EntityModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +28,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+
+import static com.yotouch.core.Consts.itemPerPage;
 
 @Component
 @CacheConfig(cacheNames = "Entity")
@@ -251,6 +256,24 @@ public class DbSessionImpl implements DbSession {
     public List<Entity> queryRawSql(String entityName, String where, Object[] args) {
         MetaEntity me = entityMgr.getMetaEntity(entityName);
         return this.dbStore.querySql(me, where, args, new EntityRowMapper(this, me, isMrLazy()));
+    }
+
+    @Override
+    public PaginationHelper<Entity> queryRawSql(String entityName, String where, Object[] args, PaginationHelper<Entity> paginationHelper) {
+        CountField countField = new CountField();
+        Query query = new Query();
+        query.addField(countField);
+        query.rawSql(where, args);
+        Entity entity = queryOne(entityName, query);
+        int totalRow = entity.v(countField.getName()) == null ? 0 : entity.v(countField.getName());
+
+        paginationHelper.setTotalRows(totalRow);
+        int currentPage = paginationHelper.getCurrentPage();
+        int offset = (currentPage - 1) * paginationHelper.getItemPerPage();
+
+        paginationHelper.setItems(queryRawSql(entityName, where + " LIMIT " + offset + ", " + paginationHelper.getItemPerPage(), args));
+
+        return paginationHelper;
     }
 
     @Override
