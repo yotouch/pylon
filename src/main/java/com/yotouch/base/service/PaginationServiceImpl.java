@@ -44,6 +44,7 @@ public class PaginationServiceImpl implements PaginationService {
 
     public Map<String, Integer> getInitPageInfo(int currentPage, int total, int itemPerPage) {
         int totalPage = (int) Math.ceil(total/(itemPerPage + 0.0));
+        totalPage = totalPage==0?1:totalPage;
         if (currentPage < 1){
             currentPage = 1;
         }
@@ -69,6 +70,7 @@ public class PaginationServiceImpl implements PaginationService {
         Map<String, Object> pageInfoResult = new HashMap<>();
 
         int totalPage = (int) Math.ceil(total/(itemPerPage + 0.0));
+        totalPage = totalPage==0?1:totalPage;
         if (currentPage < 1){
             currentPage = 1;
         }
