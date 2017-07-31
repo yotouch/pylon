@@ -9,14 +9,14 @@ import org.springframework.stereotype.Component;
 public class MetaFieldModel extends EntityModel {
     private String          displayName;
     private String          name;
-    private boolean         required;
+    private Boolean         required;
     private String          defaultValue;
     private String          dataType;
     private String          fieldType;
     private MetaEntityModel targetMetaEntity;
     private Integer         weight;
-    private boolean         visible;
-    private boolean         deleted;
+    private Boolean         visible;
+    private Boolean         deleted;
     private MetaEntityModel metaEntity;
 
     public String getDisplayName() {
@@ -35,11 +35,11 @@ public class MetaFieldModel extends EntityModel {
         this.name = name;
     }
 
-    public boolean isRequired() {
+    public Boolean getRequired() {
         return required;
     }
 
-    public void setRequired(boolean required) {
+    public void setRequired(Boolean required) {
         this.required = required;
     }
 
@@ -59,22 +59,6 @@ public class MetaFieldModel extends EntityModel {
         this.dataType = dataType;
     }
 
-    public Integer getWeight() {
-        return weight;
-    }
-
-    public void setWeight(Integer weight) {
-        this.weight = weight;
-    }
-
-    public MetaEntityModel getMetaEntity() {
-        return metaEntity;
-    }
-
-    public void setMetaEntity(MetaEntityModel metaEntity) {
-        this.metaEntity = metaEntity;
-    }
-
     public String getFieldType() {
         return fieldType;
     }
@@ -91,19 +75,35 @@ public class MetaFieldModel extends EntityModel {
         this.targetMetaEntity = targetMetaEntity;
     }
 
-    public boolean isVisible() {
+    public Integer getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Integer weight) {
+        this.weight = weight;
+    }
+
+    public Boolean getVisible() {
         return visible;
     }
 
-    public void setVisible(boolean visible) {
+    public void setVisible(Boolean visible) {
         this.visible = visible;
     }
 
-    public boolean isDeleted() {
+    public Boolean getDeleted() {
         return deleted;
     }
 
-    public void setDeleted(boolean deleted) {
+    public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public MetaEntityModel getMetaEntity() {
+        return metaEntity;
+    }
+
+    public void setMetaEntity(MetaEntityModel metaEntity) {
+        this.metaEntity = metaEntity;
     }
 }

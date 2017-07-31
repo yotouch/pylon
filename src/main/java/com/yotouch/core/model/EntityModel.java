@@ -11,7 +11,6 @@ import java.util.Calendar;
  * Created by king on 3/29/17.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(JsonInclude.Include.NON_DEFAULT)
 @Component
 public class EntityModel {
     private String uuid;
@@ -19,7 +18,7 @@ public class EntityModel {
     private Calendar createdAt;
     private Calendar updatedAt;
     private String updaterUuid;
-    private int status = Consts.STATUS_NORMAL;
+    private Integer status;
     private String company;
 
     public String getCompany() {
@@ -70,11 +69,11 @@ public class EntityModel {
         this.updaterUuid = updaterUuid;
     }
 
-    public int getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 }

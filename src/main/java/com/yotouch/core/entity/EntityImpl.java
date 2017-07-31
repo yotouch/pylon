@@ -304,8 +304,8 @@ public class EntityImpl implements Entity {
     @Override
     public <T extends EntityModel> T looksLike(Class<T> clazz) {
         ObjectMapper mapper = new ObjectMapper();
-//        mapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
-        return mapper.convertValue(asMap(), clazz);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        return mapper.convertValue(valueMap(), clazz);
     }
 
     @Override
@@ -340,7 +340,7 @@ public class EntityImpl implements Entity {
 
     private <T extends EntityModel> Map<String, Object> modelToMap(T entityModel){
         ObjectMapper mapper = new ObjectMapper();
-//        mapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         return mapper.convertValue(entityModel, new TypeReference<Map<String, Object>>() {});
     }
 

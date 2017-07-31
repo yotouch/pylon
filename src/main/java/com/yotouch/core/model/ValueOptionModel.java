@@ -10,8 +10,8 @@ public class ValueOptionModel extends EntityModel {
     private String          displayName;
     private String          value;
     private String          pinyin;
-    private boolean         checked;
-    private boolean         deleted;
+    private Boolean         checked;
+    private Boolean         deleted;
     private Integer         weight;
     private MetaEntityModel metaEntity;
     private MetaFieldModel  metaField;
@@ -40,11 +40,11 @@ public class ValueOptionModel extends EntityModel {
         this.pinyin = pinyin;
     }
 
-    public boolean isChecked() {
+    public Boolean getChecked() {
         return checked;
     }
 
-    public void setChecked(boolean checked) {
+    public void setChecked(Boolean checked) {
         this.checked = checked;
     }
 
@@ -72,11 +72,11 @@ public class ValueOptionModel extends EntityModel {
         this.metaField = metaField;
     }
 
-    public boolean isDeleted() {
+    public Boolean getDeleted() {
         return deleted;
     }
 
-    public void setDeleted(boolean deleted) {
+    public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
     }
 }

@@ -5,13 +5,14 @@ package com.yotouch.core.dao;
  */
 
 import com.yotouch.core.model.EntityModel;
+import com.yotouch.core.runtime.DbSession;
 
 import java.util.List;
 
 public interface EntityDao<M extends EntityModel> {
-    List<M> listAll();
-    M getByUuid(String uuid);
-    void deleteByUuid(String uuid);
-    M save(M model);
-    M update(M model);
+    List<M> listAll(DbSession dbSession);
+    M getByUuid(DbSession dbSession, String uuid);
+    void deleteByUuid(DbSession dbSession, String uuid);
+    M save(DbSession dbSession, M model);
+    M update(DbSession dbSession, M model);
 }

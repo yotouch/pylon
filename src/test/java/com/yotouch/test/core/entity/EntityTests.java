@@ -341,6 +341,7 @@ public class EntityTests {
 
         user = ds.save(user, "user");
         assertNotNull(user.getAge());
+        assertEquals(1000, user.getStatus(), 0);
 
         MetaFieldModel metaFieldModel = new MetaFieldModel();
         assertNull(metaFieldModel.getWeight());
