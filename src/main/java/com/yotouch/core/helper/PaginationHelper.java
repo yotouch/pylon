@@ -10,7 +10,7 @@ public class PaginationHelper<T> {
     private int     currentPage;
     private int     totalRows;
     private int     itemPerPage = Consts.itemPerPage;
-    private List<T> items;
+    private List<T> itemList;
 
     public PaginationHelper(int currentPage) {
         this.currentPage = currentPage < 1 ? 1 : currentPage;
@@ -72,11 +72,11 @@ public class PaginationHelper<T> {
         this.itemPerPage = itemPerPage < 1 ? Consts.itemPerPage : itemPerPage;
     }
 
-    public List<T> getItems() {
-        return items;
+    public List<T> getItemList() {
+        return itemList;
     }
 
-    public void setItems(List<T> items) {
-        this.items = items;
+    public void setItemList(List<T> itemList) {
+        this.itemList = itemList;
     }
 }

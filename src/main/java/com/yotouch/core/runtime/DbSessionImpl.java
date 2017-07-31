@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import com.google.common.base.Joiner;
 import com.yotouch.core.entity.query.Query;
-import com.yotouch.core.entity.query.QueryField;
 import com.yotouch.core.entity.query.ff.CountField;
 import com.yotouch.core.exception.DbSessionException;
 import com.yotouch.core.helper.PaginationHelper;
@@ -28,8 +27,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-
-import static com.yotouch.core.Consts.itemPerPage;
 
 @Component
 @CacheConfig(cacheNames = "Entity")
@@ -271,7 +268,7 @@ public class DbSessionImpl implements DbSession {
         int currentPage = paginationHelper.getCurrentPage();
         int offset = (currentPage - 1) * paginationHelper.getItemPerPage();
 
-        paginationHelper.setItems(queryRawSql(entityName, where + " LIMIT " + offset + ", " + paginationHelper.getItemPerPage(), args));
+        paginationHelper.setItemList(queryRawSql(entityName, where + " LIMIT " + offset + ", " + paginationHelper.getItemPerPage(), args));
 
         return paginationHelper;
     }
