@@ -10,7 +10,6 @@ public class PaginationHelper<T> {
     private int     currentPage;
     private int     totalRows;
     private int     itemPerPage = Consts.itemPerPage;
-    private String  paginationUrl;
     private List<T> items;
 
     public PaginationHelper(int currentPage) {
@@ -71,14 +70,6 @@ public class PaginationHelper<T> {
 
     public void setItemPerPage(int itemPerPage) {
         this.itemPerPage = itemPerPage < 1 ? Consts.itemPerPage : itemPerPage;
-    }
-
-    public String getPaginationUrl() {
-        return paginationUrl;
-    }
-
-    public void setPaginationUrl(String paginationUrl) {
-        this.paginationUrl = paginationUrl;
     }
 
     public List<T> getItems() {
