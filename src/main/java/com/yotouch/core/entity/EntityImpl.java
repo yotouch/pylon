@@ -5,7 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yotouch.core.Consts;
+import com.yotouch.core.model.EntityModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -26,6 +30,7 @@ import com.yotouch.core.exception.YotouchException;
 import com.yotouch.core.runtime.DbSession;
 
 
+
 public class EntityImpl implements Entity {
 
     static final private Logger logger = LoggerFactory.getLogger(EntityImpl.class);
@@ -39,6 +44,11 @@ public class EntityImpl implements Entity {
     public EntityImpl(MetaEntity me) {
         this.me = me;
         this.valueMap = new HashMap<>();
+
+        me.getMetaFields().stream()
+                .filter(mf -> mf.getDefaultFieldValue() != null && !StringUtils.isEmpty(mf.getDefaultFieldValue().getValue())) //由于StringFieldValue默认为"" 所以用isEmpty
+                .forEach(mf -> this.valueMap.put(mf.getName(), mf.getDefaultFieldValue()));
+
         this.srMap = new HashMap<>();
     }
 
@@ -292,6 +302,49 @@ public class EntityImpl implements Entity {
     }
 
     @Override
+    public <T extends EntityModel> T looksLike(Class<T> clazz) {
+        ObjectMapper mapper = new ObjectMapper();
+//        mapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
+        return mapper.convertValue(asMap(), clazz);
+    }
+
+    @Override
+    public <T extends EntityModel> Entity fromModel(T entityModel) {
+        return fromMap(modelToMap(entityModel));
+    }
+
+    @Override
+    public Entity fromMap(Map<String, Object> map){
+        if (map == null) return this;
+
+        long changeValueCounts = this.getMetaEntity().getMetaFields().stream()
+                .filter(
+                        mf -> !"createdAt".equals(mf.getName())
+                                && !"updatedAt".equals(mf.getName())
+                                && map.containsKey(mf.getName())
+                                && map.get(mf.getName()) != null
+                                && (mf.isSingleReference() || Consts.META_FIELD_TYPE_DATA_FIELD.equals(mf.getFieldType()))
+                )
+                .map(mf -> {
+                    Object tempV = map.get(mf.getName());
+                    if (mf.isSingleReference() && tempV instanceof Map && !StringUtils.isEmpty(((Map) tempV).get("uuid"))) {
+                        setValue(mf.getName(), ((Map) tempV).get("uuid"));
+                    } else {
+                        setValue(mf.getName(), tempV);
+                    }
+                    return mf;
+                }).count();
+
+        return this;
+    }
+
+    private <T extends EntityModel> Map<String, Object> modelToMap(T entityModel){
+        ObjectMapper mapper = new ObjectMapper();
+//        mapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
+        return mapper.convertValue(entityModel, new TypeReference<Map<String, Object>>() {});
+    }
+
+    @Override
     public Entity getSingleReference(DbSession dbSession, String fieldName) {
         
         MetaField<?> mf = this.me.getMetaField(fieldName);
@@ -324,7 +377,10 @@ public class EntityImpl implements Entity {
 
     @Override
     public boolean isNew() {
-        return StringUtils.isEmpty(this.getUuid());
+        String uuid = this.getUuid();
+        // NOTE: yinwm -- It's a workaround strategy for outside give uuid, start with minus sign seems a new entity 
+        // when save to storage, DBSession should check and remove prefix minus sign, change update to insert
+        return StringUtils.isEmpty(this.getUuid()) || uuid.startsWith("-");
     }
 
     @Override

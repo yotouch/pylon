@@ -110,6 +110,7 @@ public interface Consts {
     int REFUND_TYPE_ITEMS  = 5520;
     int REFUND_TYPE_AMOUNT = 5530;
 
+    int YSE                                 = 1;
+    int NO                                  = 0;
 
-    
 }

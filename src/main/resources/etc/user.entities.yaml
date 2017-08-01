@@ -34,7 +34,15 @@ entities:
         attr:
             fieldType: SINGLE_REFERENCE
             targetMetaEntity: userAttr
-        
+        status:
+            dataType: INT
+            displayName: 状态
+            required: 1
+            valueOption:
+              - 正常
+              - 删除
+              - 禁用
+
     passport:
         number:
             dataType: STRING
@@ -54,6 +62,7 @@ entities:
     party:
         name:
             dataType: STRING
+            defaultValue: 默认party
 
     item:
         name:

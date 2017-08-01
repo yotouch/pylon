@@ -3,6 +3,7 @@ package com.yotouch.base.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yotouch.base.util.WebUtil;
 import com.yotouch.core.Consts;
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.runtime.DbSession;
@@ -36,6 +37,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RoleService roleService;
 
+    @Autowired
+    private WebUtil webUtil ;
+
     @Override
     public String genPassword(Entity user, String password) {
         //// TODO: 16/5/12 从 application.yaml 中获取 
@@ -43,7 +47,7 @@ public class UserServiceImpl implements UserService {
         
         logger.info("Instance name " + instanceName);
         String pwdStr = "yotouch:" + instanceName + ":" + user.getUuid() + ":" + password;
-        logger.info("Gen plain password " + pwdStr);
+        //logger.info("Gen plain password " + pwdStr);
         String md5Pwd = DigestUtils.md5DigestAsHex(pwdStr.getBytes());
         return md5Pwd;
     }
@@ -149,7 +153,7 @@ public class UserServiceImpl implements UserService {
         String userToken = this.genLoginToken(user);
         logger.info("userToken: " + userToken);
         Cookie c = new Cookie("userToken", userToken);
-        c.setPath("/");
+        c.setPath(webUtil.getDefaultCookiePath()) ;
         response.addCookie(c);
     }
 
@@ -191,7 +195,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<Entity> getUserRoleList(DbSession dbSession, Entity user) {
         List<Entity> roles = roleService.getUserRoles(user);
-        return roles.stream().map(ur->ur.sr(dbSession, "role")).collect(Collectors.toList());
+        List<Entity> roleList = new ArrayList<>();
+        for(Entity e:roles){
+            roleList.add(dbSession.getEntity("role",e.v("role")));
+        }
+        return roleList;
+        //return roles.stream().map(ur->ur.sr(dbSession, "role")).collect(Collectors.toList());
     }
 
     @Override

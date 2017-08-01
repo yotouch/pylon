@@ -3,6 +3,8 @@ package com.yotouch.base.bizentity;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +17,8 @@ import com.yotouch.core.workflow.WorkflowManagerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Service;
 import org.yaml.snakeyaml.Yaml;
 
@@ -35,13 +39,13 @@ public class BizEntityManagerImpl implements BizEntityManager {
         
     @Autowired
     private EntityManager entityMgr;
-    
+
     @Autowired
     private WorkflowManager wfMgr;
-    
+
     @Autowired
     private Configure config;
-    
+
     @Autowired
     private DbSession dbSession;
     
@@ -59,17 +63,29 @@ public class BizEntityManagerImpl implements BizEntityManager {
 
     @PostConstruct
     public void init() {
-        
+
         this.entityNamedMap = new HashMap<>();
         this.wfNamedMap = new HashMap<>();
 
-        File ytHome = config.getRuntimeHome();
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        try {
+            Resource[] resources = resolver.getResources("classpath*:/etc/bizEntities.yaml");
+            for (Resource resource : resources) {
+                InputStream is = resource.getInputStream();
+                parseBizEntityInputStream(is);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        for (File ah: ytHome.listFiles()) {
-            if (ah.isDirectory()) {
-                if (ah.getName().startsWith("addon-")
-                        || ah.getName().startsWith("app-")) {
-                    parseBizEntityConfigFile(new File(ah, "etc/bizEntities.yaml"));
+        File ytHome = config.getRuntimeHome();
+        if (ytHome != null) {
+            for (File ah : ytHome.listFiles()) {
+                if (ah.isDirectory()) {
+                    if (ah.getName().startsWith("addon-")
+                            || ah.getName().startsWith("app-")) {
+                        parseBizEntityConfigFile(new File(ah, "etc/bizEntities.yaml"));
+                    }
                 }
             }
         }
@@ -78,10 +94,10 @@ public class BizEntityManagerImpl implements BizEntityManager {
         if (pylonTest != null && pylonTest.toLowerCase().equals("true")) {
             parseBizEntityConfigFile(new File(ytHome, "etc/bizEntities.yaml"));
         }
-        
+
         loadDbBizEntity();
 
-        ((EntityManagerImpl)this.entityMgr).rebuildDb();
+        ((EntityManagerImpl) this.entityMgr).rebuildDb();
 
     }
 
@@ -106,42 +122,47 @@ public class BizEntityManagerImpl implements BizEntityManager {
             this.wfNamedMap.put(wf.getName(), bme);
         }
     }
+    
+    private void parseBizEntityInputStream(InputStream is) {
+        Yaml yaml = new Yaml();
+        @SuppressWarnings("unchecked")
+        Map<String, Object> m = (Map<String, Object>) yaml.load(is);
+
+        @SuppressWarnings("unchecked")
+        List<Map<String, String>> bizEntities =  (List<Map<String, String>>) m.get("bizEntities");
+
+        if (bizEntities == null) {
+            return;
+        }
+
+
+        for (Map<String, String> beMap: bizEntities) {
+            logger.info("BeMap " + beMap);
+
+            String workflowName = beMap.get("workflow");
+            String entityName = beMap.get("entity");
+
+            Workflow wf = wfMgr.getWorkflow(workflowName);
+            MetaEntity me = entityMgr.getMetaEntity(entityName);
+
+            fillWfFields(me);
+
+            BizMetaEntityImpl bme = new BizMetaEntityImpl(wf, me);
+            this.entityNamedMap.put(me.getName(), bme);
+            this.wfNamedMap.put(wf.getName(), bme);
+        }
+
+        //((EntityManagerImpl)this.entityMgr).rebuildDb();
+    }
 
     private void parseBizEntityConfigFile(File bizEntitiesFile) {
         logger.info("Parse BizEntity " + bizEntitiesFile);
 
         if (bizEntitiesFile.exists()) {
-            Yaml yaml = new Yaml();
+            
             try {
-                @SuppressWarnings("unchecked")
-                Map<String, Object> m = (Map<String, Object>) yaml.load(new FileInputStream(bizEntitiesFile));
-
-                @SuppressWarnings("unchecked")
-                List<Map<String, String>> bizEntities =  (List<Map<String, String>>) m.get("bizEntities");
-
-                if (bizEntities == null) {
-                    return;
-                }
-
-
-                for (Map<String, String> beMap: bizEntities) {
-                    logger.info("BeMap " + beMap);
-
-                    String workflowName = beMap.get("workflow");
-                    String entityName = beMap.get("entity");
-
-                    Workflow wf = wfMgr.getWorkflow(workflowName);
-                    MetaEntity me = entityMgr.getMetaEntity(entityName);
-
-                    fillWfFields(me);
-
-                    BizMetaEntityImpl bme = new BizMetaEntityImpl(wf, me);
-                    this.entityNamedMap.put(me.getName(), bme);
-                    this.wfNamedMap.put(wf.getName(), bme);
-                }
-
-                //((EntityManagerImpl)this.entityMgr).rebuildDb();
-
+                InputStream is = new FileInputStream(bizEntitiesFile);
+                parseBizEntityInputStream(is);
             } catch (FileNotFoundException e) {
                 logger.error("Load system field error", e);
                 return;

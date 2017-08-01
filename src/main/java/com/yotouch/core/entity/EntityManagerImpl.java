@@ -1,24 +1,31 @@
 package com.yotouch.core.entity;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.*;
-
-import javax.annotation.PostConstruct;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.yaml.snakeyaml.Yaml;
-
 import com.yotouch.core.Consts;
 import com.yotouch.core.config.Configure;
 import com.yotouch.core.entity.mf.MultiReferenceMetaFieldImpl;
 import com.yotouch.core.exception.NoSuchMetaEntityException;
 import com.yotouch.core.store.db.DbStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.jdbc.BadSqlGrammarException;
+import org.springframework.stereotype.Service;
+import org.yaml.snakeyaml.Yaml;
+
+import javax.annotation.PostConstruct;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class EntityManagerImpl implements EntityManager {
@@ -38,10 +45,12 @@ public class EntityManagerImpl implements EntityManager {
     private Map<String, MetaEntityImpl> mfEntities;
 
     private Map<String, MetaFieldImpl<?>> systemFields;
+    private Map<String, List<String>>     systemValueOptions;
 
     public EntityManagerImpl() {
         this.userEntities = new HashMap<>();
         this.mfEntities = new HashMap<>();
+        this.systemValueOptions = new HashMap<>();
     }
 
     private boolean isLowerCase() {
@@ -160,22 +169,33 @@ public class EntityManagerImpl implements EntityManager {
     }
 
     private void loadUserEntities() {
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        try {
+            Resource[] resources = resolver.getResources("classpath*:/etc/**.entities.yaml");
+            for (Resource resource : resources) {
+                logger.info("Load user entity from classpath : " + resource.getFilename());
+                InputStream is = resource.getInputStream();
+                loadMetaEntitiesFromInputStream(is, "usr_");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         File ytHome = config.getRuntimeHome();
-
-        for (File ah: ytHome.listFiles()) {
-            if (ah.isDirectory()) {
-                if (ah.getName().startsWith("addon-")
-                        || ah.getName().startsWith("app-")) {
-
-                    scanEtcUserEntities(ah);
+        if (ytHome != null) {
+            for (File ah : ytHome.listFiles()) {
+                if (ah.isDirectory()) {
+                    if (ah.getName().startsWith("addon-")
+                            || ah.getName().startsWith("app-")) {
+                        scanEtcUserEntities(ah);
+                    }
                 }
             }
-        }
 
-        if (ytHome.getName().equals("pylon")) {
-            scanEtcUserEntities(ytHome);
+            if (ytHome.getName().equals("pylon")) {
+                scanEtcUserEntities(ytHome);
+            }
         }
-
     }
 
     private void scanEtcUserEntities(File ah) {
@@ -194,29 +214,40 @@ public class EntityManagerImpl implements EntityManager {
     }
 
     private void loadSystemMetaEntities() {
+        // load file from classpath
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        try {
+            Resource[] resources = resolver.getResources("classpath*:/etc/systemEntities.yaml");
+            for (Resource resource : resources) {
+                InputStream is = resource.getInputStream();
+                loadMetaEntitiesFromInputStream(is, "");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         File ytHome = config.getRuntimeHome();
+        if (ytHome != null) {
+            File pylonHome = null;
+            File appHome = null;
+            for (File ah : ytHome.listFiles()) {
+                if (ah.getName().equals("pylon")) {
+                    pylonHome = ah;
+                }
 
-        File pylonHome = null;
-        File appHome = null;
-        for (File ah: ytHome.listFiles()) {
-            if (ah.getName().equals("pylon")) {
-                pylonHome = ah;
+                if (ah.getName().startsWith("app-")) {
+                    appHome = ah;
+                }
             }
 
-            if (ah.getName().startsWith("app-")) {
-                appHome = ah;
+            logger.info("PYLON HOME " + pylonHome);
+            logger.info("APP   HOME " + appHome);
+
+            loadFileMetaEntities(new File(pylonHome, "etc/systemEntities.yaml"), "");
+            if (appHome != null) {
+                loadFileMetaEntities(new File(appHome, "etc/systemEntities.yaml"), "");
             }
         }
-
-        logger.info("PYLON HOME " + pylonHome);
-        logger.info("APP   HOME " + appHome);
-
-        loadFileMetaEntities(new File(pylonHome, "etc/systemEntities.yaml"), "");
-        if (appHome != null) {
-            loadFileMetaEntities(new File(appHome, "etc/systemEntities.yaml"), "");
-        }
-
-
     }
 
     private void loadFileMetaEntitiesFormat2(Map<String, Object> m, String defaultPrefix) {
@@ -252,7 +283,49 @@ public class EntityManagerImpl implements EntityManager {
 
             this.userEntities.put(mei.getName(), mei);
         }
+    }
+    
+    private void loadMetaEntitiesFromInputStream(InputStream is, String prefix) {
+        Yaml yaml = new Yaml();
 
+        @SuppressWarnings("unchecked")
+        Map<String, Object> m = (Map<String, Object>) yaml.load(is);
+        if (m == null) {
+            return;
+        }
+
+        if (m.containsKey("format")) {
+            int format = (int) m.get("format");
+            if (format == 2) {
+                loadFileMetaEntitiesFormat2(m, prefix);
+                return ;
+            }
+        }
+
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> entities = (Map<String, Object>) m.get("entities");
+
+        for (String en : entities.keySet()) {
+            String uuid = "uuid-sys-" + en;
+
+            MetaEntityImpl mei = (MetaEntityImpl) this.userEntities.get(en);
+            if (mei == null) {
+                mei = new MetaEntityImpl(uuid, en, en, prefix, this.isLowerCase());
+            }
+
+            // parse files
+            @SuppressWarnings("unchecked")
+            Map<String, Object> fields = (Map<String, Object>) entities.get(en);
+
+            buildEntityFields(uuid, mei, fields);
+
+            appendSysFields(uuid, mei);
+
+            this.userEntities.put(mei.getName(), mei);
+            logger.warn("Build System metaEntity " + mei);
+            //logger.warn("Build System metaEntity fiels " + mei.getMetaFields());
+        }
     }
 
     private void loadFileMetaEntities(File file, String prefix) {
@@ -260,46 +333,10 @@ public class EntityManagerImpl implements EntityManager {
         logger.info("Load entities " + file + " WITH defaultPrefix " + prefix);
 
         if (file.exists()) {
-            Yaml yaml = new Yaml();
+            
             try {
-                @SuppressWarnings("unchecked")
-                Map<String, Object> m = (Map<String, Object>) yaml.load(new FileInputStream(file));
-                if (m == null) {
-                    return;
-                }
-
-                if (m.containsKey("format")) {
-                    int format = (int) m.get("format");
-                    if (format == 2) {
-                        loadFileMetaEntitiesFormat2(m, prefix);
-                        return ;
-                    }
-                }
-
-
-                @SuppressWarnings("unchecked")
-                Map<String, Object> entities = (Map<String, Object>) m.get("entities");
-
-                for (String en : entities.keySet()) {
-                    String uuid = "uuid-sys-" + en;
-
-                    MetaEntityImpl mei = (MetaEntityImpl) this.userEntities.get(en);
-                    if (mei == null) {
-                        mei = new MetaEntityImpl(uuid, en, en, prefix, this.isLowerCase());
-                    }
-
-                    // parse files
-                    @SuppressWarnings("unchecked")
-                    Map<String, Object> fields = (Map<String, Object>) entities.get(en);
-
-                    buildEntityFields(uuid, mei, fields);
-
-                    appendSysFields(uuid, mei);
-
-                    this.userEntities.put(mei.getName(), mei);
-                    logger.warn("Build System metaEntity " + mei);
-                    //logger.warn("Build System metaEntity fiels " + mei.getMetaFields());
-                }
+                InputStream is = new FileInputStream(file); 
+                loadMetaEntitiesFromInputStream(is, prefix);
 
             } catch (FileNotFoundException e) {
                 logger.error("Load system field error", e);
@@ -320,6 +357,18 @@ public class EntityManagerImpl implements EntityManager {
             MetaFieldImpl<?> mfi = MetaFieldImpl.build(this, fMap);
             mei.addField(mfi);
             mfi.setMetaEntity(mei);
+
+            buildFieldValueOptions(mfi, fMap);
+        }
+    }
+
+    private void buildFieldValueOptions(MetaField<?> mfi, Map<String, Object> fMap) {
+        List<String> options = (ArrayList<String>) fMap.get("valueOption");
+        if (options != null && !options.isEmpty()) {
+            int weight = mfi.getValueOptions().size();
+            for (String o : options) {
+                mfi.addValueOption(ValueOption.build(mfi, o, weight++, false, false));
+            }
         }
     }
 
@@ -329,6 +378,7 @@ public class EntityManagerImpl implements EntityManager {
             for (MetaField<?> mf : mei.getMetaFields()) {
                 if (sysFn.equalsIgnoreCase(mf.getName())) {
                     hasSysField = true;
+                    appendSysValueOptions(mf); //有这个metaField也append
                     break;
                 }
             }
@@ -342,6 +392,16 @@ public class EntityManagerImpl implements EntityManager {
 
             mei.addField(newF);
             newF.setMetaEntity(mei);
+            appendSysValueOptions(newF); //没有这个字段也要append
+        }
+    }
+
+    private void appendSysValueOptions(MetaField<?> mf) {
+        if (this.systemValueOptions.containsKey(mf.getName())) { //这个mf有systemValueOptions
+            int weight = mf.getValueOptions().size();
+            for (String displayName : this.systemValueOptions.get(mf.getName())) {
+                mf.addValueOption(ValueOption.build(mf, displayName, weight++, false, false));
+            }
         }
     }
 
@@ -349,27 +409,77 @@ public class EntityManagerImpl implements EntityManager {
 
         this.systemFields = new HashMap<>();
 
-        File ytHome = config.getRuntimeHome();
-
-        File pylonHome = null;
-        File appHome = null;
-        for (File ah: ytHome.listFiles()) {
-            if (ah.getName().equals("pylon")) {
-                pylonHome = ah;
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        try {
+            Resource[] resources = resolver.getResources("classpath*:/etc/systemFields.yaml");
+            for (Resource resource : resources) {
+                InputStream is = resource.getInputStream();
+                loadSysFieldsFromInputStream(is);
             }
-
-            if (ah.getName().startsWith("app-")) {
-                appHome = ah;
-            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        logger.info("PYLON HOME " + pylonHome);
-        logger.info("APP   HOME " + appHome);
+        File ytHome = config.getRuntimeHome();
+        if (ytHome != null) {
+            File pylonHome = null;
+            File appHome = null;
+            for (File ah : ytHome.listFiles()) {
+                if (ah.getName().equals("pylon")) {
+                    pylonHome = ah;
+                }
+
+                if (ah.getName().startsWith("app-")) {
+                    appHome = ah;
+                }
+            }
+
+            logger.info("PYLON HOME " + pylonHome);
+            logger.info("APP   HOME " + appHome);
 
 
-        loadSysFields(pylonHome);
-        loadSysFields(appHome);
+            loadSysFields(pylonHome);
+            loadSysFields(appHome);
+        }
 
+    }
+
+    private void loadSysFieldsFromInputStream(InputStream is) {
+        Yaml yaml = new Yaml();
+        @SuppressWarnings("unchecked")
+        Map<String, Object> m = (Map<String, Object>) yaml.load(is);
+        logger.info("Load system fields " + m);
+        @SuppressWarnings("unchecked")
+        Map<String, Object> fields = (Map<String, Object>) m.get("systemFields");
+
+        for (String fn : fields.keySet()) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> fMap = (Map<String, Object>) fields.get(fn);
+            fMap.put("name", fn);
+            fMap.put("uuid", "-");
+            fMap.put("type", "system");
+            MetaFieldImpl<?> mfi = MetaFieldImpl.build(this, fMap);
+
+            loadSysFieldValueOptions(mfi, fMap);
+
+            this.systemFields.put(fn, mfi);
+        }
+    }
+
+    private void loadSysFieldValueOptions(MetaField<?> metaField, Map<String, Object> fMap) {
+        List<String> options = (ArrayList<String>) fMap.get("valueOption");
+        if (options != null && !options.isEmpty()) {
+            List<String> loadedOptions = new ArrayList<>();
+            if (this.systemValueOptions.containsKey(metaField.getName())) {
+                loadedOptions = this.systemValueOptions.get(metaField.getName());
+            }
+            for (String o : options) {
+                if (!loadedOptions.contains(o)) {
+                    loadedOptions.add(o);
+                }
+            }
+            this.systemValueOptions.put(metaField.getName(), loadedOptions);
+        }
     }
 
     private void loadSysFields(File appHome) {
@@ -382,23 +492,10 @@ public class EntityManagerImpl implements EntityManager {
         logger.warn("Load system meta fields " + sysFieldFile + " exists " + sysFieldFile.exists());
 
         if (sysFieldFile.exists()) {
-            Yaml yaml = new Yaml();
+            
             try {
-                @SuppressWarnings("unchecked")
-                Map<String, Object> m = (Map<String, Object>) yaml.load(new FileInputStream(sysFieldFile));
-                logger.info("Load system fields " + m);
-                @SuppressWarnings("unchecked")
-                Map<String, Object> fields = (Map<String, Object>) m.get("systemFields");
-
-                for (String fn : fields.keySet()) {
-                    @SuppressWarnings("unchecked")
-                    Map<String, Object> fMap = (Map<String, Object>) fields.get(fn);
-                    fMap.put("name", fn);
-                    fMap.put("uuid", "-");
-                    fMap.put("type", "system");
-                    this.systemFields.put(fn, MetaFieldImpl.build(this, fMap));
-                }
-
+                InputStream is = new FileInputStream(sysFieldFile); 
+                loadSysFieldsFromInputStream(is);
                 //logger.warn("System fields " + this.systemFields);
             } catch (FileNotFoundException e) {
                 logger.error("Load system field error", e);
@@ -410,40 +507,73 @@ public class EntityManagerImpl implements EntityManager {
     private void loadDbMetaEntities() {
         logger.info("DbStore " + this.dbStore);
         MetaEntity me = this.getMetaEntity("metaEntity");
-        List<Map<String, Object>> rows = dbStore.fetchAll(me);
-        for (Map<String, Object> row : rows) {
-            logger.info("Processing MetaEntity " + row.get("name") + " with UUID " + row.get("uuid"));
+        try {
+            List<Map<String, Object>> rows = dbStore.fetchAll(me);
 
-            MetaEntityImpl mei = this.buildMetaEntity(row);
-            appendSysFields(mei.getUuid(), mei);
-            this.userEntities.put(mei.getName(), mei);
+            for (Map<String, Object> row : rows) {
+                logger.info("Processing MetaEntity " + row.get("name") + " with UUID " + row.get("uuid"));
 
-            logger.info("Finish build user MetaEntity " + mei);
+                MetaEntityImpl mei = this.buildMetaEntity(row);
+                appendSysFields(mei.getUuid(), mei);
+                this.userEntities.put(mei.getName(), mei);
+
+                logger.info("Finish build user MetaEntity " + mei);
+            }
+        } catch (BadSqlGrammarException e) {
+            logger.warn("No metaEntity table");
         }
+
     }
     
     private void loadDbMetaFields() {
         
         MetaEntity me = this.getMetaEntity("metaField");
-        
-        List<Map<String, Object>> rows = dbStore.fetchAll(me);
-        for (Map<String, Object> row: rows) {
-            logger.info("Processing MetaField " + row.get("name") + " with UUID " + row.get("uuid"));
-            
-            MetaFieldImpl<?> mfi = MetaFieldImpl.build(this, row);
-            
-            String meUuid = (String)row.get("metaEntityUuid");
-            logger.info("Processing MetaField " + mfi + " for me " + meUuid);
-            
-            MetaEntityImpl mfMe = (MetaEntityImpl) this.getMetaEntity(meUuid);
-            if (mfMe != null) {
-                if (mfMe.getMetaField(mfi.getName()) == null) {
-                    mfMe.addField(mfi);
-                    mfi.setMetaEntity(mfMe);
+
+        try {
+            List<Map<String, Object>> rows = dbStore.fetchAll(me);
+            for (Map<String, Object> row : rows) {
+                logger.info("Processing MetaField " + row.get("name") + " with UUID " + row.get("uuid"));
+
+                MetaFieldImpl<?> mfi = MetaFieldImpl.build(this, row);
+
+                String meUuid = (String) row.get("metaEntityUuid");
+                logger.info("Processing MetaField " + mfi + " for me " + meUuid);
+
+                MetaEntityImpl mfMe = (MetaEntityImpl) this.getMetaEntity(meUuid);
+                if (mfMe != null) {
+                    MetaField<?> mfMeMetaField = mfMe.getMetaField(mfi.getName());
+                    if (mfMeMetaField == null) {
+                        mfMe.addField(mfi);
+                        mfi.setMetaEntity(mfMe);
+                        loadDbValueOptions(mfi);
+                    } else {
+                        loadDbValueOptions(mfMeMetaField);
+                    }
                 }
-            }            
+            }
+        } catch (BadSqlGrammarException e) {
+            logger.warn("No metaField table");
         }
-                
+    }
+
+    private void loadDbValueOptions(MetaField<?> metaField) {
+        try {
+            MetaEntity valueOption = this.getMetaEntity("valueOption");
+            List<Map<String, Object>> valueOptions = dbStore.fetchList(valueOption, "metaFieldUuid = ?", new Object[]{metaField.getUuid()});
+            if (valueOptions != null && !valueOptions.isEmpty()) {
+                for (Map<String, Object> row : valueOptions) {
+                    if ("1".equals(row.get("deleted"))) {
+                        continue;
+                    }
+                    logger.info("Processing ValueOption " + row.get("displayName") + " for mf " + metaField.getUuid());
+                    Integer weight = row.get("weight") == null ? null : Integer.valueOf((String) row.get("weight"));
+                    Integer checked = row.get("checked") == null ? 0 : Integer.valueOf((String) row.get("checked"));
+                    metaField.addValueOption(ValueOption.build(metaField, (String) row.get("displayName"), weight, 1 == checked, false));
+                }
+            }
+        } catch (BadSqlGrammarException e) {
+            logger.warn("No valueOption table");
+        }
     }
 
     private MetaEntityImpl buildMetaEntity(Map<String, Object> row) {
@@ -466,9 +596,9 @@ public class EntityManagerImpl implements EntityManager {
         MetaEntityImpl mei = new MetaEntityImpl(meUuid, meName, displayName,"usr_", this.isLowerCase());
 
         for (Map<String, Object> fr : fieldRows) {
-            MetaFieldImpl<?> mf = MetaFieldImpl.build(this, fr);
-            mei.addField(mf);
-            mf.setMetaEntity(mei);
+            MetaFieldImpl<?> mfi = MetaFieldImpl.build(this, fr);
+            mei.addField(mfi);
+            mfi.setMetaEntity(mei);
         }
 
         return mei;

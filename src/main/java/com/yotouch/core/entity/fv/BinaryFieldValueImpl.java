@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.io.ByteStreams;
 
 import com.yotouch.core.entity.MetaField;
+import org.springframework.util.StringUtils;
 
 public class BinaryFieldValueImpl extends AbstractFieldValue<byte[]> implements FieldValue<byte[]> {
 
@@ -20,7 +21,7 @@ public class BinaryFieldValueImpl extends AbstractFieldValue<byte[]> implements 
 
     @Override
     protected byte[] parseValue(Object v) {
-        if (v == null) {
+        if (StringUtils.isEmpty(v)) {
             return new byte[0];
         } else if (v instanceof byte[]) {
             return (byte[]) v;

@@ -48,7 +48,7 @@ public class SystemInterceptor extends LoginInterceptor{
         if (StringUtils.isEmpty(bid)) {
             bid = UUID.randomUUID().toString();
             Cookie c = new Cookie("_bid_", bid);
-            c.setPath("/");
+            c.setPath(webUtil.getDefaultCookiePath());
             c.setMaxAge(Integer.MAX_VALUE);
             response.addCookie(c);
         }
