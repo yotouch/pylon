@@ -54,6 +54,8 @@ public interface DbSession {
 
     void setLoginUser(Entity loginUser);
 
+    void setCompany(Entity company);
+
     Entity increase(Entity entity, String field, int amount);
 
     Entity queryOneByField(String metaEntity, String fieldName, Object value);

@@ -23,3 +23,6 @@ systemFields:
             - 正常
             - 删除
             - 正常
+    company:
+        fieldType: SINGLE_REFERENCE
+        targetMetaEntity: company
