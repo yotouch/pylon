@@ -147,3 +147,8 @@ entities:
         fieldType: SINGLE_REFERENCE
         targetMetaEntity: metaEntity
         displayName: 对应的metaEntity
+
+    company:
+      name:
+        dataType: STRING
+        displayName: 公司名字

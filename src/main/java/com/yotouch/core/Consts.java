@@ -62,6 +62,7 @@ public interface Consts {
     String RUNTIME_VARIABLE_APP_HOST        = "APP_HOST";
     String RUNTIME_VARIABLE_CUSTOMER        = "CUSTOMER";
     String RUNTIME_VARIABLE_USER            = "USER";
+    String RUNTIME_VARIABLE_COMPANY         = "COMPANY";
 
     String CASHFLOW_SCENE_PAY_ORDER            = "SCENE_PAY_ORDER";            // 支付到订单
     String CASHFLOW_SCENE_PAY_COMMISSION       = "SCENE_PAY_COMMISSION";       // 支付佣金

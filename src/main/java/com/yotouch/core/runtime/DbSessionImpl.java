@@ -45,6 +45,8 @@ public class DbSessionImpl implements DbSession {
 
     private Entity loginUser;
 
+    private Entity company;
+
     private boolean isMrLazy() {
         return "1".equals(isMrLazyStr) || "true".equalsIgnoreCase(isMrLazyStr);
     }
@@ -75,6 +77,10 @@ public class DbSessionImpl implements DbSession {
         if (isNew) {
             if (this.loginUser != null) {
                 e.setValue("creatorUuid", this.loginUser.getUuid());
+            }
+
+            if (this.company != null) {
+                e.setValue("company", company);
             }
             
             Calendar c = e.v("createdAt");
@@ -361,6 +367,11 @@ public class DbSessionImpl implements DbSession {
     @Override
     public void setLoginUser(Entity loginUser) {
         this.loginUser = loginUser;
+    }
+
+    @Override
+    public void setCompany(Entity company) {
+        this.company = company;
     }
 
     @Override
