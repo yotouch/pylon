@@ -212,7 +212,7 @@ public class RoleServiceImpl implements RoleService {
         HashSet<Entity> users = new HashSet<>();
 
         for(Entity role : roles){
-            List<Entity> currentUserRoles = dbSession.queryRawSql("userRole", "roleUuid = ? AND status = ? ", new Object[]{role.getUuid(), Consts.STATUS_NORMAL});
+            List<Entity> currentUserRoles = dbSession.queryRawSql("userRole", "roleUuid = ? AND status = ? order by createdAt desc ", new Object[]{role.getUuid(), Consts.STATUS_NORMAL});
 
             for (Entity userRole : currentUserRoles) {
                 Entity user = dbSession.getEntity("user", userRole.v("user"));
