@@ -1,6 +1,7 @@
 package com.yotouch.core.entity.query;
 
-import org.springframework.util.StringUtils;
+import com.yotouch.core.entity.query.statics.GroupBy;
+import com.yotouch.core.entity.query.statics.OrderBy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,9 +10,9 @@ public class Query {
 
     private List<QueryField> fieldList;
 
-    private String orderBy;
+    private List<OrderBy> orderByList = new ArrayList<>();
 
-    private String groupBy;
+    private List<GroupBy> groupByList = new ArrayList<>();
 
     private String sql;
 
@@ -26,39 +27,40 @@ public class Query {
         return this;
     }
 
-    public Query addOrderBy(String order, String by) {
-        if (StringUtils.isEmpty(this.orderBy)) {
-            this.orderBy = order + " " + by.toUpperCase();
-        } else {
-            this.orderBy += ", " + order + " " + by.toUpperCase();
-        }
-        return this;
-    }
-
-    public Query addOrderBy(String order) {
-        if (StringUtils.isEmpty(this.orderBy)) {
-            this.orderBy = order;
-        } else {
-            this.orderBy += ", " + order;
-        }
+    public Query addOrderBy(OrderBy orderBy) {
+        this.orderByList.add(orderBy);
         return this;
     }
 
     public String getOrderBy() {
-        return this.orderBy;
+        if (orderByList.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder orders = new StringBuilder();
+        for (OrderBy orderBy : orderByList) {
+            orders.append(orderBy.asSql()).append(", ");
+        }
+
+        return orders.substring(0, orders.length() - 2);
     }
 
-    public Query addGroupBy(String groupBy) {
-        if (StringUtils.isEmpty(this.groupBy)) {
-            this.groupBy = groupBy;
-        } else {
-            this.groupBy += ", " + groupBy;
-        }
+    public Query addGroupBy(GroupBy groupBy) {
+        this.groupByList.add(groupBy);
         return this;
     }
 
     public String getGroupBy() {
-        return this.groupBy;
+        if (groupByList.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder groups = new StringBuilder();
+        for (GroupBy groupBy : groupByList) {
+            groups.append(groupBy.asSql()).append(", ");
+        }
+
+        return groups.substring(0, groups.length() - 2);
     }
 
     public Query rawSql(String sql, Object[] args) {

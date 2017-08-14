@@ -6,6 +6,8 @@ import com.yotouch.core.entity.query.ff.FunctionField;
 import com.yotouch.core.entity.query.Query;
 import com.yotouch.core.entity.query.QueryField;
 import com.yotouch.core.entity.query.ff.SumField;
+import com.yotouch.core.entity.query.statics.GroupBy;
+import com.yotouch.core.entity.query.statics.OrderBy;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -185,7 +187,7 @@ public class QueryTests {
         q = new Query();
         qf = new CountField("ageCount2");
         q.addField(qf).addField(age);
-        q.addGroupBy("age");
+        q.addGroupBy(new GroupBy("age"));
         q.rawSql("nickname LIKE ?", new Object[]{"f99%"});
 
         el = ds.query("user", q);
@@ -197,8 +199,8 @@ public class QueryTests {
         q = new Query();
         qf = new CountField("ageCount2");
         q.addField(qf).addField(age);
-        q.addOrderBy("age", "desc");
-        q.addGroupBy("age");
+        q.addOrderBy(new OrderBy("age", "desc"));
+        q.addGroupBy(new GroupBy("age"));
         q.rawSql("nickname LIKE ?", new Object[]{"f99%"});
 
         el = ds.query("user", q);
@@ -214,7 +216,7 @@ public class QueryTests {
         DbSession ds = rt.createDbSession();
 
         Query q = new Query();
-        q.addOrderBy("age", "desc");
+        q.addOrderBy(new OrderBy("age", "desc"));
         q.rawSql("nickname LIKE ?", new Object[]{"f99%"});
         List<Entity> el = ds.query("user", q);
 
@@ -224,7 +226,7 @@ public class QueryTests {
 
 
         q = new Query();
-        q.addOrderBy("age");
+        q.addOrderBy(new OrderBy("age"));
         q.rawSql("nickname LIKE ?", new Object[]{"f99%"});
         el = ds.query("user", q);
 
@@ -234,8 +236,8 @@ public class QueryTests {
 
 
         q = new Query();
-        q.addOrderBy("nickname");
-        q.addOrderBy("age");
+        q.addOrderBy(new OrderBy("nickname"));
+        q.addOrderBy(new OrderBy("age"));
         q.rawSql("nickname LIKE ?", new Object[]{"f99%"});
         el = ds.query("user", q);
 
@@ -248,8 +250,8 @@ public class QueryTests {
 
 
         q = new Query();
-        q.addOrderBy("nickname");
-        q.addOrderBy("age", "desc");
+        q.addOrderBy(new OrderBy("nickname"));
+        q.addOrderBy(new OrderBy("age", "desc"));
         q.rawSql("nickname LIKE ?", new Object[]{"f99%"});
         el = ds.query("user", q);
 
