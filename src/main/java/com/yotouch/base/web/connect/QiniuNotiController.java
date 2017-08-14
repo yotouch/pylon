@@ -43,6 +43,10 @@ public class QiniuNotiController extends BaseController{
         try {
             JsonNode rootNode = mapper.readTree(jsonString);
             String persistentId = rootNode.get("id").textValue().trim();
+            int code = rootNode.get("code").intValue();
+            if (code != 0) {
+                return;
+            }
             Entity attachment = getAttachment(dbSession, persistentId);
             if (attachment != null) {
                 String key = rootNode.get("items").get(0).get("key").textValue().trim();

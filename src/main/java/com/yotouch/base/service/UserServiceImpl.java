@@ -195,7 +195,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<Entity> getUserRoleList(DbSession dbSession, Entity user) {
         List<Entity> roles = roleService.getUserRoles(user);
-        return roles.stream().map(ur->ur.sr(dbSession, "role")).collect(Collectors.toList());
+        List<Entity> roleList = new ArrayList<>();
+        for(Entity e:roles){
+            roleList.add(dbSession.getEntity("role",e.v("role")));
+        }
+        return roleList;
+        //return roles.stream().map(ur->ur.sr(dbSession, "role")).collect(Collectors.toList());
     }
 
     @Override

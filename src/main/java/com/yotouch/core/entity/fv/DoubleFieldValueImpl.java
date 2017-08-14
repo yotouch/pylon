@@ -1,6 +1,7 @@
 package com.yotouch.core.entity.fv;
 
 import com.yotouch.core.entity.MetaField;
+import org.springframework.util.StringUtils;
 
 public class DoubleFieldValueImpl extends AbstractFieldValue<Double> implements FieldValue<Double> {
 
@@ -10,7 +11,7 @@ public class DoubleFieldValueImpl extends AbstractFieldValue<Double> implements 
 
     @Override
     protected Double parseValue(Object v) {
-        if (v == null) {
+        if (StringUtils.isEmpty(v)) {
             return null;
         } else if (
                 v instanceof Double

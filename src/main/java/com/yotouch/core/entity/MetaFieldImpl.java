@@ -1,6 +1,10 @@
 package com.yotouch.core.entity;
 
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.yotouch.core.entity.mf.LongMetaFieldImpl;
 import org.slf4j.Logger;
@@ -24,11 +28,14 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
     
     protected MetaEntity me;
     protected String type = "user";
-    protected String uuid;
-    protected String name;
-    protected String displayName;
-    protected boolean isRequired;
+    protected String        uuid;
+    protected String        name;
+    protected String        displayName;
+    protected boolean       required;
+    protected boolean       visible;
+    protected boolean       deleted;
     protected FieldValue<T> defaultValue;
+    protected List<ValueOption> valueOptions = new ArrayList<>();
     
     
     @Override
@@ -40,7 +47,35 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
         this.type = type;
         return this;
     }
-    
+
+    @Override
+    public void addValueOption(ValueOption valueOption) {
+        if (!valueOptions.contains(valueOption)) {
+            valueOptions.add(valueOption);
+        }
+    }
+
+    @Override
+    public ValueOption getValueOption(String valueOptionDisplayname) {
+        List<ValueOption> afterFilter = this.valueOptions.stream()
+                .filter(valueOption -> valueOption.getDisplayName().equals(valueOptionDisplayname))
+                .collect(Collectors.toList());
+        return afterFilter.isEmpty() ? null : afterFilter.get(0);
+    }
+
+    @Override
+    public List<ValueOption> getValueOptions() {
+        return this.valueOptions;
+    }
+
+    @Override
+    public void addValueOptions(List<ValueOption> valueOptions) {
+        if (valueOptions != null && !valueOptions.isEmpty()) {
+           for (ValueOption vo : valueOptions) {
+               this.addValueOption(vo);
+           }
+        }
+    }
 
     @Override
     public String getName() {
@@ -71,12 +106,31 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
         
     @Override
     public boolean isRequired() {
-        return this.isRequired;
+        return this.required;
     }
     
     void setRequired(boolean required) {
-        this.isRequired = required;
+        this.required = required;
     }
+
+    @Override
+    public boolean isVisible() {
+        return this.visible;
+    }
+
+    void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
+    @Override
+    public boolean isDeleted() {
+        return this.deleted;
+    }
+
+    void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
 
     @Override
     public T getDefaultValue() {
@@ -113,11 +167,11 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
         
         String dataType = (String) fr.get("dataType");
         String fieldType = (String) fr.get("fieldType");
-        
+
         MetaFieldImpl<?> mfi = null;
         
         logger.debug("Build MetaField " + fr.get("name") + " with dataType " + dataType + " with fieldType " + fieldType);
-        
+
         if (Consts.META_FIELD_TYPE_SINGLE_REFERENCE.equalsIgnoreCase(fieldType)) {
             String targetMetaEntity = (String) fr.get("targetMetaEntity");
             mfi = new SingleReferenceMetaFieldImpl(entityMgr, targetMetaEntity);
@@ -147,7 +201,7 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
                 mfi = new ObjectMetaFieldImpl();
             }
         }
-        
+
         //mfi.setMetaEntity(mei);
         
         mfi.setUuid((String) fr.get("uuid"));
@@ -155,12 +209,14 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
         mfi.setDisplayName((String) fr.get("displayName"));
         mfi.setDefaultValue(fr.get("defaultValue"));
         mfi.setRequired("1".equals(fr.get("required")));
-        
+        mfi.setVisible("1".equals(fr.get("visible")));
+        mfi.setDeleted("1".equals(fr.get("deleted")));
+
         String type = (String)fr.get("type");
         if (type != null && !type.equals("")) {
             mfi.setType(type);
-        }        
-        
+        }
+
         //logger.info("Try to build MetaField " + fr);
         //mei.addField(mfi);
 
@@ -222,7 +278,7 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
     @Override
     public String toString() {
         return "MetaFieldImpl [\n\tme=" + (me == null ? "NULL" : me.getName()) + ", \n\tuuid=" + uuid + ", \n\tname=" + name + ", \n\tdisplayName=" + displayName
-                + ", \n\tfieldType=" + this.getFieldType() + "\n\tdataType=" + this.getDataType() + ", \n\tisRequired=" + isRequired + ", \n\tdefaultValue=" + defaultValue + "\n]\n";
+                + ", \n\tfieldType=" + this.getFieldType() + "\n\tdataType=" + this.getDataType() + ", \n\trequired=" + required  + ", \n\tvisible=" + visible + ", \n\tdeleted=" + deleted + ", \n\tdefaultValue=" + defaultValue + "\n]\n";
     }
 
     public MetaFieldImpl<?> copy(String uuid) {
@@ -237,5 +293,4 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
         
         return null;
     }
-
 }

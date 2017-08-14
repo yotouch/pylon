@@ -7,6 +7,7 @@ import java.util.List;
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.entity.MetaField;
 import com.yotouch.core.exception.YotouchException;
+import org.springframework.util.StringUtils;
 
 public class MultiReferenceFieldValue extends AbstractFieldValue<List<String>> implements FieldValue<List<String>> {
 
@@ -24,7 +25,7 @@ public class MultiReferenceFieldValue extends AbstractFieldValue<List<String>> i
         
         List<String> ret = new ArrayList<>();
         
-        if (v == null) {
+        if (StringUtils.isEmpty(v)) {
             return ret;
         } else if (v instanceof Collection<?>) {
             Collection<?> l = (Collection<?>) v;

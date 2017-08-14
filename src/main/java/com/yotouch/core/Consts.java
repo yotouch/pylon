@@ -43,6 +43,7 @@ public interface Consts {
     
     int STATUS_NORMAL                       = 1000;
     int STATUS_DELETED                      = 1001;
+    int STATUS_LOCKING                      = 1004;
     int STATUS_SHADOW                       = 404;
 
     int STATUS_PAYMENT_DEPOSIT_PENDING      = 6001;   // 钱等待存入
@@ -109,6 +110,7 @@ public interface Consts {
     int REFUND_TYPE_ITEMS  = 5520;
     int REFUND_TYPE_AMOUNT = 5530;
 
+    int YSE                                 = 1;
+    int NO                                  = 0;
 
-    
 }

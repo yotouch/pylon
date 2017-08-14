@@ -4,9 +4,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
 import com.yotouch.core.entity.query.Query;
+import com.yotouch.core.entity.query.ff.CountField;
 import com.yotouch.core.exception.DbSessionException;
+import com.yotouch.core.helper.PaginationHelper;
 import com.yotouch.core.model.EntityModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +25,6 @@ import com.yotouch.core.store.db.DbStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -185,14 +184,21 @@ public class DbSessionImpl implements DbSession {
 
     @Override
     public <M extends EntityModel> M save(M entityModel, String entityName) {
+        Entity entity = getEntityFromModel(entityModel, entityName);
+
+        return this.save(entity.fromModel(entityModel)).looksLike((Class<M>) entityModel.getClass());
+    }
+
+    @Override
+    public <M extends EntityModel> Entity getEntityFromModel(M entityModel, String entityName) {
         Entity entity;
-        if (entityModel != null && !StringUtils.isEmpty(entityModel.getUuid())) {
+        if (entityModel != null && !StringUtils.isEmpty(entityModel.getUuid()) && !entityModel.getUuid().startsWith("-")) {
             entity = this.getEntity(entityName, entityModel.getUuid());
         } else {
             entity = this.newEntity(entityName);
         }
 
-        return this.save(entity.fromModel(entityModel)).looksLike((Class<M>) entityModel.getClass());
+        return entity;
     }
 
     @Override
@@ -250,13 +256,31 @@ public class DbSessionImpl implements DbSession {
     }
 
     @Override
+    public PaginationHelper<Entity> queryRawSql(String entityName, String where, Object[] args, PaginationHelper<Entity> paginationHelper) {
+        CountField countField = new CountField();
+        Query query = new Query();
+        query.addField(countField);
+        query.rawSql(where, args);
+        Entity entity = queryOne(entityName, query);
+        int totalRow = entity.v(countField.getName()) == null ? 0 : entity.v(countField.getName());
+
+        paginationHelper.setTotalRows(totalRow);
+        int currentPage = paginationHelper.getCurrentPage();
+        int offset = (currentPage - 1) * paginationHelper.getItemPerPage();
+
+        paginationHelper.setItemList(queryRawSql(entityName, where + " LIMIT " + offset + ", " + paginationHelper.getItemPerPage(), args));
+
+        return paginationHelper;
+    }
+
+    @Override
     public <M extends EntityModel> List<M> queryRawSql(String entityName, String where, Object[] args, Class<M> clazz) {
         List<Entity> entityList = queryRawSql(entityName, where, args);
 
         if (entityList != null && !entityList.isEmpty()) {
             return entityList
                     .stream()
-                    .map(entity -> Entity.looksLike(this, entity, clazz))
+                    .map(entity -> entity.looksLike(clazz))
                     .collect(Collectors.toList());
         }
 
@@ -277,7 +301,7 @@ public class DbSessionImpl implements DbSession {
         if (entityList != null && !entityList.isEmpty()) {
             return entityList
                     .stream()
-                    .map(entity -> Entity.looksLike(this, entity, clazz))
+                    .map(entity -> entity.looksLike(clazz))
                     .collect(Collectors.toList());
         }
 
@@ -304,7 +328,7 @@ public class DbSessionImpl implements DbSession {
         Entity entity = queryOneRawSql(entityName, where, args);
 
         if (entity != null) {
-            return Entity.looksLike(this, entity, clazz);
+            return entity.looksLike(clazz);
         }
 
         return null;
