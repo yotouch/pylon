@@ -478,27 +478,24 @@ public class DbStoreImpl implements DbStore {
         }
 
         sql.append(" FROM ").append(mei.getTableName());
+
         if (!StringUtils.isEmpty(query.getWhere())) {
             sql.append(" WHERE ").append(query.getWhere());
+        }
 
-            if (!StringUtils.isEmpty(query.getGroupBy())) {
-                sql.append(" GROUP BY ").append(query.getGroupBy());
-            }
+        String groupByString = query.genGroupByString();
+        String orderByString = query.genOrderByString();
+        if (!StringUtils.isEmpty(groupByString)) {
+            sql.append(" GROUP BY ").append(groupByString);
+        }
 
-            if (!StringUtils.isEmpty(query.getOrderBy())) {
-                sql.append(" ORDER BY ").append(query.getOrderBy());
-            }
+        if (!StringUtils.isEmpty(orderByString)) {
+            sql.append(" ORDER BY ").append(orderByString);
+        }
 
+        if (!StringUtils.isEmpty(query.getWhere())) {
             return this.jdbcTpl.query(sql.toString(), query.getArgs(), mapper);
         } else {
-            if (!StringUtils.isEmpty(query.getGroupBy())) {
-                sql.append(" GROUP BY ").append(query.getGroupBy());
-            }
-
-            if (!StringUtils.isEmpty(query.getOrderBy())) {
-                sql.append(" ORDER BY ").append(query.getOrderBy());
-            }
-
             return this.jdbcTpl.query(sql.toString(), mapper);
         }
     }

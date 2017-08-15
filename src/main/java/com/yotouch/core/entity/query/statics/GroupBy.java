@@ -1,6 +1,6 @@
 package com.yotouch.core.entity.query.statics;
 
-public class GroupBy implements StaticsInterface {
+public class GroupBy {
     private String groupBy;
 
     public GroupBy(String groupBy) {
@@ -15,7 +15,6 @@ public class GroupBy implements StaticsInterface {
         this.groupBy = groupBy;
     }
 
-    @Override
     public String asSql() {
         return groupBy;
     }

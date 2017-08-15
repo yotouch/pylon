@@ -1,8 +1,10 @@
 package com.yotouch.core.entity.query.statics;
 
-public class OrderBy implements StaticsInterface {
+import com.yotouch.core.Consts;
+
+public class OrderBy {
     private String order = "";
-    private String by = "ASC";
+    private String by = Consts.ORDERBY_ASC;
 
     public OrderBy(String order) {
         this.order = order;
@@ -29,7 +31,6 @@ public class OrderBy implements StaticsInterface {
         this.by = by;
     }
 
-    @Override
     public String asSql() {
         return order + " " + by;
     }

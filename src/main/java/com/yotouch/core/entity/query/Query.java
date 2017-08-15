@@ -32,7 +32,7 @@ public class Query {
         return this;
     }
 
-    public String getOrderBy() {
+    public String genOrderByString() {
         if (orderByList.isEmpty()) {
             return "";
         }
@@ -50,7 +50,7 @@ public class Query {
         return this;
     }
 
-    public String getGroupBy() {
+    public String genGroupByString() {
         if (groupByList.isEmpty()) {
             return "";
         }
