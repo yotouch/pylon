@@ -12,7 +12,6 @@ import com.yotouch.base.util.WebUtil;
 import com.yotouch.core.runtime.DbSession;
 import com.yotouch.core.runtime.YotouchApplication;
 import com.yotouch.base.service.AttachmentService;
-import com.yotouch.base.service.WechatManager;
 import com.yotouch.base.util.PropUtil;
 import com.yotouch.core.entity.Entity;
 import org.springframework.util.StringUtils;
@@ -30,9 +29,6 @@ public abstract class BaseController {
 
     @Autowired
     protected PropUtil propUtil;
-
-    @Autowired
-    protected WechatManager wechatMgr;
 
     @Autowired
     protected AttachmentService attService;

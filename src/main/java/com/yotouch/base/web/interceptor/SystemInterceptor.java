@@ -6,10 +6,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.yotouch.base.util.QiniuUtil;
 import com.yotouch.base.util.WebUtil;
-import me.chanjar.weixin.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.yotouch.core.Consts;
