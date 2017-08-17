@@ -113,4 +113,7 @@ public interface Consts {
     int YSE                                 = 1;
     int NO                                  = 0;
 
+    String ORDERBY_DESC                     = "DESC";
+    String ORDERBY_ASC                      = "ASC";
+
 }
