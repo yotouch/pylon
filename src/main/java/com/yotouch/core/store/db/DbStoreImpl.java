@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
+import com.yotouch.core.entity.query.Query;
 import com.yotouch.core.entity.query.QueryField;
 import com.yotouch.core.exception.YotouchException;
 import org.slf4j.Logger;
@@ -453,6 +454,52 @@ public class DbStoreImpl implements DbStore {
             return this.jdbcTpl.query(sql, mapper);
         }
     }
+
+    @Override
+    public List<Entity> query(MetaEntity me, Query query, EntityRowMapper mapper) {
+        MetaEntityImpl mei = (MetaEntityImpl) me;
+
+        StringBuilder sql;
+        sql = new StringBuilder("SELECT ");
+
+        if (query.getFields() == null || query.getFields().isEmpty()) {
+            sql.append(" * ");
+        } else {
+            for (int i = 0; i < query.getFields().size(); i++) {
+                if (i > 0) {
+                    sql.append(" , ");
+                }
+
+                QueryField qf = query.getFields().get(i);
+                sql.append(qf.asSql());
+            }
+
+            mapper.setFields(query.getFields());
+        }
+
+        sql.append(" FROM ").append(mei.getTableName());
+
+        if (!StringUtils.isEmpty(query.getWhere())) {
+            sql.append(" WHERE ").append(query.getWhere());
+        }
+
+        String groupByString = query.genGroupByString();
+        String orderByString = query.genOrderByString();
+        if (!StringUtils.isEmpty(groupByString)) {
+            sql.append(" GROUP BY ").append(groupByString);
+        }
+
+        if (!StringUtils.isEmpty(orderByString)) {
+            sql.append(" ORDER BY ").append(orderByString);
+        }
+
+        if (!StringUtils.isEmpty(query.getWhere())) {
+            return this.jdbcTpl.query(sql.toString(), query.getArgs(), mapper);
+        } else {
+            return this.jdbcTpl.query(sql.toString(), mapper);
+        }
+    }
+
 
     @Override
     public void increase(MetaEntity me, String uuid, String field, int amount) {

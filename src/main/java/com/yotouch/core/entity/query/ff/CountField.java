@@ -4,6 +4,10 @@ import com.yotouch.core.Consts;
 
 public class CountField extends FunctionField {
 
+    public CountField(String name) {
+        super(name);
+    }
+
     public CountField() {
         super("func_count");
     }

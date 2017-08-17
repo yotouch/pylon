@@ -50,6 +50,8 @@ public interface DbSession {
 
     Entity queryOne(String entityName, Query q);
 
+    List<Entity> query(String entityName, Query q);
+
     List<Entity> queryIn(String entityName, List<String> entityUuids);
 
     void setLoginUser(Entity loginUser);

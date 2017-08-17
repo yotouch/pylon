@@ -81,8 +81,9 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
     public String getName() {
         return this.name;
     }
-    
-    void setName(String name) {
+
+    @Override
+    public void setName(String name) {
         this.name = name;
     }
 
