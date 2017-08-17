@@ -14,20 +14,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.yotouch.base.PylonApplication;
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.entity.EntityManager;
 import com.yotouch.core.runtime.DbSession;
 import com.yotouch.core.runtime.YotouchApplication;
 import com.yotouch.core.runtime.YotouchRuntime;
-import org.springframework.transaction.annotation.Transactional;
 
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = PylonApplication.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest
 @Transactional
 public class QueryTests {
 

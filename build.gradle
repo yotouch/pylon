@@ -22,7 +22,9 @@ buildscript {
 
 apply plugin: 'java'
 apply plugin: 'idea'
-apply plugin: 'org.springframework.boot' 
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
 
 jar {
 	baseName = 'pylon'
@@ -33,6 +35,8 @@ targetCompatibility = 1.8
 
 repositories {
 	jcenter()
+	maven { url "http://repo.spring.io/snapshot" }
+	maven { url "http://repo.spring.io/milestone" }
 }
 
 
@@ -80,8 +84,9 @@ dependencies {
 
 	runtime('mysql:mysql-connector-java')
 	
-	testCompile('org.springframework.boot:spring-boot-starter-test')
-	
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+
+
 }
 
 //如果pylon作为一个单独的项目来用

@@ -15,16 +15,17 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import com.yotouch.base.PylonApplication;
 import com.yotouch.core.exception.NoSuchMetaFieldException;
 import com.yotouch.core.runtime.DbSession;
 import com.yotouch.core.runtime.YotouchApplication;
 import com.yotouch.core.runtime.YotouchRuntime;
+import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = PylonApplication.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = PylonApplication.class)
 public class EntityTests {
 
     private static final Logger logger = LoggerFactory.getLogger(EntityTests.class);
