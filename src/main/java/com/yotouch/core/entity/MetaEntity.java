@@ -15,5 +15,7 @@ public interface MetaEntity {
     String getUuid();
     
     Entity newEntity();
+    
+    String getScope();
 
 }

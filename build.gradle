@@ -27,9 +27,10 @@ apply plugin: 'io.spring.dependency-management'
 
 
 jar {
-	baseName = 'pylon'
-	version = '0.0.2-DEV'
-        enabled = true 
+    baseName = 'pylon'
+    version = '0.0.2-DEV'
+    enabled = true
+    exclude('application.yaml')
 
 }
 sourceCompatibility = 1.8

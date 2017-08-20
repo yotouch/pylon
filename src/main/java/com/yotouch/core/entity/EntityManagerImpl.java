@@ -13,6 +13,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.yaml.snakeyaml.Yaml;
 
 import javax.annotation.PostConstruct;
@@ -104,7 +105,11 @@ public class EntityManagerImpl implements EntityManager {
         
         String uuid = me.getName() + "_" + mf.getName() + "_" + targetEntityName;
         
-        MetaEntityImpl mei = new MetaEntityImpl(uuid, uuid, uuid,"mr_", this.isLowerCase());
+        if (!StringUtils.isEmpty(me.getScope())) {
+            uuid = me.getScope() + "_" + uuid;
+        }
+        
+        MetaEntityImpl mei = new MetaEntityImpl(uuid, uuid, uuid,"mr_", me.getScope(), this.isLowerCase());
         mmf.setMappingMetaEntity(mei);
         
         Map<String, Object> fMap = new HashMap<>();
@@ -219,6 +224,7 @@ public class EntityManagerImpl implements EntityManager {
         try {
             Resource[] resources = resolver.getResources("classpath*:/etc/systemEntities.yaml");
             for (Resource resource : resources) {
+                logger.info("Load system entity " + resource.getURI());
                 InputStream is = resource.getInputStream();
                 loadMetaEntitiesFromInputStream(is, "");
             }
@@ -258,9 +264,16 @@ public class EntityManagerImpl implements EntityManager {
             String uuid = "uuid-sys-" + en;
 
             Map<String, Object> emap = (Map<String, Object>) entities.get(en);
+            String scope = null;
+            if (emap.containsKey("scope")) {
+                scope = (String) emap.get("scope");
+            }
+
             String prefix = defaultPrefix;
             if (emap.containsKey("prefix")) {
                 prefix = (String) emap.get("prefix");
+            } else if (!StringUtils.isEmpty(scope)) {
+                prefix = "";
             }
             
             String displayName = en;
@@ -273,7 +286,7 @@ public class EntityManagerImpl implements EntityManager {
 
             MetaEntityImpl mei = (MetaEntityImpl) this.userEntities.get(en);
             if (mei == null) {
-                mei = new MetaEntityImpl(uuid, en, displayName, prefix, this.isLowerCase());
+                mei = new MetaEntityImpl(uuid, en, displayName, prefix, scope, this.isLowerCase());
             }
 
 
@@ -311,7 +324,7 @@ public class EntityManagerImpl implements EntityManager {
 
             MetaEntityImpl mei = (MetaEntityImpl) this.userEntities.get(en);
             if (mei == null) {
-                mei = new MetaEntityImpl(uuid, en, en, prefix, this.isLowerCase());
+                mei = new MetaEntityImpl(uuid, en, en, prefix, null, this.isLowerCase());
             }
 
             // parse files
@@ -413,6 +426,7 @@ public class EntityManagerImpl implements EntityManager {
         try {
             Resource[] resources = resolver.getResources("classpath*:/etc/systemFields.yaml");
             for (Resource resource : resources) {
+                logger.info(resource.getDescription() + resource.getURI());
                 InputStream is = resource.getInputStream();
                 loadSysFieldsFromInputStream(is);
             }
@@ -579,6 +593,7 @@ public class EntityManagerImpl implements EntityManager {
     private MetaEntityImpl buildMetaEntity(Map<String, Object> row) {
         
         String meName = (String) row.get("name");
+        String meScope = (String) row.get("scope");
         String meUuid = (String) row.get("uuid");
         String displayName = (String) row.get("displayName");
         if (displayName == null && displayName.equals("")) {
@@ -593,7 +608,7 @@ public class EntityManagerImpl implements EntityManager {
 
         logger.info("Get field data for " + meName + " fieldData " + fieldRows);
 
-        MetaEntityImpl mei = new MetaEntityImpl(meUuid, meName, displayName,"usr_", this.isLowerCase());
+        MetaEntityImpl mei = new MetaEntityImpl(meUuid, meName, displayName,"usr_", meScope, this.isLowerCase());
 
         for (Map<String, Object> fr : fieldRows) {
             MetaFieldImpl<?> mfi = MetaFieldImpl.build(this, fr);

@@ -8,6 +8,7 @@ import java.util.Map;
 import com.yotouch.core.exception.MetaFieldIsNotSingleReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 public class MetaEntityImpl implements MetaEntity {
 
@@ -19,16 +20,19 @@ public class MetaEntityImpl implements MetaEntity {
     private String displayName;
     private String uuid;
     private String tablePrefix;
+    
+    private String scope;
 
     private boolean lowerTableNames;
 
-    MetaEntityImpl(String uuid, String name, String displayName, String tablePrefix, boolean lowerTableName) {
+    MetaEntityImpl(String uuid, String name, String displayName, String tablePrefix, String scope, boolean lowerTableName) {
         this.name = name;
         this.uuid = uuid;
         this.displayName = displayName;
         this.tablePrefix = tablePrefix; 
         this.fieldMap = new HashMap<>();
         this.lowerTableNames = lowerTableName;
+        this.scope = scope;
     }
 
     public void addField(MetaField<?> field) {
@@ -117,11 +121,22 @@ public class MetaEntityImpl implements MetaEntity {
         return new EntityImpl(this);
     }
 
-    
+    @Override
+    public String getScope() {
+        return this.scope;
+    }
+
+
     public String getTableName() {
-        String name = this.tablePrefix + this.getName();
-        if (this.tablePrefix == null || "".equals(this.tablePrefix) || "-".equals(this.tablePrefix)) {
-            name = this.getName();
+        
+        String name = this.getName();
+        
+        if (!StringUtils.isEmpty(this.scope)) {
+            name = this.scope + "_" + name;
+        }
+        
+        if (!(this.tablePrefix == null || "".equals(this.tablePrefix) || "-".equals(this.tablePrefix))) {
+            name = this.tablePrefix + name;
         }
         
         if (lowerTableNames) {
@@ -131,8 +146,10 @@ public class MetaEntityImpl implements MetaEntity {
         logger.debug("Get table name NO lower case " + name.toLowerCase());
 
         return name;
-
     }
+    
+    
+    
 }
 
 
