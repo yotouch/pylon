@@ -71,6 +71,11 @@ public class BizEntityManagerImpl implements BizEntityManager {
         try {
             Resource[] resources = resolver.getResources("classpath*:/etc/bizEntities.yaml");
             for (Resource resource : resources) {
+                String uri = resource.getURI().toString();
+                if (uri.contains("pylon")) {
+                    continue;
+                }
+                
                 InputStream is = resource.getInputStream();
                 parseBizEntityInputStream(is);
             }

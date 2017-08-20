@@ -179,6 +179,10 @@ public class EntityManagerImpl implements EntityManager {
             Resource[] resources = resolver.getResources("classpath*:/etc/**.entities.yaml");
             for (Resource resource : resources) {
                 logger.info("Load user entity from classpath : " + resource.getFilename());
+                String uri = resource.getURI().toString();
+                if (uri.contains("pylon") && !uri.contains("sys.")) {
+                    continue;
+                }
                 InputStream is = resource.getInputStream();
                 loadMetaEntitiesFromInputStream(is, "usr_");
             }
