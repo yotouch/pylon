@@ -74,7 +74,6 @@ public abstract class LoginInterceptor implements HandlerInterceptor {
 
                     Entity user = userService.checkLoginUser(userToken);
                     if (user != null) {
-                        request.setAttribute("loginUser", user);
                         request.setAttribute(Consts.RUNTIME_VARIABLE_USER, user);
 
                         // TODO add role menu
