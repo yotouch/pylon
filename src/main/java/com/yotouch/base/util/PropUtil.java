@@ -41,13 +41,13 @@ public class PropUtil {
         return entity.v("value");
     }
 
-    public synchronized int nextSeq(DbSession dbSession, String name) {
+    public synchronized long nextSeq(DbSession dbSession, String name) {
         return this.nextSeq(dbSession, name, 1);
     }
 
-    public synchronized int nextSeq(DbSession dbSession, String name, int step) {
+    public synchronized long nextSeq(DbSession dbSession, String name, int step) {
         Entity prop = this.getProp(dbSession, name);
-        int seq = 0;
+        long seq = 0L;
 
         if (prop == null) {
             prop = dbSession.newEntity("prop");
@@ -61,7 +61,7 @@ public class PropUtil {
         String seqStr = prop.v("value");
         if (!StringUtils.isEmpty(seqStr)) {
             try {
-                seq = Integer.parseInt(seqStr);
+                seq = Long.parseLong(seqStr);
             } catch (Exception e) {
             }
         }

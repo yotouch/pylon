@@ -13,7 +13,13 @@ public class LongFieldValueImpl extends AbstractFieldValue<Long> implements Fiel
     protected Long parseValue(Object v) {
         if (StringUtils.isEmpty(v)) {
             return null;
-        } else if (v instanceof Integer || v instanceof Long) {
+        } else if (v instanceof Integer) {
+            long value = ((Integer) v).longValue();
+            if (value == 0) {
+                this.setChanged(true); // // TODO: 16/8/11  Hack for zero value 
+            }
+            return (Long) v;
+        } if (v instanceof Long) {
             long value = (long) v;
             if (value == 0) {
                 this.setChanged(true); // // TODO: 16/8/11  Hack for zero value 

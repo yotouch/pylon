@@ -143,7 +143,7 @@ public class DbStoreImpl implements DbStore {
         } else if (Consts.META_FIELD_DATA_TYPE_DOUBLE.equalsIgnoreCase(mf.getDataType())) {
             sql += name + " DOUBLE, ";
         } else if (Consts.META_FIELD_DATA_TYPE_TEXT.equalsIgnoreCase(mf.getDataType())) {
-            sql += name + " TEXT, ";
+            sql += name + " LONGTEXT, ";
         } else if (Consts.META_FIELD_DATA_TYPE_BINARY.equalsIgnoreCase(mf.getDataType())) {
             sql += name + " LONGBLOB, ";
         } else if (Consts.META_FIELD_DATA_TYPE_BOOLEAN.equalsIgnoreCase(mf.getDataType())) {
