@@ -61,6 +61,9 @@ public class QiniuUtil {
 
     @Value("${qiniu.pipeline:}")
     private String pipeline;
+
+    @Value("${qiniu.private:}")
+    private String privateStr;
     
     @Autowired
     private AttachmentService attachmentService;
@@ -142,33 +145,41 @@ public class QiniuUtil {
 
         String qiniuUrl = att.v("qiniuUrl");
         if (StringUtils.isEmpty(qiniuUrl)) {
-            return "/attachment/" + att.getUuid();
+            qiniuUrl  = "/attachment/" + att.getUuid();
         }
-        return qiniuUrl;
+        
+        String url = "http://" + this.domain + "/" + qiniuUrl; 
+        
+        if ("1".equalsIgnoreCase(privateStr) || "true".equalsIgnoreCase(privateStr)) {
+            url = this.auth.privateDownloadUrl(url, 60);
+        }
+        
+        return url;
+        
+        
     }
 
-    public String getAndUploadQiniuUrlIgnoreSaveDb(DbSession dbSession, byte[] content) throws IOException {
+    public Entity getAndUploadQiniuUrlIgnoreSaveDb(DbSession dbSession, byte[] content) throws IOException {
         String md5 = DigestUtils.md5DigestAsHex(content);
 
         Entity att = dbSession.queryOneByField("attachment", "md5", md5);
-        String qiniuUrl = null;
         if (att != null) {
-            qiniuUrl = att.v("qiniuUrl");
+            return att;
         }
-        
+
+        String qiniuUrl = null;
         if (!StringUtils.isEmpty(qiniuUrl)) {
-            return qiniuUrl;
+            return att;
         }
         
         att = attachmentService.saveAttachment(content, true);
-
         qiniuUrl = this.upload("attachment/" + att.getUuid(), content);
         att.setValue("qiniuUrl", qiniuUrl);
         att = dbSession.save(att);
-
-        return "http://" + this.domain + "/" + qiniuUrl;
+        
+        return att;
     }
-
+    
     public String getAndUploadQiniuUrl(DbSession dbSession, Entity att) throws IOException {
         return this.getAndUploadQiniuUrl(dbSession, att, null);
     }

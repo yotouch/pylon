@@ -20,7 +20,7 @@
 
                 var result = data.result;
                 console.log(result);
-
+                
                 $('#att').append('<p><a href="/attachment/get?uuid='+result.uuid+'" target="_blank">'+result.uuid+'</a></p>')
                 $('#attUuid').val(result.uuid);
             }
