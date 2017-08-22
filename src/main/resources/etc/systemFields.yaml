@@ -3,7 +3,7 @@ systemFields:
         dataType: UUID
         displayName: UUID
         required: 1
-    creatorUuid:
+    creatorId:
         dataType: UUID
         displayName: Creator UUID
     createdAt:
@@ -13,7 +13,7 @@ systemFields:
     updatedAt:
         dataType: DATETIME
         defaultValue: ${NOW}
-    updaterUuid:
+    updaterId:
         dataType: UUID
     status:
         dataType: INT

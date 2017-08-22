@@ -13,6 +13,10 @@ public interface AttachmentService {
 
     Entity saveAttachment(byte[] content, String contentType);
 
+    Entity saveAttachment(byte[] content, String contentType, boolean md5Only);
+
     Entity saveAttachment(byte[] bytes);
+
+    Entity saveAttachment(byte[] bytes, boolean md5Only);
 }
 

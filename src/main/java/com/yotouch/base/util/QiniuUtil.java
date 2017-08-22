@@ -147,6 +147,28 @@ public class QiniuUtil {
         return qiniuUrl;
     }
 
+    public String getAndUploadQiniuUrlIgnoreSaveDb(DbSession dbSession, byte[] content) throws IOException {
+        String md5 = DigestUtils.md5DigestAsHex(content);
+
+        Entity att = dbSession.queryOneByField("attachment", "md5", md5);
+        String qiniuUrl = null;
+        if (att != null) {
+            qiniuUrl = att.v("qiniuUrl");
+        }
+        
+        if (!StringUtils.isEmpty(qiniuUrl)) {
+            return qiniuUrl;
+        }
+        
+        att = attachmentService.saveAttachment(content, true);
+
+        qiniuUrl = this.upload("attachment/" + att.getUuid(), content);
+        att.setValue("qiniuUrl", qiniuUrl);
+        att = dbSession.save(att);
+
+        return "http://" + this.domain + "/" + qiniuUrl;
+    }
+
     public String getAndUploadQiniuUrl(DbSession dbSession, Entity att) throws IOException {
         return this.getAndUploadQiniuUrl(dbSession, att, null);
     }
@@ -309,6 +331,8 @@ public class QiniuUtil {
 
         return tempPostResult;
     }
+    
+    
 
 
     public int getMediaDuration(String qiniuUrl){

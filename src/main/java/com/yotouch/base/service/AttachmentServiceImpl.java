@@ -22,19 +22,24 @@ public class AttachmentServiceImpl implements AttachmentService {
     @Autowired
     protected YotouchApplication ytApp;
 
-    @Value("${app.attachment.saveBinary:}")
-    String saveBinary;
-
-
     @Override
     public Entity saveAttachment(byte[] bytes) {
+        return this.saveAttachment(bytes, false);
+    }
+
+    @Override
+    public Entity saveAttachment(byte[] bytes, boolean md5Only) {
         Tika tika = new Tika();
         String mime = tika.detect(bytes);
-        return this.saveAttachment(bytes, mime);
+        return this.saveAttachment(bytes, mime, md5Only);
     }
 
     @Override
     public Entity saveAttachment(byte[] bytes, String contentType) {
+        return this.saveAttachment(bytes, contentType, false);
+    }
+    @Override
+    public Entity saveAttachment(byte[] bytes, String contentType, boolean md5Only) {
         DbSession dbSession = ytApp.getRuntime().createDbSession();
 
         String md5 = DigestUtils.md5DigestAsHex(bytes);
@@ -46,11 +51,12 @@ public class AttachmentServiceImpl implements AttachmentService {
             att = dbSession.newEntity("attachment");
             att.setValue("md5",  md5);
 
-            if (!"false".equalsIgnoreCase(saveBinary)) {
+            if (!md5Only) {
                 att.setValue("content", bytes);
             }
             att.setValue("mime", contentType);
-            att = dbSession.save(att);   
+            att = dbSession.save(att);
+            
         }
 
         return att;

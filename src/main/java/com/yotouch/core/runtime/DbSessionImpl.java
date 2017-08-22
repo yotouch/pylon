@@ -74,7 +74,7 @@ public class DbSessionImpl implements DbSession {
 
         if (isNew) {
             if (this.loginUser != null) {
-                e.setValue("creatorUuid", this.loginUser.getUuid());
+                e.setValue("creatorId", this.loginUser.getUuid());
             }
             
             Calendar c = e.v("createdAt");
@@ -96,7 +96,7 @@ public class DbSessionImpl implements DbSession {
             }
         } else {
             if (this.loginUser != null) {
-                e.setValue("updaterUuid", this.loginUser.getUuid());
+                e.setValue("updaterId", this.loginUser.getUuid());
             }
             e.setValue("updatedAt", new Date());
             // Do Update

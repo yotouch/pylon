@@ -45,10 +45,6 @@ public abstract class BaseController {
         DbSession dbSession = this.getDbSession();
 
         Entity loginUser = (Entity) request.getAttribute(Consts.RUNTIME_VARIABLE_USER);
-        if (loginUser == null) {
-            loginUser = (Entity) request.getAttribute("loginUser");
-        }
-        //logger.info("Create dbSession with LoginUser " + loginUser);
         dbSession.setLoginUser(loginUser);
         return dbSession;
     }
