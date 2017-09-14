@@ -183,7 +183,7 @@ public class WebUtil {
      * @return
      */
     private String replaceSharpToSharp(String url){
-        url.replace("_sharp_", "#");
+        url = url.replace("_sharp_", "#");
         return url;
     }
 
