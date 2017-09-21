@@ -15,9 +15,11 @@ import java.util.Calendar;
 public class EntityModel {
     private String uuid;
     private String creatorUuid;
+    private String creatorId;
     private Calendar createdAt;
     private Calendar updatedAt;
     private String updaterUuid;
+    private String updaterId;
     private Integer status;
     private String company;
 
@@ -75,6 +77,22 @@ public class EntityModel {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(String creatorId) {
+        this.creatorId = creatorId;
+    }
+
+    public String getUpdaterId() {
+        return updaterId;
+    }
+
+    public void setUpdaterId(String updaterId) {
+        this.updaterId = updaterId;
     }
 
     @Override
