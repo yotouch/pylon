@@ -55,6 +55,11 @@ public class WorkflowManagerImpl implements WorkflowManager {
         try {
             Resource[] resources = resolver.getResources("classpath*:/etc/workflows.yaml");
             for (Resource resource : resources) {
+                String uri = resource.getURI().toString();
+                if (uri.contains("pylon")) {
+                    continue;
+                }
+
                 InputStream is = resource.getInputStream();
                 parseWorkflowConfigInputStream(is);
             }
