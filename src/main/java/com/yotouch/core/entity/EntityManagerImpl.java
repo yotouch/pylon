@@ -608,7 +608,7 @@ public class EntityManagerImpl implements EntityManager {
     @Override
     public List<MetaEntity> getMetaEntities() {
         List<MetaEntity> l = new ArrayList<>(userEntities.values());
-        l.addAll(this.userEntities.values());
+//        l.addAll(this.userEntities.values());
         return l;
     }
 
