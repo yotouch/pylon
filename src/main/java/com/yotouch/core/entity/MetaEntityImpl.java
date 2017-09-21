@@ -147,9 +147,11 @@ public class MetaEntityImpl implements MetaEntity {
 
         return name;
     }
-    
-    
-    
+
+    @Override
+    public int compareTo(MetaEntity o) {
+        return this.getName().compareTo(o.getName());
+    }
 }
 
 

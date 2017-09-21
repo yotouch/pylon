@@ -2,7 +2,7 @@ package com.yotouch.core.entity;
 
 import java.util.List;
 
-public interface MetaEntity {
+public interface MetaEntity extends Comparable<MetaEntity> {
     
     <T extends Object> MetaField<T> getMetaField(String name);
     
