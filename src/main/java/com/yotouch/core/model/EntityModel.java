@@ -1,8 +1,6 @@
 package com.yotouch.core.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.yotouch.core.Consts;
 import org.springframework.stereotype.Component;
 
 import java.util.Calendar;
