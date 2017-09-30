@@ -158,7 +158,7 @@ public class QiniuUtil {
         }
 
         String qiniuUrl = att.v("qiniuUrl");
-        if (StringUtils.isEmpty(qiniuUrl)) {
+        if (StringUtils.isEmpty(qiniuUrl) || qiniuUrl.contains("error")) {
             qiniuUrl = this.upload(att, params);
 
             att.setValue("qiniuUrl", qiniuUrl);
