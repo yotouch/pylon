@@ -76,8 +76,6 @@ dependencies {
 
 	compile('org.jodd:jodd-http:3.7')
 	compile('org.apache.commons:commons-lang3:3.4')
-	//compile('com.github.binarywang:weixin-java-mp:2.0.0')
-	//compile('com.github.liyiorg:weixin-popular:2.8.0')
 
 	compile('com.vdurmont:emoji-java:3.1.1')
 
