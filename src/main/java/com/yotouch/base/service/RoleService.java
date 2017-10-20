@@ -5,6 +5,7 @@ import com.yotouch.core.runtime.DbSession;
 
 import java.util.List;
 
+@Deprecated
 public interface RoleService {
     
     List<Entity> getUserRoles(Entity user);
