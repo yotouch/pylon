@@ -13,7 +13,6 @@ public class DateTimeUtil {
     
     //new SimpleDateFormat("yyyy-MM-ddTHH:mm:ss"),
     static final SimpleDateFormat[] DATETIME_FORMAT_LIST = new SimpleDateFormat[] {
-            new SimpleDateFormat("yyyy/M/d"),
             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"),
             new SimpleDateFormat("yyyy-MM-dd HH:mm"),
             new SimpleDateFormat("yyyyMMddHHmmss"),
