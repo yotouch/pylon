@@ -271,14 +271,18 @@ public class QueryTests {
         DbSession ds = rt.createDbSession();
 
         Query q = new Query();
-        FunctionField qf = new DistinctField("distinctAge").setArg("age");
         IntMetaFieldImpl age = new IntMetaFieldImpl();
         age.setName("age");
-        qf.setMetaField(age);
+
+        FunctionField qf = new DistinctField("distinctAge", age).setArg("age");
+
         q.addField(qf);
+        q.addOrderBy(new OrderBy("distinctAge"));
         q.rawSql("1 = 1 ", new Object[]{});
         List<Entity> entityList = ds.query("user", q);
 
         assertEquals(2, entityList.size());
+        assertEquals(88, (int)entityList.get(0).v(qf.getName()));
+        assertEquals(99, (int)entityList.get(1).v(qf.getName()));
     }
 }

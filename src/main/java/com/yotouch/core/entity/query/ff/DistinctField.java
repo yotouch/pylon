@@ -1,19 +1,11 @@
 package com.yotouch.core.entity.query.ff;
 
-import com.yotouch.core.entity.MetaField;
+import com.yotouch.core.entity.MetaFieldImpl;
 
 public class DistinctField extends FunctionField {
 
-    public DistinctField(String name, MetaField metaField) {
-        super(name);
-    }
-
-    public DistinctField(String name) {
-        super(name);
-    }
-
-    public DistinctField() {
-        super("func_distinct");
+    public DistinctField(String name, MetaFieldImpl metaField) {
+        super(name, metaField);
     }
 
     @Override

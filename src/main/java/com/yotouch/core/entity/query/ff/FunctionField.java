@@ -20,6 +20,7 @@ public abstract class FunctionField implements QueryField {
 
     public FunctionField(String name, MetaFieldImpl metaField) {
         this.name = name;
+        this.arg = metaField.getName();
         this.metaField = metaField;
     }
 
