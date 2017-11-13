@@ -62,6 +62,3 @@ public interface DbSession {
     
     List<Entity> queryListByField(String metaEntity, String fieldName, Object value);
 }
-
-
-
