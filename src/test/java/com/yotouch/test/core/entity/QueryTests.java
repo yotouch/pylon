@@ -1,7 +1,9 @@
 package com.yotouch.test.core.entity;
 
+import com.yotouch.core.entity.MetaFieldImpl;
 import com.yotouch.core.entity.mf.IntMetaFieldImpl;
 import com.yotouch.core.entity.query.ff.CountField;
+import com.yotouch.core.entity.query.ff.DistinctField;
 import com.yotouch.core.entity.query.ff.FunctionField;
 import com.yotouch.core.entity.query.Query;
 import com.yotouch.core.entity.query.QueryField;
@@ -260,5 +262,26 @@ public class QueryTests {
         assertEquals("f99", (String)el.get(1).v("nickname"));
         assertEquals(99, (int)el.get(2).v("age"));
         assertEquals("f99-2", (String)el.get(2).v("nickname"));
+    }
+
+    @Test
+    public void testDistinct() {
+        YotouchRuntime rt = ytApp.getRuntime();
+        DbSession ds = rt.createDbSession();
+
+        Query q = new Query();
+        IntMetaFieldImpl age = new IntMetaFieldImpl();
+        age.setName("age");
+
+        FunctionField qf = new DistinctField("distinctAge", age).setArg("age");
+
+        q.addField(qf);
+        q.addOrderBy(new OrderBy("distinctAge"));
+        q.rawSql("1 = 1 ", new Object[]{});
+        List<Entity> entityList = ds.query("user", q);
+
+        assertEquals(2, entityList.size());
+        assertEquals(88, (int)entityList.get(0).v(qf.getName()));
+        assertEquals(99, (int)entityList.get(1).v(qf.getName()));
     }
 }

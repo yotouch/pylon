@@ -172,9 +172,18 @@ public class WebUtil {
             url = "http://" + url;
         }
 
+        url = replaceSharpToSharp(url);
 
+        return url;
+    }
 
-
+    /**
+     * 这是一个workaround
+     * @param url
+     * @return
+     */
+    private String replaceSharpToSharp(String url){
+        url = url.replace("_sharp_", "#");
         return url;
     }
 
@@ -302,10 +311,14 @@ public class WebUtil {
         return "";
     }
 
-    public Map<String, Object> getRetMap() {
+    public Map<String, Object> getRetMap(){
+        return getRetMap(0, "") ;
+    }
+
+    public Map<String, Object> getRetMap(int errorCode, String errorMsg) {
         Map<String, Object> m = new HashMap<>();
-        m.put("errorCode", 0);
-        m.put("errorMsg", "");
+        m.put("errorCode", errorCode);
+        m.put("errorMsg", errorMsg);
 
         Map<String, Object> rm = new HashMap<>();
         m.put("data", rm);
