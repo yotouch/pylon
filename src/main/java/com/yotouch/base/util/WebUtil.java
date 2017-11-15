@@ -172,9 +172,18 @@ public class WebUtil {
             url = "http://" + url;
         }
 
+        url = replaceSharpToSharp(url);
 
+        return url;
+    }
 
-
+    /**
+     * 这是一个workaround
+     * @param url
+     * @return
+     */
+    private String replaceSharpToSharp(String url){
+        url = url.replace("_sharp_", "#");
         return url;
     }
 
