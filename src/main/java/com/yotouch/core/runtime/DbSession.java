@@ -16,6 +16,8 @@ public interface DbSession {
 
     Entity save(Entity e);
 
+    void insertBatch(List<Entity> entityList);
+
     <M extends EntityModel> M save(M entityModel, String entityName);
 
     <M extends EntityModel> Entity getEntityFromModel(M entityModel, String entityName);

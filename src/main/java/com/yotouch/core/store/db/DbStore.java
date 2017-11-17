@@ -26,6 +26,8 @@ public interface DbStore {
 
     String insert(MetaEntity me, List<FieldValue<?>> fvs, String uuid);
 
+    void insertBatch(MetaEntity me, List<Entity> entityList);
+
     void update(MetaEntity me, String uuid, List<FieldValue<?>> fvs);
 
     List<Entity> query(MetaEntity me, String uuid, EntityRowMapper mapper);

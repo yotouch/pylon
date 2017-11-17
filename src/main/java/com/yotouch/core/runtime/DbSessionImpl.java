@@ -183,6 +183,34 @@ public class DbSessionImpl implements DbSession {
     }
 
     @Override
+    public void insertBatch(List<Entity> entityList) {
+        if (entityList == null || entityList.isEmpty()) {
+            return;
+        }
+
+        Entity entity = entityList.get(0);
+        MetaEntity metaEntity = entity.getMetaEntity();
+
+        final Date now = new Date();
+        for (Entity e : entityList) {
+            if (loginUser != null) {
+                e.setValue("creatorUuid", loginUser.getUuid());
+            }
+
+            Calendar c = e.v("createdAt");
+            if (c == null) {
+                e.setValue("createdAt", now);
+            }
+            if (e.v("status") == null) {
+                e.setValue("status", Consts.STATUS_NORMAL);
+            }
+
+        }
+
+        this.dbStore.insertBatch(metaEntity, entityList);
+    }
+
+    @Override
     public <M extends EntityModel> M save(M entityModel, String entityName) {
         Entity entity = getEntityFromModel(entityModel, entityName);
 
