@@ -7,6 +7,7 @@ import com.google.common.base.Joiner;
 import com.yotouch.core.entity.query.Query;
 import com.yotouch.core.entity.query.ff.CountField;
 import com.yotouch.core.exception.DbSessionException;
+import com.yotouch.core.exception.NoSameMetaEntityException;
 import com.yotouch.core.helper.PaginationHelper;
 import com.yotouch.core.model.EntityModel;
 import org.slf4j.Logger;
@@ -26,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 @Component
@@ -182,7 +184,8 @@ public class DbSessionImpl implements DbSession {
     }
 
     @Override
-    public void saveBatch(List<Entity> entityList) {
+    @Transactional
+    public void saveBatch(List<Entity> entityList) throws NoSameMetaEntityException {
         if (entityList == null || entityList.isEmpty()) {
             return;
         }
@@ -193,6 +196,10 @@ public class DbSessionImpl implements DbSession {
         final Date now = new Date();
         List<Entity> newEntityList = new ArrayList<>();
         for (Entity e : entityList) {
+            if (!Objects.equals(metaEntity.getName(), e.getMetaEntity().getName())) {
+                throw new NoSameMetaEntityException(metaEntity.getName(), e.getMetaEntity().getName());
+            }
+
             if (e.isNew()) {
                 if (loginUser != null) {
                     e.setValue("creatorUuid", loginUser.getUuid());
@@ -213,7 +220,6 @@ public class DbSessionImpl implements DbSession {
                 e.setValue("updatedAt", new Date());
                 this.dbStore.update(metaEntity, e.getUuid(), ((EntityImpl) e).getFieldValueList());
             }
-
         }
 
         this.dbStore.insertBatch(metaEntity, newEntityList);
