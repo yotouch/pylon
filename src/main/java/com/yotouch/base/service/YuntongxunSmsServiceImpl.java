@@ -61,6 +61,7 @@ public class YuntongxunSmsServiceImpl implements SmsService {
             for (String key:keySet){
                 Object object = data.get(key);
                 System.out.println(key +" = "+object);
+                return true ;
             }
         } else {
             //异常返回输出错误码和错误信息
