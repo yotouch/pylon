@@ -190,8 +190,7 @@ public class DbSessionImpl implements DbSession {
             return;
         }
 
-        Entity entity = entityList.get(0);
-        MetaEntity metaEntity = entity.getMetaEntity();
+        MetaEntity metaEntity = entityList.get(0).getMetaEntity();
 
         final Date now = new Date();
         List<Entity> newEntityList = new ArrayList<>();
@@ -212,7 +211,7 @@ public class DbSessionImpl implements DbSession {
                 if (e.v("status") == null) {
                     e.setValue("status", Consts.STATUS_NORMAL);
                 }
-                newEntityList.add(entity);
+                newEntityList.add(e);
             } else {
                 if (this.loginUser != null) {
                     e.setValue("updaterUuid", this.loginUser.getUuid());
