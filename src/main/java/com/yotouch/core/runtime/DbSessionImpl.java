@@ -66,6 +66,8 @@ public class DbSessionImpl implements DbSession {
 
     @Override
     public Entity save(Entity e) {
+        setPredefinedFieldValue(e);
+
         String uuid = e.getUuid();
 
         EntityImpl ei = (EntityImpl) e;
@@ -79,12 +81,6 @@ public class DbSessionImpl implements DbSession {
                 e.setValue("creatorId", this.loginUser.getUuid());
             }
 
-            if (this.predefinedFieldMap != null) {
-                for(String column : this.predefinedFieldMap.keySet()) {
-                    e.setValue(column, this.predefinedFieldMap.get(column));
-                }
-            }
-            
             Calendar c = e.v("createdAt");
             if (c == null) {
                 e.setValue("createdAt", new Date());
@@ -105,12 +101,6 @@ public class DbSessionImpl implements DbSession {
         } else {
             if (this.loginUser != null) {
                 e.setValue("updaterId", this.loginUser.getUuid());
-            }
-
-            if (this.predefinedFieldMap != null) {
-                for(String column : this.predefinedFieldMap.keySet()) {
-                    e.setValue(column, this.predefinedFieldMap.get(column));
-                }
             }
 
             e.setValue("updatedAt", new Date());
@@ -195,6 +185,14 @@ public class DbSessionImpl implements DbSession {
         
 
         return this.getEntity(e.getMetaEntity().getName(), uuid);
+    }
+
+    private void setPredefinedFieldValue(Entity e) {
+        if (this.predefinedFieldMap != null) {
+            for(String column : this.predefinedFieldMap.keySet()) {
+                e.setValue(column, this.predefinedFieldMap.get(column));
+            }
+        }
     }
 
     @Override

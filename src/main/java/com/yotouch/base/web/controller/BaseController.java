@@ -58,10 +58,8 @@ public abstract class BaseController {
             MetaEntity me = loginUser.getMetaEntity();
             MetaField cf = me.getMetaField("company");
             if (cf != null) {
-                Entity company = loginUser.sr(dbSession, "company");
-                if (company != null) {
-                    map.put("companyUuid", company.getUuid());
-                }
+                String companyUuid = loginUser.v("company");
+                map.put("company", companyUuid);
             }
 
             dbSession.setPredefinedFieldMap(map);
