@@ -3,6 +3,8 @@ package com.yotouch.base.web.controller;
 import javax.servlet.http.HttpServletRequest;
 
 import com.yotouch.core.Consts;
+import com.yotouch.core.entity.MetaEntity;
+import com.yotouch.core.entity.MetaField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,11 +18,14 @@ import com.yotouch.base.util.PropUtil;
 import com.yotouch.core.entity.Entity;
 import org.springframework.util.StringUtils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public abstract class BaseController {
 
     private static final Logger logger = LoggerFactory.getLogger(BaseController.class);
 
-    
+
     @Autowired
     protected YotouchApplication ytApp;
 
@@ -45,6 +50,22 @@ public abstract class BaseController {
         DbSession dbSession = this.getDbSession();
 
         Entity loginUser = (Entity) request.getAttribute(Consts.RUNTIME_VARIABLE_USER);
+        if (loginUser != null) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("creatorId", loginUser.getUuid());
+            map.put("updaterId", loginUser.getUuid());
+
+            MetaEntity me = loginUser.getMetaEntity();
+            MetaField cf = me.getMetaField("company");
+            if (cf != null) {
+                Entity company = loginUser.sr(dbSession, "company");
+                if (company != null) {
+                    map.put("companyUuid", company.getUuid());
+                }
+            }
+
+            dbSession.setPredefinedFieldMap(map);
+        }
         dbSession.setLoginUser(loginUser);
         return dbSession;
     }

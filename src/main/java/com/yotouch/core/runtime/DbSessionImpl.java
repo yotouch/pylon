@@ -45,6 +45,8 @@ public class DbSessionImpl implements DbSession {
 
     private Entity loginUser;
 
+    private Map<String, Object> predefinedFieldMap;
+
     private boolean isMrLazy() {
         return "1".equals(isMrLazyStr) || "true".equalsIgnoreCase(isMrLazyStr);
     }
@@ -76,6 +78,12 @@ public class DbSessionImpl implements DbSession {
             if (this.loginUser != null) {
                 e.setValue("creatorId", this.loginUser.getUuid());
             }
+
+            if (this.predefinedFieldMap != null) {
+                for(String column : this.predefinedFieldMap.keySet()) {
+                    e.setValue(column, this.predefinedFieldMap.get(column));
+                }
+            }
             
             Calendar c = e.v("createdAt");
             if (c == null) {
@@ -98,6 +106,13 @@ public class DbSessionImpl implements DbSession {
             if (this.loginUser != null) {
                 e.setValue("updaterId", this.loginUser.getUuid());
             }
+
+            if (this.predefinedFieldMap != null) {
+                for(String column : this.predefinedFieldMap.keySet()) {
+                    e.setValue(column, this.predefinedFieldMap.get(column));
+                }
+            }
+
             e.setValue("updatedAt", new Date());
             // Do Update
             this.dbStore.update(me, uuid, ei.getFieldValueList());
@@ -368,6 +383,11 @@ public class DbSessionImpl implements DbSession {
     @Override
     public void setLoginUser(Entity loginUser) {
         this.loginUser = loginUser;
+    }
+
+    @Override
+    public void setPredefinedFieldMap(Map<String, Object> predefinedFieldMap) {
+        this.predefinedFieldMap = predefinedFieldMap;
     }
 
     @Override

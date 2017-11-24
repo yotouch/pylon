@@ -1,6 +1,7 @@
 package com.yotouch.core.runtime;
 
 import java.util.List;
+import java.util.Map;
 
 import com.yotouch.core.entity.Entity;
 import com.yotouch.core.entity.MetaEntity;
@@ -61,4 +62,6 @@ public interface DbSession {
     Entity queryOneByField(String metaEntity, String fieldName, Object value);
     
     List<Entity> queryListByField(String metaEntity, String fieldName, Object value);
+
+    void setPredefinedFieldMap(Map<String, Object> predefinedFieldMap);
 }
