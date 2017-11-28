@@ -228,7 +228,7 @@ public class DbSessionImpl implements DbSession {
     public <M extends EntityModel> M save(M entityModel, String entityName) {
         Entity entity = getEntityFromModel(entityModel, entityName);
 
-        return this.save(entity.fromModel(entityModel)).looksLike((Class<M>) entityModel.getClass());
+        return this.save(entity).looksLike((Class<M>) entityModel.getClass());
     }
 
     @Override
@@ -240,7 +240,7 @@ public class DbSessionImpl implements DbSession {
             entity = this.newEntity(entityName);
         }
 
-        return entity;
+        return entity.fromModel(entityModel);
     }
 
     @Override
