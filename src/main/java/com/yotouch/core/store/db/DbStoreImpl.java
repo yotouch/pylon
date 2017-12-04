@@ -13,14 +13,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-
 import com.yotouch.core.Consts;
 import com.yotouch.core.entity.Entity;
+import com.yotouch.core.entity.EntityImpl;
 import com.yotouch.core.entity.EntityRowMapper;
 import com.yotouch.core.entity.MetaEntity;
 import com.yotouch.core.entity.MetaEntityImpl;
@@ -356,6 +357,73 @@ public class DbStoreImpl implements DbStore {
         logger.debug("INSERT INTO " + mei.getTableName() + " uuid " + uuid);
 
         return uuid;        
+    }
+
+    @Override
+    public void insertBatch(MetaEntity me, List<Entity> entityList) {
+        if (entityList == null || entityList.isEmpty()) {
+            return;
+        }
+
+        MetaEntityImpl mei = (MetaEntityImpl) me;
+
+        String sql = "INSERT INTO " + mei.getTableName() + " (uuid ";
+
+        String qStr = "?";
+
+        Entity entity = entityList.get(0);
+        EntityImpl entityImpl = (EntityImpl) entity;
+        List<FieldValue<?>> fvs = entityImpl.getFieldValueList();
+
+        for (FieldValue<?> fv : fvs) {
+            MetaField<?> mf = fv.getField();
+
+            String fname = mf.getName();
+
+            if (fname.equals("uuid") || mf.isMultiReference()) {
+                continue;
+            }
+
+            if (mf.isSingleReference()) {
+                fname = fname + "Uuid";
+            }
+
+            sql += " , " + fname;
+            qStr += " , ?";
+        }
+
+        sql += ") VALUES ( "+qStr+")";
+
+        logger.debug("Do INSERT " + sql);
+
+        this.jdbcTpl.batchUpdate(sql, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                Entity e = entityList.get(i);
+
+                EntityImpl ei = (EntityImpl) e;
+                List<FieldValue<?>> fieldValueList = ei.getFieldValueList();
+
+                ps.setString(1, UUID.randomUUID().toString());
+                int pos = 2;
+                for (int i1 = 0; i1 < fieldValueList.size(); i1++) {
+                    FieldValue<?> fv = fieldValueList.get(i1);
+                    MetaField<?> mf = fv.getField();
+                    if (mf.getName().equals("uuid") || mf.isMultiReference()) {
+                        continue;
+                    }
+                    setPsValue(ps, pos, fv);
+                    pos += 1;
+                }
+            }
+
+            @Override
+            public int getBatchSize() {
+                return entityList.size();
+            }
+        });
+
+        logger.debug("INSERT BATCH INTO " + mei.getTableName() + " TOTAL: " + entityList.size());
     }
 
     @Override

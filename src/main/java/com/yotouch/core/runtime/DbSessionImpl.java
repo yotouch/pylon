@@ -7,6 +7,7 @@ import com.google.common.base.Joiner;
 import com.yotouch.core.entity.query.Query;
 import com.yotouch.core.entity.query.ff.CountField;
 import com.yotouch.core.exception.DbSessionException;
+import com.yotouch.core.exception.NoSameMetaEntityException;
 import com.yotouch.core.helper.PaginationHelper;
 import com.yotouch.core.model.EntityModel;
 import org.slf4j.Logger;
@@ -26,12 +27,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 @Component
 @CacheConfig(cacheNames = "Entity")
 public class DbSessionImpl implements DbSession {
-    
+
     static final private Logger logger = LoggerFactory.getLogger(DbSessionImpl.class);
 
     @Autowired
@@ -71,7 +73,7 @@ public class DbSessionImpl implements DbSession {
         String uuid = e.getUuid();
 
         EntityImpl ei = (EntityImpl) e;
-        
+
         MetaEntity me = e.getMetaEntity();
 
         boolean isNew = ei.isNew();
@@ -88,10 +90,10 @@ public class DbSessionImpl implements DbSession {
             if (e.v("status") == null) {
                 e.setValue("status", Consts.STATUS_NORMAL);
             }
-            
+
             uuid = e.getUuid();
             if (StringUtils.isEmpty(uuid)) {
-                uuid = this.dbStore.insert(me, ei.getFieldValueList());   
+                uuid = this.dbStore.insert(me, ei.getFieldValueList());
             } else if (uuid.startsWith("-")) {
                 uuid = uuid.substring(1);
                 uuid = this.dbStore.insert(me, ei.getFieldValueList(), uuid);
@@ -107,7 +109,7 @@ public class DbSessionImpl implements DbSession {
             // Do Update
             this.dbStore.update(me, uuid, ei.getFieldValueList());
         }
-        
+
         // save multi reference
         for (MetaField<?> mf : me.getMetaFields()) {
             if (mf.isMultiReference() &&
@@ -164,7 +166,7 @@ public class DbSessionImpl implements DbSession {
 
                 weight += 1;
 
-                for (String targetUuid: values) {
+                for (String targetUuid : values) {
 
                     if (!newUuids.contains(targetUuid)) {
                         continue;
@@ -182,7 +184,6 @@ public class DbSessionImpl implements DbSession {
             }
         }
 
-        
 
         return this.getEntity(e.getMetaEntity().getName(), uuid);
     }
@@ -196,10 +197,51 @@ public class DbSessionImpl implements DbSession {
     }
 
     @Override
+    @Transactional
+    public void saveBatch(List<Entity> entityList) throws NoSameMetaEntityException {
+        if (entityList == null || entityList.isEmpty()) {
+            return;
+        }
+
+        MetaEntity metaEntity = entityList.get(0).getMetaEntity();
+
+        final Date now = new Date();
+        List<Entity> newEntityList = new ArrayList<>();
+        for (Entity e : entityList) {
+            if (!Objects.equals(metaEntity.getName(), e.getMetaEntity().getName())) {
+                throw new NoSameMetaEntityException(metaEntity.getName(), e.getMetaEntity().getName());
+            }
+
+            if (e.isNew()) {
+                if (loginUser != null) {
+                    e.setValue("creatorUuid", loginUser.getUuid());
+                }
+
+                Calendar c = e.v("createdAt");
+                if (c == null) {
+                    e.setValue("createdAt", now);
+                }
+                if (e.v("status") == null) {
+                    e.setValue("status", Consts.STATUS_NORMAL);
+                }
+                newEntityList.add(e);
+            } else {
+                if (this.loginUser != null) {
+                    e.setValue("updaterUuid", this.loginUser.getUuid());
+                }
+                e.setValue("updatedAt", new Date());
+                this.dbStore.update(metaEntity, e.getUuid(), ((EntityImpl) e).getFieldValueList());
+            }
+        }
+
+        this.dbStore.insertBatch(metaEntity, newEntityList);
+    }
+
+    @Override
     public <M extends EntityModel> M save(M entityModel, String entityName) {
         Entity entity = getEntityFromModel(entityModel, entityName);
 
-        return this.save(entity.fromModel(entityModel)).looksLike((Class<M>) entityModel.getClass());
+        return this.save(entity).looksLike((Class<M>) entityModel.getClass());
     }
 
     @Override
@@ -211,14 +253,13 @@ public class DbSessionImpl implements DbSession {
             entity = this.newEntity(entityName);
         }
 
-        return entity;
+        return entity.fromModel(entityModel);
     }
 
     @Override
     public void deleteRawSql(MetaEntity me, String where, Object[] args) {
         this.dbStore.deleteRawSql(me, where, args);
     }
-
 
 
     @Override
@@ -243,12 +284,12 @@ public class DbSessionImpl implements DbSession {
         MetaEntity me = entityMgr.getMetaEntity(entityName);
         return this.getEntity(me, uuid);
     }
-    
+
     @Override
     //@Cacheable
     public Entity getEntity(MetaEntity me, String uuid) {
         List<Entity> el = this.dbStore.query(me, uuid, new EntityRowMapper(this, me, isMrLazy()));
-        
+
         if (el.isEmpty()) {
             return null;
         } else {
@@ -332,7 +373,7 @@ public class DbSessionImpl implements DbSession {
         if (el.isEmpty()) {
             return null;
         }
-        
+
         return el.get(0);
     }
 
@@ -394,7 +435,7 @@ public class DbSessionImpl implements DbSession {
 
         int v = 0;
         if (o instanceof String) {
-            v = Integer.parseInt((String)o);
+            v = Integer.parseInt((String) o);
         } else {
             v = (int) o;
         }
@@ -424,16 +465,16 @@ public class DbSessionImpl implements DbSession {
 
     @Override
     public Entity queryOneByField(String metaEntity, String fieldName, Object value) {
-        return this.queryOneRawSql(metaEntity, fieldName + "= ?", new Object[]{ value });
+        return this.queryOneRawSql(metaEntity, fieldName + "= ?", new Object[]{value});
     }
 
     @Override
     public List<Entity> queryListByField(String metaEntity, String fieldName, Object value) {
 
         return this.queryRawSql(
-                metaEntity, 
-                fieldName + "= ?", 
-                new Object[]{ value }
+                metaEntity,
+                fieldName + "= ?",
+                new Object[]{value}
         );
 
     }

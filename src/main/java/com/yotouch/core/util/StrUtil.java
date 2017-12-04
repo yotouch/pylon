@@ -36,6 +36,6 @@ public class StrUtil {
         String[] qa = new String[valueList.size()];
         Arrays.fill(qa, "?");
 
-        return String.join(",", qa);
+        return "(" + String.join(",", qa) + ")";
     }
 }
