@@ -1,0 +1,8 @@
+format: 2
+entities:
+  prop:
+    fields:
+      name:
+        dataType: STRING
+      value:
+        dataType: STRING
