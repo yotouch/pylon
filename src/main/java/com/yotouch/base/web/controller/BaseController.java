@@ -42,13 +42,7 @@ public abstract class BaseController {
     @Autowired
     private DbSession dbSession;
 
-    protected DbSession getDbSession() {
-        return dbSession;
-    }
-
     protected DbSession getDbSession(HttpServletRequest request) {
-        DbSession dbSession = this.getDbSession();
-
         Entity loginUser = (Entity) request.getAttribute(Consts.RUNTIME_VARIABLE_USER);
         if (loginUser != null) {
             Map<String, Object> map = new HashMap<>();

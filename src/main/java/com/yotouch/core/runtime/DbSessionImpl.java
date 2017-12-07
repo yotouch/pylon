@@ -26,12 +26,14 @@ import com.yotouch.core.store.db.DbStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 @Component
 @CacheConfig(cacheNames = "Entity")
+@Scope("prototype")
 public class DbSessionImpl implements DbSession {
 
     static final private Logger logger = LoggerFactory.getLogger(DbSessionImpl.class);
