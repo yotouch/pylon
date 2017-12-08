@@ -53,7 +53,9 @@ public abstract class BaseController {
             MetaField cf = me.getMetaField("company");
             if (cf != null) {
                 String companyUuid = loginUser.v("company");
-                map.put("company", companyUuid);
+                if (!StringUtils.isEmpty(companyUuid)) {
+                    map.put("company", companyUuid);
+                }
             }
 
             dbSession.setPredefinedFieldMap(map);
