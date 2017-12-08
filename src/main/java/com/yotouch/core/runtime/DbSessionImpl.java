@@ -193,7 +193,10 @@ public class DbSessionImpl implements DbSession {
     private void setPredefinedFieldValue(Entity e) {
         if (this.predefinedFieldMap != null) {
             for(String column : this.predefinedFieldMap.keySet()) {
-                e.setValue(column, this.predefinedFieldMap.get(column));
+                Object v = e.v(column);
+                if (v == null) {
+                    e.setValue(column, this.predefinedFieldMap.get(column));
+                }
             }
         }
     }
