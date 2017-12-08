@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.yotouch.base.util.QiniuUtil;
@@ -47,10 +48,10 @@ public class AttachmentController extends BaseController {
     @RequestMapping("/admin/attachment/watermark")
     public @ResponseBody Map<String, Object> watermarkUpload(
             @RequestParam("attUuid") String attUuid,
-            @RequestParam("watermarkUuid") String wmUuid
+            @RequestParam("watermarkUuid") String wmUuid,
+            HttpServletRequest request
     ) {
-
-        DbSession dbSession = this.getDbSession();
+        DbSession dbSession = this.getDbSession(request);
         Entity att = dbSession.getEntity("attachment", attUuid);
         byte[] attConetnt = att.v("content");
 
@@ -123,10 +124,11 @@ public class AttachmentController extends BaseController {
 
     @RequestMapping("/attachment/qnurl/{uuid}")
     public @ResponseBody  String qiniuUrl(
-            @PathVariable("uuid") String uuid
+            @PathVariable("uuid") String uuid,
+            HttpServletRequest request
     ) throws IOException {
 
-        DbSession dbSession = this.getDbSession();
+        DbSession dbSession = this.getDbSession(request);
         Entity att = dbSession.getEntity("attachment", uuid);
 
         return qnUtil.getAndUploadQiniuUrl(dbSession, att);
