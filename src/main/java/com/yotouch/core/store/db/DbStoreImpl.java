@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
@@ -28,8 +29,8 @@ import com.yotouch.core.entity.MetaEntityImpl;
 import com.yotouch.core.entity.MetaField;
 import com.yotouch.core.entity.fv.FieldValue;
 
-
 @Service
+@Scope("prototype")
 public class DbStoreImpl implements DbStore {
 
     static final private Logger logger = LoggerFactory.getLogger(DbStoreImpl.class);

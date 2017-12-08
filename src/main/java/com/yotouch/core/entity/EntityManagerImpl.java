@@ -5,10 +5,13 @@ import com.yotouch.core.config.Configure;
 import com.yotouch.core.entity.mf.MultiReferenceMetaFieldImpl;
 import com.yotouch.core.exception.NoSuchMetaEntityException;
 import com.yotouch.core.store.db.DbStore;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.BadSqlGrammarException;
@@ -29,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Scope("singleton")
 public class EntityManagerImpl implements EntityManager {
 
     static final Logger logger = LoggerFactory.getLogger(EntityManagerImpl.class);
