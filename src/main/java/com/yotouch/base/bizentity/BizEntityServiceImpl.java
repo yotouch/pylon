@@ -3,6 +3,8 @@ package com.yotouch.base.bizentity;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yotouch.base.bizentity.handler.AfterActionHandler;
 import com.yotouch.base.bizentity.handler.BeforeActionHandler;
 import com.yotouch.base.bizentity.handler.CanDoActionHandler;
@@ -150,6 +152,7 @@ public class BizEntityServiceImpl implements BizEntityService {
         beforeActionHandler.doBeforeAction(dbSession, wfa, entity, args);
 
         entity.setValue(Consts.BIZ_ENTITY_FIELD_STATE, wfa.getTo().getName());
+        List<Map<String, Object>> diffList = entity.diffValueList();
         entity = dbSession.save(entity);
 
         Entity wfaLog = dbSession.newEntity("workflowActionLog");
@@ -157,6 +160,20 @@ public class BizEntityServiceImpl implements BizEntityService {
         wfaLog.setValue("workflow", wfa.getWorkflow().getName());
         wfaLog.setValue("entityUuid", entity.getUuid());
         wfaLog.setValue("entityName", entity.getMetaEntity().getName());
+
+        Map<String, Object> actionLog = (Map<String, Object>) args.get("actionLog");
+        if (actionLog != null) {
+            wfaLog.setValue("note", actionLog.get(Consts.WORKFLOW_ACTION_LOG_NOTE));
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            String s = mapper.writeValueAsString(diffList);
+            wfaLog.setValue("extra", s);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
         dbSession.save(wfaLog);
 
         return new TransitResult(wfa, entity);
