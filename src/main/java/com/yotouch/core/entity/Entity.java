@@ -86,4 +86,6 @@ public interface Entity {
 
     Entity fromMap(Map<String, Object> map);
 
+    List<Map<String, Object>> diffValueList();
+
 }
