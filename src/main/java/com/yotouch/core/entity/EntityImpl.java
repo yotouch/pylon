@@ -1,9 +1,6 @@
 package com.yotouch.core.entity;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -336,6 +333,25 @@ public class EntityImpl implements Entity {
                 }).count();
 
         return this;
+    }
+
+    @Override
+    public List<Map<String, Object>> diffValueList() {
+
+        List<Map<String, Object>> l = new ArrayList<>();
+
+        for (FieldValue<?> fv : this.getFieldValueList()) {
+            if (fv.isChanged()) {
+                Map<String, Object> m = new HashMap<>();
+                String fn = fv.getField().getName();
+                m.put(Consts.WORKFLOW_ACTION_EXTRA_DIFF_FIELD_NAME, fn);
+                m.put(Consts.WORKFLOW_ACTION_EXTRA_DIFF_OLD_VALUE, this.getOldValue(fn));
+                m.put(Consts.WORKFLOW_ACTION_EXTRA_DIFF_NEW_VALUE, this.v(fn));
+                l.add(m);
+            }
+        }
+
+        return l;
     }
 
     private <T extends EntityModel> Map<String, Object> modelToMap(T entityModel){

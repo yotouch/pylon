@@ -12,35 +12,42 @@ public interface Consts {
     String META_FIELD_DATA_TYPE_TEXT        = "TEXT";
     String META_FIELD_DATA_TYPE_BINARY      = "BINARY";
     String META_FIELD_DATA_TYPE_BOOLEAN     = "BOOL";
-    
-    
-    
+
+
+
     String FIELD_VARIABLE_NOW               = "${NOW}";
-    
+
     String DEFAULT_COMPANY_NAME             = "default";
-    
+
     String FIELD_NAME_COMPANY_UUID          = "companyUuid";
-    
+
     String WORKFLOW_STATE_TYPE_START        = "start";
     String WORKFLOW_STATE_TYPE_FINISH       = "finish";
     String WORKFLOW_STATE_TYPE_NORMAL       = "normal";
-    
+
     String WORKFLOW_STATE_ANY_STATE         = "__ANY__";
     String WORKFLOW_STATE_SELF_STATE        = "__SELF__";
 
     String WORKFLOW_ACTION_TYPE_TO_SELF     = "to_self";
     String WORKFLOW_ACTION_TYPE_NORMAL      = "normal";
-    
+
+    String WORKFLOW_ACTION_LOG_NOTE         = "ACTION_LOG_NOTE";
+
+    String WORKFLOW_ACTION_EXTRA_DIFF_FIELD_NAME = "fieldName";
+    String WORKFLOW_ACTION_EXTRA_DIFF_OLD_VALUE  = "oldValue";
+    String WORKFLOW_ACTION_EXTRA_DIFF_NEW_VALUE  = "newValue";
+
+
     String BIZ_ENTITY_FIELD_WORKFLOW        = "wf_workflow";
     String BIZ_ENTITY_FIELD_STATE           = "wf_state";
-    
+
     String CONFIG_KEY_INSTANCE_NAME         = "instanceName";
     String CONFIG_KEY_CONST                 = "const";
-    
+
     String META_FIELD_TYPE_DATA_FIELD       = "DATA_FIELD";
     String META_FIELD_TYPE_SINGLE_REFERENCE = "SINGLE_REFERENCE";
     String META_FIELD_TYPE_MULTI_REFERENCE  = "MULTI_REFERENCE";
-    
+
     int STATUS_NORMAL                       = 1000;
     int STATUS_DELETED                      = 1001;
     int STATUS_LOCKING                      = 1004;
@@ -50,11 +57,11 @@ public interface Consts {
     int STATUS_PAYMENT_DEPOSIT_FAILED       = 6010;   // 钱等待存入
     int STATUS_PAYMENT_DEPOSITED            = 6050;   // 钱已经存入
     int STATUS_PAYMENT_WITHDRAWN            = 6100;   // 钱已经支出
-    
+
     String WECHAT_STATE_REDIRECT            = "urlRedirect";
-    
+
     String COOKIE_NAME_WX_USER_UUID         = "wxUserUuid";
-    
+
     String RUNTIME_VARIABLE_WECHAT_USER     = "WECHAT_USER";
     String RUNTIME_VARIABLE_WX_APPID        = "WECHAT_APPID";
     String RUNTIME_VARIABLE_WX_JS_ARGS      = "WECHAT_JS_ARGS";
@@ -87,7 +94,7 @@ public interface Consts {
 
     String WECHAT_TRADE_STATUS_SUCCESS      = "SUCCESS";
     String WECHAT_TRADE_STATUS_NOTPAY       = "NOTPAY";
-    
+
     int AJAX_STATUS_FAILED                  = 1;
     int AJAX_STATUS_OK                      = 0;
 
@@ -101,7 +108,7 @@ public interface Consts {
     int DUPLICATE_NAME                       = 5400; // 用户名重复
     int PWD_UNCONSISTENCY                    = 5401; // 重复密码不一致
     int DUPLICATE_PHONE                      = 5410; // 电话重复
-    
+
     int paginationWidth                     = 5;
     int itemPerPage                         = 20;
 

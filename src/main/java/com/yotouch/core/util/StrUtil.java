@@ -1,5 +1,7 @@
 package com.yotouch.core.util;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -30,4 +32,10 @@ public class StrUtil {
         return this.genVCode(4);
     }
 
+    public static <T> String buildQueryInString(List<T> valueList) {
+        String[] qa = new String[valueList.size()];
+        Arrays.fill(qa, "?");
+
+        return "(" + String.join(",", qa) + ")";
+    }
 }

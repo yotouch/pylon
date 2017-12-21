@@ -118,6 +118,8 @@ entities:
         dataType: UUID
       note:
         dataType: TEXT
+      extra:
+        dataType: TEXT
 
     valueOption:
       displayName:

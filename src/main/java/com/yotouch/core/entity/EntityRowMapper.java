@@ -22,11 +22,11 @@ import com.yotouch.core.entity.mf.MultiReferenceMetaFieldImpl;
 import com.yotouch.core.runtime.DbSession;
 
 public class EntityRowMapper implements RowMapper<Entity> {
-    
+
     static final Logger logger = LoggerFactory.getLogger(EntityRowMapper.class);
 
     private MetaEntity me;
-    
+
     private DbSession dbSession;
 
     private boolean isMrLazy;
@@ -61,15 +61,7 @@ public class EntityRowMapper implements RowMapper<Entity> {
             if (qf instanceof MetaField) {
                 checkMetaField(rs, (MetaField<?>) qf, e);
             } else if (qf instanceof FunctionField) {
-
-                if (Consts.META_FIELD_DATA_TYPE_INT.equalsIgnoreCase(qf.getDataType())) {
-                    e.setValue(qf.getName(), rs.getInt(idx));
-                } else if (Consts.META_FIELD_DATA_TYPE_LONG.equalsIgnoreCase(qf.getDataType())) {
-                        e.setValue(qf.getName(), rs.getLong(idx));
-                } else if (Consts.META_FIELD_DATA_TYPE_DOUBLE.equalsIgnoreCase(qf.getDataType())) {
-                    e.setValue(qf.getName(), rs.getDouble(idx));
-                }
-
+                checkFunctionField(rs, (FunctionField) qf, e);
             }
 
         }
@@ -162,6 +154,64 @@ public class EntityRowMapper implements RowMapper<Entity> {
                 } else {
                     e.setValue(fname, rs.getInt(fname));
                 }
+            }
+        }
+    }
+
+    private void checkFunctionField(ResultSet rs, FunctionField ff, Entity e) throws SQLException {
+        String fname = ff.getName();
+
+        logger.debug("Get value from functionFiled " + ff);
+
+
+        if (Consts.META_FIELD_DATA_TYPE_STRING.equalsIgnoreCase(ff.getDataType())
+                || Consts.META_FIELD_DATA_TYPE_UUID.equalsIgnoreCase(ff.getDataType())
+                || Consts.META_FIELD_DATA_TYPE_TEXT.equalsIgnoreCase(ff.getDataType())
+                ) {
+            e.setValue(fname, rs.getString(fname));
+        } else if (Consts.META_FIELD_DATA_TYPE_DATETIME.equalsIgnoreCase(ff.getDataType())) {
+            Date d = rs.getTimestamp(fname);
+            e.setValue(fname, d);
+        } else if (Consts.META_FIELD_DATA_TYPE_INT.equalsIgnoreCase(ff.getDataType())) {
+            Object o = rs.getObject(fname);
+            if (o == null) {
+                e.setValue(fname, null);
+            } else {
+                e.setValue(fname, rs.getInt(fname));
+            }
+        } else if (Consts.META_FIELD_DATA_TYPE_LONG.equalsIgnoreCase(ff.getDataType())) {
+            Object o = rs.getObject(fname);
+            if (o == null) {
+                e.setValue(fname, null);
+            } else {
+                e.setValue(fname, rs.getLong(fname));
+            }
+        } else if (Consts.META_FIELD_DATA_TYPE_DOUBLE.equalsIgnoreCase(ff.getDataType())) {
+            Object o = rs.getObject(fname);
+            if (o == null) {
+                e.setValue(fname, null);
+            } else {
+                e.setValue(fname, rs.getDouble(fname));
+            }
+        } else if (Consts.META_FIELD_DATA_TYPE_BINARY.equalsIgnoreCase(ff.getDataType())) {
+
+            Blob blob = rs.getBlob(fname);
+            if (blob == null) {
+                e.setValue(fname, null);
+            } else {
+                InputStream is = blob.getBinaryStream();
+                try {
+                    e.setValue(fname, ByteStreams.toByteArray(is));
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        } else if (Consts.META_FIELD_DATA_TYPE_BOOLEAN.equalsIgnoreCase(ff.getDataType())) {
+            Object o = rs.getObject(fname);
+            if (o == null) {
+                e.setValue(fname, null);
+            } else {
+                e.setValue(fname, rs.getInt(fname));
             }
         }
     }
