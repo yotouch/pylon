@@ -283,7 +283,7 @@ public class QiniuUtil {
 
     public Map<String, Object> getMediaInfo(String qiniuUrl) throws IOException {
 
-        URL url = new URL(qiniuUrl + "?avinfo");
+        URL url = new URL(qiniuUrl);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
         // By default it is GET request
