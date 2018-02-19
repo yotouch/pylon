@@ -3,6 +3,7 @@ package com.yotouch.base.service;
 import java.util.HashMap;
 import java.util.Set;
 
+import com.cloopen.rest.sdk.CCPRestSmsSDK;
 import com.google.common.base.Joiner;
 
 import org.slf4j.Logger;
@@ -11,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.cloopen.rest.sdk.CCPRestSmsSDK;
 
 @Service
 public class YuntongxunSmsServiceImpl implements SmsService {
