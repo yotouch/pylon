@@ -10,32 +10,38 @@ import java.util.Date;
 public class DateTimeUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(DateTimeUtil.class);
-    
-    //new SimpleDateFormat("yyyy-MM-ddTHH:mm:ss"),
-    static final SimpleDateFormat[] DATETIME_FORMAT_LIST = new SimpleDateFormat[] {
-            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"),
-            new SimpleDateFormat("yyyy-MM-dd HH:mm"),
-            new SimpleDateFormat("yyyyMMddHHmmss"),
-            new SimpleDateFormat("yyyy-MM-dd"),
-    };
 
-    static final SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
-    static final SimpleDateFormat sdfDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    
-    
+    private static final SimpleDateFormat[] getDateTimeFormatList() {
+        return new SimpleDateFormat[]{
+                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"),
+                new SimpleDateFormat("yyyy-MM-dd HH:mm"),
+                new SimpleDateFormat("yyyyMMddHHmmss"),
+                new SimpleDateFormat("yyyy-MM-dd"),
+        };
+    }
+
+    private static final SimpleDateFormat getSdfDate() {
+        return new SimpleDateFormat("yyyy-MM-dd");
+    }
+
+    private static final SimpleDateFormat getSdfDateTime() {
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    }
+
     public static final Date parseString(String dt) {
-        for (SimpleDateFormat sdf: DATETIME_FORMAT_LIST) {
+        for (SimpleDateFormat sdf : getDateTimeFormatList()) {
             try {
                 return sdf.parse(dt);
             } catch (Exception e) {
+                logger.error(e.getMessage(), e);
             }
         }
-        
+
         return null;
     }
 
     public static final String formatDate(Date d) {
-        return sdfDate.format(d);
+        return getSdfDate().format(d);
     }
 
     public static final String formatDate(Calendar cal) {
@@ -43,13 +49,12 @@ public class DateTimeUtil {
     }
 
     public static final String formatDateTime(Date d) {
-        return sdfDateTime.format(d);
+        return getSdfDateTime().format(d);
     }
 
     public static final String formatDateTime(Calendar cal) {
         return formatDateTime(cal.getTime());
     }
-
 
 
 }
