@@ -50,7 +50,7 @@ public class QiniuNotiController extends BaseController{
             Entity attachment = getAttachment(dbSession, persistentId);
             if (attachment != null) {
                 String key = rootNode.get("items").get(0).get("key").textValue().trim();
-                String qiniuUrl = "http://" + this.domain + "/" + key;
+                String qiniuUrl = "http://" + this.domain + "/" + key + "?avinfo";
                 logger.info(qiniuUrl + "回传的七牛链接");
                 int duration = qiniuUtil.getMediaDuration(qiniuUrl);
                 attachment.setValue("duration", duration);
