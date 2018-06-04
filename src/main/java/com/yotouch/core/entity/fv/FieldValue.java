@@ -2,7 +2,7 @@ package com.yotouch.core.entity.fv;
 
 import com.yotouch.core.entity.MetaField;
 
-public interface FieldValue<T> {
+public interface FieldValue<T> extends Cloneable {
     
     MetaField<T> getField();
     
@@ -16,6 +16,5 @@ public interface FieldValue<T> {
 
     void setNewValue(Object value);
 
-    
-
+    FieldValue<T> copy() throws CloneNotSupportedException;
 }

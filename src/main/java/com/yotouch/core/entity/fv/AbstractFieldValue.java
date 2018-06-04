@@ -73,4 +73,9 @@ public abstract class AbstractFieldValue<T> implements FieldValue<T> {
 
     abstract protected T parseValue(Object v);
 
+    @Override
+    public FieldValue<T> copy() throws CloneNotSupportedException {
+        return (FieldValue<T>) this.clone();
+    }
+
 }

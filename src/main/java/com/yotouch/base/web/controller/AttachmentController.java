@@ -11,8 +11,10 @@ import com.yotouch.base.util.QiniuUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,6 +40,12 @@ public class AttachmentController extends BaseController {
 
     @Autowired
     private QiniuUtil qnUtil;
+
+    @Value("${attachment.cdn:}")
+    String attachmentCnd;
+
+    @Value("${attachment.saveDb:}")
+    Boolean saveDb;
 
     @RequestMapping("/admin/attachment/test")
     public String testAttachment() {
@@ -65,25 +73,34 @@ public class AttachmentController extends BaseController {
     
     @RequestMapping("/admin/attachment/upload")
     public @ResponseBody Map<String, Object> uploadFile(
-            @RequestParam("file") MultipartFile uploadfile
-            ) {
+            @RequestParam("file") MultipartFile uploadfile,
+            HttpServletRequest request
+            ) throws IOException {
         
         String filename = uploadfile.getOriginalFilename();
         
         logger.info("Upload filename " + filename);
         Map<String, Object> ret = new HashMap<>();
 
-        try {
-            Entity attachment = attachmentService.saveAttachment(
+
+        Entity attachment = null;
+        if ("qiniu".equalsIgnoreCase(attachmentCnd)) {
+            if (saveDb != null && !saveDb) {
+                attachment = qnUtil.getAndUploadQiniuUrlIgnoreSaveDb(
+                        getDbSession(request),
+                        uploadfile.getBytes()
+                );
+            }
+        }
+
+        if (attachment == null) {
+            attachment = attachmentService.saveAttachment(
                     uploadfile.getBytes(),
                     uploadfile.getContentType()
             );
-
-            ret.put("uuid", attachment.getUuid());
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
+        ret.put("uuid", attachment.getUuid());
         return ret;
     }
     
@@ -92,6 +109,7 @@ public class AttachmentController extends BaseController {
             @RequestParam(value="uuid") String uuid,
             HttpServletResponse resp
             ) throws IOException {
+
 
         showAttachment(uuid, resp);
     }
@@ -111,9 +129,13 @@ public class AttachmentController extends BaseController {
             throw new Four04NotFoundException();
         }
 
+        String qiniuUrl = att.v("qiniuUrl");
+        if (!StringUtils.isEmpty(qiniuUrl)) {
+            resp.sendRedirect(qnUtil.getQiniuUrl(att));
+            return;
+        }
 
         resp.reset();
-
         resp.setContentType(att.getValue("mime"));
         byte[] content = att.getValue("content");
         resp.setContentLength(content.length);

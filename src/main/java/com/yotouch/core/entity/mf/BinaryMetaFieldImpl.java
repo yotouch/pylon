@@ -12,11 +12,14 @@ public class BinaryMetaFieldImpl extends MetaFieldImpl<byte[]> {
         return Consts.META_FIELD_DATA_TYPE_BINARY;
     }
 
-    
+    @Override
+    public FieldValue<byte[]> newFieldValue(Object value){
+        return new BinaryFieldValueImpl(this, value);
+    }
 
     @Override
-    public FieldValue<byte[]> newFieldValue(Object value) {
-        return new BinaryFieldValueImpl(this, value);
+    protected void setDefaultValue(Object dv) {
+        this.defaultValue = this.newFieldValue(dv);
     }
 
 }

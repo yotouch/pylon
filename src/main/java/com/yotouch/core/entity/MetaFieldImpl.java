@@ -134,11 +134,20 @@ public abstract class MetaFieldImpl<T> implements MetaField<T>, Cloneable {
 
     @Override
     public T getDefaultValue() {
-        return this.defaultValue.getValue();
+        return this.getDefaultFieldValue().getValue();
     }
 
     @Override
     public FieldValue<T> getDefaultFieldValue() {
+        if (this.defaultValue != null) {
+            try {
+                return this.defaultValue.copy();
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+        }
         return this.defaultValue;
     }
     
