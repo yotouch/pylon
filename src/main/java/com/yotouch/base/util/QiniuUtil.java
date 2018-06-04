@@ -139,6 +139,10 @@ public class QiniuUtil {
     }
 
     public String getQiniuUrl(Entity att) {
+        return getQiniuUrl(att, 60) ;
+    }
+
+    public String getQiniuUrl(Entity att, int expires){
         if (att == null) {
             return "";
         }
@@ -147,16 +151,15 @@ public class QiniuUtil {
         if (StringUtils.isEmpty(qiniuUrl)) {
             qiniuUrl  = "/attachment/" + att.getUuid();
         }
-        
-        String url = "http://" + this.domain + "/" + qiniuUrl; 
-        
+
+        String url = "http://" + this.domain + "/" + qiniuUrl;
+
         if ("1".equalsIgnoreCase(privateStr) || "true".equalsIgnoreCase(privateStr)) {
-            url = this.auth.privateDownloadUrl(url, 60);
+            expires = expires > 0 ? expires : 60 ;
+            url = this.auth.privateDownloadUrl(url, expires) ;
         }
-        
+
         return url;
-        
-        
     }
 
     public Entity getAndUploadQiniuUrlIgnoreSaveDb(DbSession dbSession, byte[] content) throws IOException {
