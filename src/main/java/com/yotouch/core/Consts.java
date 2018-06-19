@@ -61,11 +61,13 @@ public interface Consts {
     String WECHAT_STATE_REDIRECT            = "urlRedirect";
 
     String COOKIE_NAME_WX_USER_UUID         = "wxUserUuid";
+    String COOKIE_NAME_WECHAT_OPENID        = "wechatOpenId";
 
     String RUNTIME_VARIABLE_WECHAT_USER     = "WECHAT_USER";
     String RUNTIME_VARIABLE_WX_APPID        = "WECHAT_APPID";
     String RUNTIME_VARIABLE_WX_JS_ARGS      = "WECHAT_JS_ARGS";
     String RUNTIME_VARIABLE_WX_SERVICE      = "WECHAT_SERVICE";
+    String RUNTIME_VARIABLE_BROWSER_WECHAT  = "BROWSER_WECHAT";
     String RUNTIME_VARIABLE_YT_APP          = "YT_APP";
     String RUNTIME_VARIABLE_APP_HOST        = "APP_HOST";
     String RUNTIME_VARIABLE_CUSTOMER        = "CUSTOMER";
