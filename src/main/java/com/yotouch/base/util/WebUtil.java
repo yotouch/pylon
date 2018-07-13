@@ -150,6 +150,15 @@ public class WebUtil {
         }
     }
 
+    public String getAppHostUrl() {
+        if ("1".equals(this.ssl) || "true".equalsIgnoreCase(this.ssl)) {
+            return "https://" + appHost;
+        } else {
+            return "http://" + appHost;
+        }
+    }
+
+
     public String getFullUrl(HttpServletRequest request) {
         String requestURL = request.getRequestURI();
         String queryString = request.getQueryString();

@@ -43,7 +43,7 @@ public class SystemInterceptor extends LoginInterceptor{
         request.setAttribute("request", request);
         request.setAttribute("webUtil", webUtil);
         request.setAttribute("qiniuUtil", qiniuUtil);
-        request.setAttribute(Consts.RUNTIME_VARIABLE_BASE_URL, webUtil.getBaseUrl(request));
+        request.setAttribute(Consts.RUNTIME_VARIABLE_BASE_URL, webUtil.getAppHostUrl());
 
         String bid = webUtil.getBrowserId(request);
         if (StringUtils.isEmpty(bid)) {
